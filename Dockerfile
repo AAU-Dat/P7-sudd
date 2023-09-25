@@ -20,7 +20,8 @@ RUN apt-get update && apt-get install -y \
     libhwloc-dev \
     libz3-dev \
     libxerces-c-dev \
-    libeigen3-dev
+    libeigen3-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install setuptools==68.2.2
 
@@ -32,7 +33,7 @@ RUN git clone --branch 14.25 --single-branch --depth 1 https://github.com/moves-
 # Build CArL-storm
 WORKDIR /base/carl-storm/build
 RUN cmake .. && \
-    make lib_carl # TODO limit by $number_of_thread
+    make -j$number_of_threads lib_carl
 
 # Install Pycarl
 WORKDIR /base/pycarl
@@ -41,14 +42,15 @@ RUN python3 setup.py build_ext --jobs $number_of_threads develop
 # Build Storm
 WORKDIR /base/storm/build
 RUN cmake .. && \
-    make binaries # TODO limit by $number_of_thread
+    make -j$number_of_threads binaries
 
 # Install Stormpy
 WORKDIR /base/stormpy
 RUN python3 setup.py build_ext --jobs $number_of_threads develop
 
-# Copy the application source code (This should always be the last step)
+# Setup jajapy
 WORKDIR /base/jajapy
-COPY . /base/jajapy
-RUN pip install -r requirements.txt
-RUN pip install pytest==7.4.2 # TODO this should be a part of the requirements.txt, or maybe a dev_requirements.txt
+COPY ./requirements.txt /base/jajapy/requirements.txt
+COPY ./dev_requirements.txt /base/jajapy/dev_requirements.txt
+RUN pip install -r requirements.txt -r dev_requirements.txt
+COPY . .
