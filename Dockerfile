@@ -1,5 +1,7 @@
 FROM ubuntu:jammy 
 
+ARG number_of_threads=2
+
 WORKDIR /base
 
 RUN apt-get update && apt-get install -y \
@@ -30,20 +32,20 @@ RUN git clone --branch 14.25 --single-branch --depth 1 https://github.com/moves-
 # Build CArL-storm
 WORKDIR /base/carl-storm/build
 RUN cmake .. && \
-    make lib_carl
+    make lib_carl # TODO limit by $number_of_thread
 
 # Install Pycarl
 WORKDIR /base/pycarl
-RUN python3 setup.py develop
+RUN python3 setup.py build_ext --jobs $number_of_threads develop
 
 # Build Storm
 WORKDIR /base/storm/build
 RUN cmake .. && \
-    make binaries
+    make binaries # TODO limit by $number_of_thread
 
 # Install Stormpy
 WORKDIR /base/stormpy
-RUN python3 setup.py build_ext --jobs 2 develop
+RUN python3 setup.py build_ext --jobs $number_of_threads develop
 
 # Copy the application source code (This should always be the last step)
 WORKDIR /base/jajapy
