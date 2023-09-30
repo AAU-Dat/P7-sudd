@@ -7,8 +7,7 @@ job("Build and push Docker") {
         }
     }
 
-    gradlew("amazoncorretto:17-alpine", "build")
-    host("Build artifacts and a Docker image") {
+    host("Build and push a Docker image") {
         dockerBuildPush {
             labels["vendor"] = "gg-season"
             args["number_of_threads"] = "1"
