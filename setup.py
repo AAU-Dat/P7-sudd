@@ -5,21 +5,21 @@ from codecs import open
 HERE = pathlib.Path(__file__).parent
 
 # The text of the README file
-with open(HERE / "README.md", encoding='utf-8') as f:
-	long_description = f.read()
+with open(HERE / "README.md", encoding="utf-8") as f:
+    long_description = f.read()
 setup(
-    name='jajapy',
+    name="jajapy",
     long_description=long_description,
     packages=find_packages(),
-    install_requires=['numpy', 'scipy', 'alive-progress','sympy'],
+    install_requires=["numpy", "scipy", "alive-progress", "sympy"],
     long_description_content_type="text/markdown",
-    version='0.10.8',
+    version="0.10.8",
     url="",
-    description='Baum-Welch for all kind of Markov model',
-    author='Raphaël Reynouard',
+    description="Baum-Welch for all kind of Markov model",
+    author="Raphaël Reynouard",
     author_email="raphal20@ru.is",
-    license='MIT',
-	classifiers=[
+    license="MIT",
+    classifiers=[
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
@@ -29,7 +29,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
-        "Operating System :: OS Independent"
+        "Operating System :: OS Independent",
     ],
-    include_package_data=True
+    include_package_data=True,
 )
