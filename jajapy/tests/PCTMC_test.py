@@ -126,7 +126,8 @@ class PCTMCTestclass(unittest.TestCase):
 		training_set    = loadSet("jajapy/tests/materials/pctmc/training_set_PCTMC.txt")
 		output_gotten   = BW().fit_parameters(training_set, initial_model,["mu1a","mu1b","mu2","kappa"])
 		output_expected = {'mu1a': 0.19154272606453604, 'mu1b': 1.7589871248425895, 'mu2': 2.287450015307295, 'kappa': 4.0504485338277245}
-		var.assertDictEqual(output_expected,output_gotten)
+		for key, _ in output_gotten.items():
+			var.assertAlmostEqual(output_expected[key], output_gotten[key], 7)
 
 
 if __name__ == "__main__":

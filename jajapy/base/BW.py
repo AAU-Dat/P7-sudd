@@ -15,6 +15,7 @@ class BW:
 	"""
 	def __init__(self):
 		self.verbose = 2
+		self.processes = 1
 		try:
 			from ..with_stormpy import jajapyModeltoStormpy, stormpyModeltoJajapy
 			self.jajapyModeltoStormpy = jajapyModeltoStormpy
