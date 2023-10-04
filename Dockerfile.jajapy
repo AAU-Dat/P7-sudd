@@ -1,0 +1,8 @@
+FROM gg-summer.registry.jetbrains.space/p/p7/markov/base:latest
+
+# Setup jajapy
+WORKDIR /base/jajapy
+COPY ./requirements.txt /base/jajapy/requirements.txt
+COPY ./dev_requirements.txt /base/jajapy/dev_requirements.txt
+RUN pip install -r requirements.txt -r dev_requirements.txt
+COPY . .
