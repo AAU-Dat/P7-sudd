@@ -14,6 +14,7 @@ class BW:
 	Class for the Baum-Welch algorithm.
 	"""
 	def __init__(self):
+		self.verbose = 2
 		try:
 			from ..with_stormpy import jajapyModeltoStormpy, stormpyModeltoJajapy
 			self.jajapyModeltoStormpy = jajapyModeltoStormpy
