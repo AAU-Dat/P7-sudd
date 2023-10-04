@@ -47,10 +47,3 @@ RUN cmake .. && \
 # Install Stormpy
 WORKDIR /base/stormpy
 RUN python3 setup.py build_ext --jobs $number_of_threads develop
-
-# Setup jajapy
-WORKDIR /base/jajapy
-COPY ./requirements.txt /base/jajapy/requirements.txt
-COPY ./dev_requirements.txt /base/jajapy/dev_requirements.txt
-RUN pip install -r requirements.txt -r dev_requirements.txt
-COPY . .
