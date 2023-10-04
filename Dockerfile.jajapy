@@ -1,4 +1,4 @@
-FROM gg-summer.registry.jetbrains.space/p/p7/markov/base:latest
+FROM gg-summer.registry.jetbrains.space/p/p7/jajapy/base:latest
 
 # Setup jajapy
 WORKDIR /base/jajapy
