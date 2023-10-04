@@ -8,6 +8,7 @@
 // The parameters to estimate are:
 // 	alpha	 	(expected value: 0.3)
 //	betax	 	(expected value: 0.1)
+//	gammax	 	(expected value: 1.0)
 //	zetax	 	(expected value: 0.2)
 //
 // The observable parameters/variables are:
@@ -23,7 +24,7 @@ ctmc
 
 const double alpha; // = 0.3;
 const double betax; // = 0.1;
-const double gammax = 1.0;
+const double gammax; // = 1.0;
 const double zetax; // = 0.2;
 
 
