@@ -7,6 +7,12 @@ job("Build and push Docker") {
         }
     }
 
+    failOn {
+        timeOut {
+            runningTimeOutInMinutes = 200
+        }
+    }
+
     host("Build and push a Docker image") {
         dockerBuildPush {
             file = "Dockerfile.base"
