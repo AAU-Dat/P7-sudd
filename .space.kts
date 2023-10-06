@@ -9,6 +9,7 @@ job("Build and push Docker") {
 
     host("Build and push a Docker image") {
         dockerBuildPush {
+            file = "Dockerfile.base"
             labels["vendor"] = "gg-season"
             args["number_of_threads"] = "1"
 
