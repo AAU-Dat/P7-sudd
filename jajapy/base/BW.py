@@ -36,8 +36,11 @@ class BW:
     """
 
     def __init__(self):
+        if platform == "win32" or platform == "darwin":
+            self.processes = 1
+        else:
+            self.processes = cpu_count() - 1
         self.verbose = 2
-        self.processes = 1
         try:
             from ..with_stormpy import jajapyModeltoStormpy, stormpyModeltoJajapy
 
