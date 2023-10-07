@@ -7,17 +7,11 @@ job("Build and push Docker") {
         }
     }
 
-    failOn {
-        timeOut {
-            runningTimeOutInMinutes = 200
-        }
-    }
-
     host("Build and push a Docker image") {
         dockerBuildPush {
             file = "Dockerfile.base"
             labels["vendor"] = "gg-season"
-            args["number_of_threads"] = "1"
+            args["number_of_threads"] = "2"
 
             val spaceRepo = "gg-summer.registry.jetbrains.space/p/p7/markov/jajapy"
             tags {
