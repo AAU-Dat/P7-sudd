@@ -5,8 +5,8 @@
 
 
 CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_columns) {
-    unsigned int n_row_variables = (int) log2(n_rows);
-    unsigned int n_column_variables = (int) log2(n_columns);
+    unsigned int n_row_variables = (int) ceil(log2(n_rows));
+    unsigned int n_column_variables = (int) ceil(log2(n_columns));
     bool row_variables[n_row_variables];
     bool column_variables[n_column_variables];
     memset(row_variables, 0, sizeof(row_variables));
