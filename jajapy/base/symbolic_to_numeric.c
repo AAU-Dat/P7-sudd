@@ -14,6 +14,7 @@ CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_column
 
     DdNode* root = symbolic;
     for (int i = 0; i < n_rows; i++) {
+        memset(column_variables, 0, sizeof(column_variables));
         for (int j = 0; j < n_columns; j++) {
             result[i][j] = evaluate_matrix_BDD(root, row_variables, n_row_variables, column_variables, n_column_variables);
             increment_bit_array(column_variables, n_column_variables);
