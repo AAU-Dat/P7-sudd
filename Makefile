@@ -32,7 +32,7 @@ build/%.o: jajapy/tests/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Run the tests
-run-tests: build/tests
+check: build/tests
 	./build/tests
 
 # Clean up

@@ -3,7 +3,6 @@
 // #define CLEAR_BIT(array, pos) (array[(pos) / 8] &= ~(1 << ((pos) % 8)))
 // #define GET_BIT(array, pos)   ((array[(pos) / 8] & (1 << ((pos) % 8))) != 0)
 
-
 CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_columns) {
     unsigned int n_row_variables = (int) ceil(log2(n_rows));
     unsigned int n_column_variables = (int) ceil(log2(n_columns));
@@ -24,7 +23,6 @@ CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_column
 
     return result;
 }
-
 
 CUDD_VALUE_TYPE** create_2d_array(int n_rows, int n_columns) {
     CUDD_VALUE_TYPE** array = (CUDD_VALUE_TYPE**)malloc(n_rows * sizeof(CUDD_VALUE_TYPE*));

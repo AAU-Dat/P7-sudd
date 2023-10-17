@@ -6,22 +6,22 @@ START_TEST(matrix_2x2) {
     // Arrange
     DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode *add_one = Cudd_addConst(manager, 1);
+    DdNode* add_one = Cudd_addConst(manager, 1);
     Cudd_Ref(add_one);
 
-    DdNode *add_two = Cudd_addConst(manager, 2);
+    DdNode* add_two = Cudd_addConst(manager, 2);
     Cudd_Ref(add_two);
 
-    DdNode *add_three = Cudd_addConst(manager, 3);
+    DdNode* add_three = Cudd_addConst(manager, 3);
     Cudd_Ref(add_three);
 
-    DdNode *add_four = Cudd_addConst(manager, 4);
+    DdNode* add_four = Cudd_addConst(manager, 4);
     Cudd_Ref(add_four);
 
-    DdNode *x0 = Cudd_addIthVar(manager, 0);
-    DdNode *x1 = Cudd_addIthVar(manager, 1);
+    DdNode* x0 = Cudd_addIthVar(manager, 0);
+    DdNode* x1 = Cudd_addIthVar(manager, 1);
 
-    DdNode *matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
+    DdNode* matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
     Cudd_Ref(matrix);
 
     // Act
@@ -52,22 +52,22 @@ START_TEST(matrix_1x4) {
     // Arrange
     DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode *add_one = Cudd_addConst(manager, 1);
+    DdNode* add_one = Cudd_addConst(manager, 1);
     Cudd_Ref(add_one);
 
-    DdNode *add_two = Cudd_addConst(manager, 2);
+    DdNode* add_two = Cudd_addConst(manager, 2);
     Cudd_Ref(add_two);
 
-    DdNode *add_three = Cudd_addConst(manager, 3);
+    DdNode* add_three = Cudd_addConst(manager, 3);
     Cudd_Ref(add_three);
 
-    DdNode *add_four = Cudd_addConst(manager, 4);
+    DdNode* add_four = Cudd_addConst(manager, 4);
     Cudd_Ref(add_four);
 
-    DdNode *x0 = Cudd_addIthVar(manager, 0);
-    DdNode *x1 = Cudd_addIthVar(manager, 1);
+    DdNode* x0 = Cudd_addIthVar(manager, 0);
+    DdNode* x1 = Cudd_addIthVar(manager, 1);
 
-    DdNode *matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
+    DdNode* matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
     Cudd_Ref(matrix);
 
     // Act
@@ -95,24 +95,24 @@ END_TEST
 
 START_TEST(matrix_4x1) {
     // Arrange
-    DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode *add_one = Cudd_addConst(manager, 1);
+    DdNode* add_one = Cudd_addConst(manager, 1);
     Cudd_Ref(add_one);
 
-    DdNode *add_two = Cudd_addConst(manager, 2);
+    DdNode* add_two = Cudd_addConst(manager, 2);
     Cudd_Ref(add_two);
 
-    DdNode *add_three = Cudd_addConst(manager, 3);
+    DdNode* add_three = Cudd_addConst(manager, 3);
     Cudd_Ref(add_three);
 
-    DdNode *add_four = Cudd_addConst(manager, 4);
+    DdNode* add_four = Cudd_addConst(manager, 4);
     Cudd_Ref(add_four);
 
-    DdNode *x0 = Cudd_addIthVar(manager, 0);
-    DdNode *x1 = Cudd_addIthVar(manager, 1);
+    DdNode* x0 = Cudd_addIthVar(manager, 0);
+    DdNode* x1 = Cudd_addIthVar(manager, 1);
 
-    DdNode *matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
+    DdNode* matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
     Cudd_Ref(matrix);
 
     // Act
@@ -143,28 +143,13 @@ END_TEST
 
 START_TEST(matrix_1x1) { // TODO fix this
     // Arrange
-    DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode *add_one = Cudd_addConst(manager, 1);
+    DdNode* add_one = Cudd_addConst(manager, 1);
     Cudd_Ref(add_one);
 
-    DdNode *add_two = Cudd_addConst(manager, 2);
-    Cudd_Ref(add_two);
-
-    DdNode *add_three = Cudd_addConst(manager, 3);
-    Cudd_Ref(add_three);
-
-    DdNode *add_four = Cudd_addConst(manager, 4);
-    Cudd_Ref(add_four);
-
-    DdNode *x0 = Cudd_addIthVar(manager, 0);
-    DdNode *x1 = Cudd_addIthVar(manager, 1);
-
-    DdNode *matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
-    Cudd_Ref(matrix);
-
     // Act
-    CUDD_VALUE_TYPE** actual = symbolic_to_numeric(matrix, 1, 1);
+    CUDD_VALUE_TYPE** actual = symbolic_to_numeric(add_one, 1, 1);
 
     // Assert
     CUDD_VALUE_TYPE expected[1][1] = {{1}};
@@ -172,10 +157,6 @@ START_TEST(matrix_1x1) { // TODO fix this
 
     // Cleanup
     Cudd_RecursiveDeref(manager, add_one);
-    Cudd_RecursiveDeref(manager, add_two);
-    Cudd_RecursiveDeref(manager, add_three);
-    Cudd_RecursiveDeref(manager, add_four);
-    Cudd_RecursiveDeref(manager, matrix);
 
     Cudd_Quit(manager);
 }
