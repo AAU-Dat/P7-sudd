@@ -9,7 +9,7 @@ double** forward(double** gamma, double** P, double* pi) {
 DdNode* add_square_transpose(DdManager* manager, DdNode* matrix, int n_rows) {
     int n_variables = 2 * (int) ceil(log2(n_rows));
 
-    int* permutation = (int*) malloc(sizeof(int) * (n_variables));
+    int permutation[n_variables];
     for (int i = 0; i < n_variables; i++) {
         permutation[i] = i;
     }
@@ -21,7 +21,6 @@ DdNode* add_square_transpose(DdManager* manager, DdNode* matrix, int n_rows) {
     }
 
     DdNode* matrix_T =  Cudd_addPermute(manager, matrix, permutation);
-    free(permutation);
     return matrix_T;
 }
 
