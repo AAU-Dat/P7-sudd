@@ -1,42 +1,28 @@
 CC = gcc
 CFLAGS = -Wall -g
-LIBS = -lcudd -lm -lcheck -lsubunit # Assuming 'cudd' requires linking with '-lcudd'. Adjust as needed.
+LIBS = -lcudd -lm -lcheck -lsubunit
 
-# Source Files
-BASE_SRCS = jajapy/base/symbolic_to_numeric.c
-TEST_SRCS = jajapy/tests/test_symbolic_to_numeric.c
-MAIN_SRCS = jajapy/tests/tests.c
-FORWARD_SRCS = jajapy/base/forward.c
-TEST_FORWARD_SRCS = jajapy/tests/test_forward.c
+TEST_DIR = jajapy/tests
+SRC_DIR = jajapy/base
+OBJ_DIR = build
 
-# Object Files (inside the build folder)
-BASE_OBJS = $(BASE_SRCS:.c=.o)
-BASE_OBJS := $(addprefix build/, $(notdir $(BASE_OBJS)))
-
-TEST_OBJS = $(TEST_SRCS:.c=.o)
-TEST_OBJS := $(addprefix build/, $(notdir $(TEST_OBJS)))
-
-MAIN_OBJS = $(MAIN_SRCS:.c=.o)
-MAIN_OBJS := $(addprefix build/, $(notdir $(MAIN_OBJS)))
-
-FORWARD_SRC = $(FORWARD_SRCS:.c=.o)
-FORWARD_SRC := $(addprefix build/, $(notdir $(FORWARD_SRC)))
-
-TEST_FORWARD_SRC = $(TEST_FORWARD_SRCS:.c=.o)
-TEST_FORWARD_SRC := $(addprefix build/, $(notdir $(TEST_FORWARD_SRC)))
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
+OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+TEST_SRCS = $(wildcard $(TEST_DIR)/*.c)
+TEST_OBJS = $(TEST_SRCS:$(TEST_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Targets
 all: build/tests
 
 # Compile the main test executable
-build/tests: $(BASE_OBJS) $(TEST_OBJS) $(MAIN_OBJS) $(TEST_FORWARD_SRC) $(FORWARD_SRC)
+build/tests: $(TEST_OBJS) $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 # Compile source files to object files in the build folder
-build/%.o: jajapy/base/%.c | build
+build/%.o: $(SRC_DIR)/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
-build/%.o: jajapy/tests/%.c | build
+build/%.o: $(TEST_DIR)/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Run the tests
@@ -51,4 +37,4 @@ clean:
 build:
 	mkdir -p build
 
-.PHONY: all run-tests clean
+.PHONY: all check clean
