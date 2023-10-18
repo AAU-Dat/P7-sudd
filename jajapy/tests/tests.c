@@ -1,13 +1,15 @@
 #include <check.h>
 #include "test_symbolic_to_numeric.h"
+#include "test_forward.h"
 
 int main(void) {
     int number_failed;
-    Suite *s;
     SRunner *sr;
 
-    s = symbolic_to_numeric_suite();
-    sr = srunner_create(s);
+    Suite* s1 = symbolic_to_numeric_suite();
+    Suite* s2 = forward_suite();
+    sr = srunner_create(s1);
+    srunner_add_suite(sr, s2);
 
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
