@@ -1,6 +1,7 @@
 #include <check.h>
 #include "test_symbolic_to_numeric.h"
 #include "test_forward.h"
+#include "test_matrix_to_add.h"
 
 int main(void) {
     int number_failed;

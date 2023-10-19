@@ -7,29 +7,29 @@ START_TEST(test_matrix_to_add)
 {
 
     // initialize variables
-    // DdManager *gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
-    // DdNode *E, **x, **y, **xn, **yn_;
-    // int nx, ny, m, n;
-    // int size_row = 2;
-    // int size_col = 3;
-    // nx = 0;
-    // ny = 0;
-    // x = (DdNode **)malloc(sizeof(DdNode *) * ceil(log(size_row)));
-    // y = (DdNode **)malloc(sizeof(DdNode *) * ceil(log(size_col)));
-    // xn = (DdNode **)malloc(sizeof(DdNode *) * ceil(log(size_row)));
-    // yn_ = (DdNode **)malloc(sizeof(DdNode *) * ceil(log(size_col)));
+    DdManager *gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    DdNode *E; //**x, **y, **xn, **yn_;
+    int nx, ny, m, n;
+    int size_row = 3;
+    int size_col = 3;
+    nx = 0;
+    ny = 0;
+    DdNode *x[(int) ceil(log2(size_row))];
+    DdNode *y[(int) ceil(log2(size_col))];
+    DdNode *xn[(int) ceil(log2(size_row))];
+    DdNode *yn_[(int) ceil(log2(size_col))];
+    double matrix[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    matrixToADD(gbm, (double **)matrix, E, x, y, xn, yn_, nx, ny, m, n);
 
-    // // matrixToADD(gbm, matrix, E, x, y, xn, yn_, nx, ny, m, n);
+    symbolic_to_numeric(E, 3, 3);  
 
-    // symbolic_to_numeric(E, 3, 3);
+    // Assert
+    // CUDD_VALUE_TYPE expected[3][3] = {
+    //     {1, 2, 3},
+    //     {4, 5, 6},
+    //     {7, 8, 9}};
 
-    // // Assert
-    // // CUDD_VALUE_TYPE expected[3][3] = {
-    // //     {1, 2, 3},
-    // //     {4, 5, 6},
-    // //     {7, 8, 9}};
-
-    // Cudd_Quit(gbm);
+    Cudd_Quit(gbm);
 }
 
 Suite *matrix_to_add_suite(void)

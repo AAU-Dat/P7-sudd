@@ -6,12 +6,12 @@ void matrixToADD(DdManager *gbm, double **matrix, DdNode *E, DdNode **x, DdNode 
    // initialize variables
    FILE *filepointer;
    int size_row, size_col;
-   char *filename[40];
+   char filename[40];
    sprintf(filename, "matrix%d.txt", getpid());
    // write matrix to file
    writeMatrixToFile(matrix);
    filepointer = fopen(filename, "r");
-
+   
    // read the first line for finding size of matrix for allocating space
    fscanf(filepointer, "%d %d", &size_row, &size_col);
 
@@ -28,7 +28,7 @@ void writeMatrixToFile(double **matrix)
 
    // get size of matrix
    int size = sizeof(matrix) / sizeof(matrix[0]);
-   char *filename[40];
+   char filename[40];
    sprintf(filename, "matrix%d.txt", getpid());
    // open file
    filepointer = fopen("matrix.txt", "w");
