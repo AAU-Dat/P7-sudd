@@ -7,7 +7,7 @@
 #include <math.h>
 #include <unistd.h>
 
-void matrixToADD(DdManager *gbm, double **matrix, DdNode *E, DdNode **x, DdNode **y, DdNode **xn, DdNode **yn_, int *nx, int *ny, int *m, int *n);
-void writeMatrixToFile(double **matrix, int *m, int *n);
+void matrixToADD(DdManager *gbm, double **matrix, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn_, int *nx, int *ny, int *m, int *n);
+void writeMatrixToFile(double **matrix, int *m, int *n, char *filename);
 
 #endif

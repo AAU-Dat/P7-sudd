@@ -21,7 +21,7 @@ START_TEST(test_matrix_to_add)
     DdNode *xn[(int) ceil(log2(size_row))];
     DdNode *yn_[(int) ceil(log2(size_col))];
     double matrix[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    matrixToADD(gbm, (double **)matrix, E, x, y, xn, yn_, &nx, &ny, &m, &n);
+    matrixToADD(gbm, (double **)matrix, &E, &x, &y, &xn, &yn_, &nx, &ny, &m, &n);
 
     symbolic_to_numeric(E, 3, 3);  
 
