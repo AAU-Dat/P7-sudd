@@ -91,7 +91,7 @@ DdNode** _backwards(
     int n_vars,
     int k_j
 ) {
-    DdNode * _P = Cudd_addSwapVariables(manager, P, column_vars, row_vars, n_vars);
+    DdNode* _P = Cudd_addSwapVariables(manager, P, column_vars, row_vars, n_vars);
 
     DdNode** beta = (DdNode**) malloc(sizeof(DdNode*) * (k_j + 1));
     beta[k_j] = Cudd_addConst(manager, 1);

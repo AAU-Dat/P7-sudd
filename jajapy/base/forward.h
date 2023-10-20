@@ -17,14 +17,14 @@ double** forward(
     int k_j
 );
 DdNode* add_square_transpose(DdManager* manager, DdNode* matrix, int n_rows);
-DdNode** _forward(
+DdNode** _forwards(
     DdManager* manager,
     DdNode** omega, 
     DdNode* P, 
     DdNode* pi, 
-    DdNode** z,
-    DdNode** x,
-    int nz,
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
     int k_j
 );
 DdNode** _backwards(
