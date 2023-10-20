@@ -16,7 +16,7 @@ CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_column
     for (int i = 0; i < n_rows; i++) {
         memset(column_variables, 0, sizeof(column_variables));
         for (int j = 0; j < n_columns; j++) {
-            result[i][j] = evaluate_matrix_BDD(root, row_variables, n_row_variables, column_variables, n_column_variables);
+            result[i][j] = evaluate_matrix_BDD(root, row_variables, n_row_variables, column_variables, n_column_variables, 0);
             increment_bit_array(column_variables, n_column_variables);
         }
         increment_bit_array(row_variables, n_row_variables);
@@ -33,17 +33,16 @@ CUDD_VALUE_TYPE** create_2d_array(int n_rows, int n_columns) {
     return array;
 }
 
-CUDD_VALUE_TYPE evaluate_matrix_BDD(DdNode* node, bool row_variables[], int n_row_variables, bool column_variables[], int n_column_variables) {
+CUDD_VALUE_TYPE evaluate_matrix_BDD(DdNode* node, bool row_variables[], int n_row_variables, bool column_variables[], int n_column_variables, int index) {
     bool bits[n_row_variables + n_column_variables];
     interleave(row_variables, n_row_variables, column_variables, n_column_variables, bits);
     if (Cudd_IsConstant(node)) {
         return Cudd_V(node);
     }
-    int index = Cudd_NodeReadIndex(node);
     if (bits[index]) {
-        return evaluate_matrix_BDD(Cudd_T(node), row_variables, n_row_variables, column_variables, n_column_variables);
+        return evaluate_matrix_BDD(Cudd_T(node), row_variables, n_row_variables, column_variables, n_column_variables, index + 1);
     } else {
-        return evaluate_matrix_BDD(Cudd_E(node), row_variables, n_row_variables, column_variables, n_column_variables);
+        return evaluate_matrix_BDD(Cudd_E(node), row_variables, n_row_variables, column_variables, n_column_variables, index + 1);
     }
 }
 
