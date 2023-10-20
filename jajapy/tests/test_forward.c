@@ -1,5 +1,7 @@
 #include "test_forward.h"
 #include "../base/symbolic_to_numeric.h"
+#include "helper.h"
+#include <check.h>
 #include <cudd.h>
 
 START_TEST(_forwards_2x2_1_k_j) {
@@ -8,68 +10,38 @@ START_TEST(_forwards_2x2_1_k_j) {
 
     int n_obs = 1;
     int n_vars = 1;
+    int n_states = 2;
 
     DdNode* row_var = Cudd_addNewVar(manager);
-    DdNode* column_var = Cudd_addNewVar(manager);
+    DdNode* col_var = Cudd_addNewVar(manager);
 
-    DdNode* add1 = Cudd_addConst(manager, 1);
-    DdNode* add2 = Cudd_addConst(manager, 2);
-    DdNode* add3 = Cudd_addConst(manager, 3);
-    DdNode* add4 = Cudd_addConst(manager, 4);
+    double P[2][2] = {
+        {1, 2},
+        {3, 4}
+    };
+    DdNode* _P = matrix_2x2(manager, P, row_var, col_var);
 
-    DdNode* P = Cudd_addIte(
-        manager,
-        row_var,
-        Cudd_addIte(
-            manager,
-            column_var,
-            add4,
-            add3
-        ), 
-        Cudd_addIte(
-            manager,
-            column_var,
-            add2, 
-            add1
-        )
-    );
+    double omega0[2] = {1, 2};
+    DdNode* _omega0 = vector_2x1(manager, omega0, row_var);
 
-    DdNode* omega0 = Cudd_addIte(
-        manager,
-        row_var,
-        add2,
-        add1
-    );
+    double omega1[2] = {3, 4};
+    DdNode* _omega1 = vector_2x1(manager, omega1, row_var);
 
-    DdNode* omega1 = Cudd_addIte(
-        manager,
-        row_var,
-        add4,
-        add3
-    );
+    DdNode* _omega[2] = {_omega0, _omega1};
 
-    DdNode* omega[2] = {omega0, omega1};
-
-    DdNode* pi = Cudd_addIte(
-        manager,
-        row_var,
-        add2,
-        add1
-    );
+    double pi[2] = {1, 2};
+    DdNode* _pi = vector_2x1(manager, pi, row_var);
 
     // Act
-    DdNode** actual = _forwards(manager, omega, P, pi, &row_var, &column_var, n_vars, n_obs);
-    // DdNode* actual = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
+    DdNode** _alpha = _forwards(manager, _omega, _P, _pi, &row_var, &col_var, n_vars, n_obs);
+    double** alpha0 = symbolic_to_numeric(_alpha[0], 2, 1);
+    double** alpha1 = symbolic_to_numeric(_alpha[1], 2, 1);
 
     // Assert
-    double expected[2][2] = {
-        {1, 4},
-        {39, 72}
-    };
-    ck_assert_double_eq(expected[0][0], symbolic_to_numeric(actual[0], 2, 1)[0][0]);
-    ck_assert_double_eq(expected[0][1], symbolic_to_numeric(actual[0], 2, 1)[1][0]);
-    ck_assert_double_eq(expected[1][0], symbolic_to_numeric(actual[1], 2, 1)[0][0]);
-    ck_assert_double_eq(expected[1][1], symbolic_to_numeric(actual[1], 2, 1)[1][0]);
+    for (int s = 0; s < n_states; s++) {
+        ck_assert_double_eq(pi[s] * omega0[s], alpha0[s][0]);
+        ck_assert_double_eq(omega1[s] * (P[0][s] * alpha0[0][0] + P[1][s] * alpha0[1][0]), alpha1[s][0]);
+    }
 
     Cudd_Quit(manager);
 }
