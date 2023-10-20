@@ -22,14 +22,7 @@ int matrixToADD(double **matrix, DdManager *gbm, DdNode **E, DdNode ***x, DdNode
    // clean up
    fclose(file);
    remove(filename);
-   FILE *outfile;
-   outfile = fopen("output.dot", "w");
-   DdNode **ddnodearray = (DdNode **)malloc(sizeof(DdNode *)); // initialize the function array
-   ddnodearray[0] = *E;
-   Cudd_DumpDot(gbm, 1, ddnodearray, NULL, NULL, outfile); // dump the function to .dot file
-   free(ddnodearray);
-   fclose(outfile); // close the file */
-
+   
    return 0;
 }
 
@@ -56,36 +49,6 @@ int writeMatrixToFile(double **matrix, int *m, int *n)
    }
 
    fclose(file);
-
-   file = fopen(filename, "r");
-
-    if (file == NULL) {
-        perror("Error opening file");
-        return 1; // Return an error code
-    }
-
-    // Read and print the contents of the file
-    char buffer[1024]; // Create a buffer to store the read data
-
-    while (1) {
-        size_t bytesRead = fread(buffer, 1, sizeof(buffer), file);
-
-        if (bytesRead == 0) {
-            if (feof(file)) {
-                // End of file reached
-                break;
-            } else {
-                perror("Error reading from file");
-                break;
-            }
-        }
-
-        // Print the read data
-        fwrite(buffer, 1, bytesRead, stdout);
-    }
-
-    // Close the file when you're done
-    fclose(file);
 
    return 0;
 }
