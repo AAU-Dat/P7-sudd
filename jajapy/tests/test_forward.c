@@ -102,169 +102,30 @@ START_TEST(_backwards_3x3_2_k_j) {
     DdNode* col_var_0 = Cudd_addNewVar(manager);
     DdNode* col_var_1 = Cudd_addNewVar(manager);
     DdNode* col_vars[2] = {col_var_0, col_var_1};
-
-    DdNode* add1 = Cudd_addConst(manager, 1);
-    DdNode* add2 = Cudd_addConst(manager, 2);
-    DdNode* add3 = Cudd_addConst(manager, 3);
-    DdNode* add4 = Cudd_addConst(manager, 4);
-    DdNode* add5 = Cudd_addConst(manager, 5);
-    DdNode* add6 = Cudd_addConst(manager, 6);
-    DdNode* add7 = Cudd_addConst(manager, 7);
-    DdNode* add8 = Cudd_addConst(manager, 8);
-    DdNode* add9 = Cudd_addConst(manager, 9);
-    DdNode* add0 = Cudd_addConst(manager, 0);
     
-    DdNode* P = Cudd_addIte(
-        manager,
-        row_var_0,
-        Cudd_addIte(
-            manager,
-            col_var_0,
-            Cudd_addIte(
-                manager,
-                row_var_1,
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add0,
-                    add0
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add0,
-                    add9
-                )
-            ),
-            Cudd_addIte(
-                manager,
-                row_var_1,
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add0,
-                    add0
-
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add8,
-                    add7
-                )
-            )
-        ),
-        Cudd_addIte(
-            manager,
-            col_var_0,
-            Cudd_addIte(
-                manager,
-                row_var_1,
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add0,
-                    add6
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add0,
-                    add3
-                )
-            ),
-            Cudd_addIte(
-                manager,
-                row_var_1,
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add5,
-                    add4
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_var_1,
-                    add2,
-                    add1
-                )
-            )
-        )
-    );
+    double P[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    DdNode* _P = matrix_3x3(manager, P, row_vars, col_vars);
     
-    DdNode* pi = Cudd_addIte(
-        manager,
-        row_var_0,
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add0,
-            add3
-        ),
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add2,
-            add1
-        )
-    );
+    double pi[3] = {1, 2, 3};
+    DdNode* _pi = vector_3x1(manager, pi, row_vars);
 
-    DdNode* omega0 = Cudd_addIte(
-        manager,
-        row_var_0,
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add0,
-            add3
-        ),
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add2,
-            add1
-        )
-    );
+    double omega0[3] = {1, 2, 3};
+    DdNode* _omega0 = vector_3x1(manager, omega0, row_vars);
     
+    double omega1[3] = {4, 5, 6};
+    DdNode* _omega1 = vector_3x1(manager, omega1, row_vars);
 
-    DdNode* omega1 = Cudd_addIte(
-        manager,
-        row_var_0,
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add0,
-            add6
-        ),
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add5,
-            add4
-        )
-    );
+    double omega2[3] = {7, 8, 9};
+    DdNode* _omega2 = vector_3x1(manager, omega2, row_vars);
 
-    DdNode* omega2 = Cudd_addIte(
-        manager,
-        row_var_0,
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add0,
-            add9
-        ),
-        Cudd_addIte(
-            manager,
-            row_var_1,
-            add8,
-            add7
-        )
-    );
-
-    DdNode* omega[3] = {omega0, omega1, omega2};
+    DdNode* _omega[3] = {_omega0, _omega1, _omega2};
     
     // Act
-    DdNode** actual = _forwards(manager, omega, P, pi, row_vars, col_vars, n_vars, k_j);
+    DdNode** actual = _forwards(manager, _omega, _P, _pi, row_vars, col_vars, n_vars, k_j);
 
     // Assert
     double expected[3][3] = {
@@ -284,7 +145,6 @@ START_TEST(_backwards_3x3_2_k_j) {
     ck_assert_double_eq(expected[2][0], symbolic_to_numeric(actual[2], 3, 1)[0][0]);
     ck_assert_double_eq(expected[2][1], symbolic_to_numeric(actual[2], 3, 1)[1][0]);
     ck_assert_double_eq(expected[2][2], symbolic_to_numeric(actual[2], 3, 1)[2][0]);
-    
 }
 
 Suite* forward_suite(void) {
