@@ -96,6 +96,7 @@ START_TEST(_backwards_3x3_2_k_j) {
     int n_vars = 2;
 
     DdNode* row_var_0 = Cudd_addNewVar(manager);
+    
     DdNode* row_var_1 = Cudd_addNewVar(manager);
     DdNode* row_vars[2] = {row_var_0, row_var_1};
 
@@ -109,6 +110,7 @@ START_TEST(_backwards_3x3_2_k_j) {
         {7, 8, 9}
     };
     DdNode* _P = matrix_3x3(manager, P, row_vars, col_vars);
+    
     
     double pi[3] = {1, 2, 3};
     DdNode* _pi = vector_3x1(manager, pi, row_vars);
