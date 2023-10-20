@@ -50,69 +50,40 @@ START_TEST(_backwards_2x2_1_k_j) {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    int k_j = 1;
+    int n_obs = 1;
     int n_vars = 1;
+    int n_states = 2;
 
     DdNode* row_var = Cudd_addNewVar(manager);
-    DdNode* column_var = Cudd_addNewVar(manager);
+    DdNode* col_var = Cudd_addNewVar(manager);
 
-    DdNode* add1 = Cudd_addConst(manager, 1);
-    DdNode* add2 = Cudd_addConst(manager, 2);
-    DdNode* add3 = Cudd_addConst(manager, 3);
-    DdNode* add4 = Cudd_addConst(manager, 4);
+    double P[2][2] = {
+        {1, 2},
+        {3, 4}
+    };
+    DdNode* _P = matrix_2x2(manager, P, row_var, col_var);
 
-    DdNode* P = Cudd_addIte(
-        manager,
-        row_var,
-        Cudd_addIte(
-            manager,
-            column_var,
-            add4,
-            add3
-        ), 
-        Cudd_addIte(
-            manager,
-            column_var,
-            add2, 
-            add1
-        )
-    );
+    double omega0[2] = {1, 2};
+    DdNode* _omega0 = vector_2x1(manager, omega0, row_var);
 
-    DdNode* omega0 = Cudd_addIte(
-        manager,
-        row_var,
-        add2,
-        add1
-    );
+    double omega1[2] = {3, 4};
+    DdNode* _omega1 = vector_2x1(manager, omega1, row_var);
 
-    DdNode* omega1 = Cudd_addIte(
-        manager,
-        row_var,
-        add4,
-        add3
-    );
+    DdNode* _omega[2] = {_omega0, _omega1};
 
-    DdNode* omega[2] = {omega0, omega1};
-
-    DdNode* pi = Cudd_addIte(
-        manager,
-        row_var,
-        add2,
-        add1
-    );
+    double pi[2] = {1, 2};
+    DdNode* _pi = vector_2x1(manager, pi, row_var);
 
     // Act
-    DdNode** actual = _backwards(manager, omega, P, pi, &row_var, &column_var, n_vars, k_j);
+    DdNode** _beta = _backwards(manager, _omega, _P, _pi, &row_var, &col_var, n_vars, n_obs);
+    double** beta0 = symbolic_to_numeric(_beta[0], 2, 1);
+    double** beta1 = symbolic_to_numeric(_beta[1], 2, 1);
 
     // Assert
-    double expected[2][2] = {
-        {11, 25},
-        {1, 1}
-    };
-    ck_assert_double_eq(expected[0][0], symbolic_to_numeric(actual[0], 2, 1)[0][0]);
-    ck_assert_double_eq(expected[0][1], symbolic_to_numeric(actual[0], 2, 1)[1][0]);
-    ck_assert_double_eq(expected[1][0], symbolic_to_numeric(actual[1], 2, 1)[0][0]);
-    ck_assert_double_eq(expected[1][1], symbolic_to_numeric(actual[1], 2, 1)[1][0]);
+    for (int s = 0; s < n_states; s++) {
+        ck_assert_double_eq(P[s][0] * omega1[0] * beta1[0][0] + P[s][1] * omega1[1] * beta1[1][0], beta0[s][0]);
+        ck_assert_double_eq(1, beta1[s][0]);
+    }
 
     Cudd_Quit(manager);
 }
