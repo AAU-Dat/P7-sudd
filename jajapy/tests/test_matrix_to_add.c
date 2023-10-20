@@ -1,39 +1,88 @@
+#include <stdio.h>
 #include <check.h>
 #include "../base/symbolic_to_numeric.h"
 #include "../base/matrix_to_add.h"
 #include "cudd.h"
 
-START_TEST(test_matrix_to_add)
+START_TEST(matrix_2x2)
 {
+    int n = 2; // number of columns
+    int m = 2; // number of rows
 
-    // initialize variables
     DdManager *gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
-    DdNode *E; //**x, **y, **xn, **yn_;
-    int nx, ny, m, n;
-    m = 3;
-    n = 3;
-    int size_row = 3;
-    int size_col = 3;
-    nx = 0;
-    ny = 0;
-    DdNode *x[(int) ceil(log2(size_row))];
-    DdNode *y[(int) ceil(log2(size_col))];
-    DdNode *xn[(int) ceil(log2(size_row))];
-    DdNode *yn_[(int) ceil(log2(size_col))];
-    double matrix[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    matrixToADD(gbm, (double **)matrix, &E, &x, &y, &xn, &yn_, &nx, &ny, &m, &n);
+    DdNode *E;
+    DdNode **x = (DdNode **)malloc(ceil(log2(m)) * sizeof(DdNode *));
+    DdNode **y = (DdNode **)malloc(ceil(log2(n)) * sizeof(DdNode *));
+    DdNode **xn = (DdNode **)malloc(ceil(log2(m)) * sizeof(DdNode *));
+    DdNode **yn = (DdNode **)malloc(ceil(log2(n)) * sizeof(DdNode *));
+    int nx = 0, ny = 0;
 
-    symbolic_to_numeric(E, 3, 3);  
+    double **matrix = (double **)malloc(m * sizeof(double *));
+    matrix[0] = (double *)malloc(n * sizeof(double *));
+    matrix[1] = (double *)malloc(n * sizeof(double *));
+    matrix[0][0] = 1;
+    matrix[0][1] = 2;
+    matrix[1][0] = 3;
+    matrix[1][1] = 4;
+
+    matrixToADD(matrix, gbm, &E, &x, &y, &xn, &yn, &nx, &ny, &m, &n);
+
+    CUDD_VALUE_TYPE **actual = symbolic_to_numeric(E, m, n);
 
     // Assert
-    // CUDD_VALUE_TYPE expected[3][3] = {
-    //     {1, 2, 3},
-    //     {4, 5, 6},
-    //     {7, 8, 9}};
+    CUDD_VALUE_TYPE expected[2][2] = {
+        {1, 2},
+        {3, 4}};
+    ck_assert_double_eq(expected[0][0], actual[0][0]);
+    ck_assert_double_eq(expected[0][1], actual[0][1]);
+    ck_assert_double_eq(expected[1][0], actual[1][0]);
+    ck_assert_double_eq(expected[1][1], actual[1][1]);
 
+    // free memory of matrix
+    for (int i = 0; i < m; i++)
+    {
+        free(matrix[i]);
+    }
     Cudd_Quit(gbm);
+    free(matrix);
 }
 
+START_TEST(matrix_1x4)
+{
+    int m = 1; // number of rows
+    int n = 4; // number of columns
+
+    DdManager *gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    DdNode *E;
+    DdNode **x = (DdNode **)malloc(ceil(log2(m)) * sizeof(DdNode *));
+    DdNode **y = (DdNode **)malloc(ceil(log2(n)) * sizeof(DdNode *));
+    DdNode **xn = (DdNode **)malloc(ceil(log2(m)) * sizeof(DdNode *));
+    DdNode **yn = (DdNode **)malloc(ceil(log2(n)) * sizeof(DdNode *));
+    int nx = 0, ny = 0;
+
+    double **matrix = (double **)malloc(m * sizeof(double *));
+    for (int i = 0; i < m; i++)
+    {
+        matrix[i] = (double *)malloc(n * sizeof(double));
+    }
+
+    matrix[0][0] = 1;
+    matrix[0][1] = 2;
+    matrix[0][2] = 3;
+    matrix[0][3] = 4;
+
+    matrixToADD(matrix, gbm, &E, &x, &y, &xn, &yn, &nx, &ny, &m, &n);
+    FILE *outfile; // output file pointer for .dot file
+  
+    CUDD_VALUE_TYPE **actual = symbolic_to_numeric(E, 1, 4);
+    CUDD_VALUE_TYPE expected[1][4] = {
+        {1, 2, 3, 4}};
+
+    ck_assert_double_eq(expected[0][0], actual[0][0]);
+    ck_assert_double_eq(expected[0][1], actual[0][1]);
+    ck_assert_double_eq(expected[0][2], actual[0][2]);
+    ck_assert_double_eq(expected[0][3], actual[0][3]);
+}
 Suite *matrix_to_add_suite(void)
 {
     Suite *s;
@@ -44,7 +93,8 @@ Suite *matrix_to_add_suite(void)
     /* Core test case */
     tc_core = tcase_create("Core");
 
-    tcase_add_test(tc_core, test_matrix_to_add);
+    tcase_add_test(tc_core, matrix_2x2);
+    tcase_add_test(tc_core, matrix_1x4);
     suite_add_tcase(s, tc_core);
 
     return s;

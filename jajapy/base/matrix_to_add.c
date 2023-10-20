@@ -1,50 +1,91 @@
 #include "matrix_to_add.h"
 
 /* function makes matrix to ADD*/
-void matrixToADD(DdManager *gbm, double **matrix, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn_, int *nx, int *ny, int *m, int *n)
+int matrixToADD(double **matrix, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m, int *n)
 {
-   // initialize variables
-   FILE *filepointer;
-   int size_row, size_col;
+   // write the matrix to a file
+   writeMatrixToFile(matrix, m, n);
+
+   // read the file
+   FILE *file;
    char filename[40];
    sprintf(filename, "matrix%d.txt", getpid());
-   printf("matrixToADD");
-   // write matrix to file
-   writeMatrixToFile(matrix, m, n, filename);
-   filepointer = fopen(filename, "r");
-   
-   // read the first line for finding size of matrix for allocating space
-   fscanf(filepointer, "%d %d", &size_row, &size_col);
+   file = fopen(filename, "r");
+   if (file == NULL)
+   {
+      perror("Error opening file");
+      return 1; // Return an error code
+   }
+   // read we now take the file and make it into an ADD
+   Cudd_addRead(file, gbm, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
-   // this function takes the file and creates the ADD
-   Cudd_addRead(filepointer, gbm, E, x, y, xn, yn_, nx, ny, m, n, 0, 2, 1, 2);
-   //remove(filename);
-   // close the file
-   fclose(filepointer);
+   // clean up
+   fclose(file);
+   remove(filename);
+   FILE *outfile;
+   outfile = fopen("output.dot", "w");
+   DdNode **ddnodearray = (DdNode **)malloc(sizeof(DdNode *)); // initialize the function array
+   ddnodearray[0] = *E;
+   Cudd_DumpDot(gbm, 1, ddnodearray, NULL, NULL, outfile); // dump the function to .dot file
+   free(ddnodearray);
+   fclose(outfile); // close the file */
+
+   return 0;
 }
 
-void writeMatrixToFile(double **matrix, int *m, int *n, char *filename)
+/* function writes matrix to file*/
+int writeMatrixToFile(double **matrix, int *m, int *n)
 {
-   // printf("writeMatrixToFile");
-   FILE *filepointer;
-   // printf("writeMatrixToFile1");
-   // char filename[40];
-   // printf("writeMatrixToFile2");
-   // sprintf(filename, "matrix%d.txt", getpid());
-   printf("writeMatrixToFile3");
-   // open file
-   filepointer = fopen(filename, "w");
-   printf("writeMatrixToFile4");
-   // write size of matrix to file
-   fprintf(filepointer, "%d %d\n", *m, *n);
-
-   // write into file with a loop
-   for (int i = 0; i < *m; i++)
+   FILE *file;
+   char filename[40];
+   sprintf(filename, "matrix%d.txt", getpid());
+   file = fopen(filename, "w");
+   if (file == NULL)
    {
-      for (int j = 0; j < *n; j++)
+      perror("Error opening file");
+      return 1; // Return an error code
+   }
+   fprintf(file, "%d %d\n", *m, *n);
+   int i, j;
+   for (i = 0; i < *m; i++)
+   {
+      for (j = 0; j < *n; j++)
       {
-         fprintf(filepointer, "%d %d %lf\n", i, j, matrix[i][j]);
+         fprintf(file, "%d %d %f\n", i, j, matrix[i][j]);
       }
    }
-   fclose(filepointer);
+
+   fclose(file);
+
+   file = fopen(filename, "r");
+
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1; // Return an error code
+    }
+
+    // Read and print the contents of the file
+    char buffer[1024]; // Create a buffer to store the read data
+
+    while (1) {
+        size_t bytesRead = fread(buffer, 1, sizeof(buffer), file);
+
+        if (bytesRead == 0) {
+            if (feof(file)) {
+                // End of file reached
+                break;
+            } else {
+                perror("Error reading from file");
+                break;
+            }
+        }
+
+        // Print the read data
+        fwrite(buffer, 1, bytesRead, stdout);
+    }
+
+    // Close the file when you're done
+    fclose(file);
+
+   return 0;
 }
