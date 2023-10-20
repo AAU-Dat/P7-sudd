@@ -48,7 +48,7 @@ START_TEST(_forwards_2x2) {
         add3
     );
 
-    DdNode* omega[3] = {omega0, omega1};
+    DdNode* omega[2] = {omega0, omega1};
 
     DdNode* pi = Cudd_addIte(
         manager,
@@ -58,7 +58,7 @@ START_TEST(_forwards_2x2) {
     );
 
     // Act
-    DdNode** actual = _forward(manager, omega, P, pi, &row_var, &column_var, n_vars, n_obs);
+    DdNode** actual = _forwards(manager, omega, P, pi, &row_var, &column_var, n_vars, n_obs);
     // DdNode* actual = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
 
     // Assert
@@ -78,7 +78,7 @@ START_TEST(_backwards_2x2) {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    int n_obs = 1;
+    int k_j = 1;
     int n_vars = 1;
 
     DdNode* row_var = Cudd_addNewVar(manager);
@@ -120,7 +120,7 @@ START_TEST(_backwards_2x2) {
         add3
     );
 
-    DdNode* omega[3] = {omega0, omega1};
+    DdNode* omega[2] = {omega0, omega1};
 
     DdNode* pi = Cudd_addIte(
         manager,
@@ -130,7 +130,7 @@ START_TEST(_backwards_2x2) {
     );
 
     // Act
-    DdNode** actual = _backwards(manager, omega, P, pi, &row_var, &column_var, n_vars, n_obs);
+    DdNode** actual = _backwards(manager, omega, P, pi, &row_var, &column_var, n_vars, k_j);
 
     // Assert
     double expected[2][2] = {

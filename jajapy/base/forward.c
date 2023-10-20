@@ -59,7 +59,7 @@
 //     return alpha;
 // }
 
-DdNode** _forward(
+DdNode** _forwards(
     DdManager* manager,
     DdNode** omega, 
     DdNode* P, 
