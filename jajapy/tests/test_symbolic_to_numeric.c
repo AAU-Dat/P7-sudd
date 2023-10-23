@@ -218,7 +218,7 @@ START_TEST(test_matrix_3x3) {
                     add7
                 )
             )
-        ),CUDD_VALUE_TYPE
+        ),
         Cudd_addIte(
             manager,
             y1,
