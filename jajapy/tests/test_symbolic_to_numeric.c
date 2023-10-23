@@ -8,15 +8,12 @@ START_TEST(test_matrix_2x2) {
     // Arrange
     DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode* row_var = Cudd_addIthVar(manager, 0);
-    DdNode* col_var = Cudd_addIthVar(manager, 1);
 
     double matrix[2][2] = {
         {1, 2},
         {3, 4}
     };
-
-    DdNode* _matrix = matrix_2x2(manager, matrix, row_var, col_var);
+    DdNode* _matrix = matrix_2x2(manager, matrix);
 
     // Act
     CUDD_VALUE_TYPE** actual = symbolic_to_numeric(_matrix, 2, 2);

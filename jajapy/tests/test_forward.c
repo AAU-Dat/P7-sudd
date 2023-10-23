@@ -20,7 +20,7 @@ START_TEST(_forwards_2x2_1_k_j) {
         {1, 2},
         {3, 4}
     };
-    DdNode* _P = matrix_2x2(manager, P, row_var, col_var);
+    DdNode* _P = matrix_2x2(manager, P);
 
     double omega0[2] = {1, 2};
     DdNode* _omega0 = vector_2x1(manager, omega0, row_var);
@@ -64,7 +64,7 @@ START_TEST(_backwards_2x2_1_k_j) {
         {1, 2},
         {3, 4}
     };
-    DdNode* _P = matrix_2x2(manager, P, row_var, col_var);
+    DdNode* _P = matrix_2x2(manager, P);
 
     double omega0[2] = {1, 2};
     DdNode* _omega0 = vector_2x1(manager, omega0, row_var);
