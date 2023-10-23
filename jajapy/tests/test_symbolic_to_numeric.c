@@ -72,26 +72,19 @@ START_TEST(matrix_4x1) {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode* add_one = Cudd_addConst(manager, 1);
-    Cudd_Ref(add_one);
+    DdNode* row_var = Cudd_addNewVar(manager);
+    Cudd_Ref(row_var);
+    DdNode* col_var = Cudd_addNewVar(manager);
+    Cudd_Ref(col_var);
 
-    DdNode* add_two = Cudd_addConst(manager, 2);
-    Cudd_Ref(add_two);
-
-    DdNode* add_three = Cudd_addConst(manager, 3);
-    Cudd_Ref(add_three);
-
-    DdNode* add_four = Cudd_addConst(manager, 4);
-    Cudd_Ref(add_four);
-
-    DdNode* x0 = Cudd_addIthVar(manager, 0);
-    DdNode* x1 = Cudd_addIthVar(manager, 1);
-
-    DdNode* matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
-    Cudd_Ref(matrix);
-
+    double matrix[2][2] = {
+        {1, 2},
+        {3, 4}
+    };
+    DdNode* _matrix = matrix_2x2(manager, matrix, row_var, col_var);
+    Cudd_Ref(_matrix);
     // Act
-    CUDD_VALUE_TYPE** actual = symbolic_to_numeric(matrix, 4, 1);
+    CUDD_VALUE_TYPE** actual = symbolic_to_numeric(_matrix, 4, 1);
 
     // Assert
     CUDD_VALUE_TYPE expected[4][1] = {
@@ -107,12 +100,6 @@ START_TEST(matrix_4x1) {
     ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Cleanup
-    Cudd_RecursiveDeref(manager, add_one);
-    Cudd_RecursiveDeref(manager, add_two);
-    Cudd_RecursiveDeref(manager, add_three);
-    Cudd_RecursiveDeref(manager, add_four);
-    Cudd_RecursiveDeref(manager, matrix);
-
     Cudd_Quit(manager);
 }
 END_TEST
