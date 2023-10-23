@@ -1,8 +1,9 @@
 #include <check.h>
 #include "../base/symbolic_to_numeric.h"
 #include "cudd.h"
+#include "helper.h"
 
-START_TEST(matrix_2x2) {
+START_TEST(test_matrix_2x2) {
     // Arrange
     DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -18,32 +19,26 @@ START_TEST(matrix_2x2) {
     DdNode* add_four = Cudd_addConst(manager, 4);
     Cudd_Ref(add_four);
 
-    DdNode* x0 = Cudd_addIthVar(manager, 0);
-    DdNode* x1 = Cudd_addIthVar(manager, 1);
+    DdNode* row_var = Cudd_addIthVar(manager, 0);
+    DdNode* col_var = Cudd_addIthVar(manager, 1);
 
-    DdNode* matrix = Cudd_addIte(manager, x0, Cudd_addIte(manager, x1, add_four, add_three), Cudd_addIte(manager, x1, add_two, add_one));
-    Cudd_Ref(matrix);
-
-    // Act
-    CUDD_VALUE_TYPE** actual = symbolic_to_numeric(matrix, 2, 2);
-
-    // Assert
-    CUDD_VALUE_TYPE expected[2][2] = {
+    double matrix[2][2] = {
         {1, 2},
         {3, 4}
     };
-    ck_assert_double_eq(expected[0][0], actual[0][0]);
-    ck_assert_double_eq(expected[0][1], actual[0][1]);
-    ck_assert_double_eq(expected[1][0], actual[1][0]);
-    ck_assert_double_eq(expected[1][1], actual[1][1]);
+
+    DdNode* _matrix = matrix_2x2(manager, matrix, row_var, col_var);
+
+    // Act
+    CUDD_VALUE_TYPE** actual = symbolic_to_numeric(_matrix, 2, 2);
+
+    // Assert
+    ck_assert_double_eq(matrix[0][0], actual[0][0]);
+    ck_assert_double_eq(matrix[0][1], actual[0][1]);
+    ck_assert_double_eq(matrix[1][0], actual[1][0]);
+    ck_assert_double_eq(matrix[1][1], actual[1][1]);
 
     // Cleanup
-    Cudd_RecursiveDeref(manager, add_one);
-    Cudd_RecursiveDeref(manager, add_two);
-    Cudd_RecursiveDeref(manager, add_three);
-    Cudd_RecursiveDeref(manager, add_four);
-    Cudd_RecursiveDeref(manager, matrix);
-
     Cudd_Quit(manager);
 }
 END_TEST
@@ -162,7 +157,7 @@ START_TEST(matrix_1x1) {
 }
 END_TEST
 
-START_TEST(matrix_3x3) {
+START_TEST(test_matrix_3x3) {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -325,11 +320,11 @@ Suite* symbolic_to_numeric_suite(void) {
 
     tc_symbolic_to_numeric = tcase_create("symbolic_to_numeric");
 
-    tcase_add_test(tc_symbolic_to_numeric, matrix_2x2);
+    tcase_add_test(tc_symbolic_to_numeric, test_matrix_2x2);
     tcase_add_test(tc_symbolic_to_numeric, matrix_1x4);
     tcase_add_test(tc_symbolic_to_numeric, matrix_4x1);
     tcase_add_test(tc_symbolic_to_numeric, matrix_1x1);
-    tcase_add_test(tc_symbolic_to_numeric, matrix_3x3);
+    tcase_add_test(tc_symbolic_to_numeric, test_matrix_3x3);
 
     suite_add_tcase(s, tc_symbolic_to_numeric);
     return s;
