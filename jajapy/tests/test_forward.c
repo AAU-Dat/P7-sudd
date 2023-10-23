@@ -3,6 +3,7 @@
 #include "helper.h"
 #include <check.h>
 #include <cudd.h>
+#include <unistd.h>
 
 START_TEST(_forwards_2x2_1_k_j) {
     // Arrange
@@ -42,7 +43,9 @@ START_TEST(_forwards_2x2_1_k_j) {
         ck_assert_double_eq(pi[s] * omega0[s], alpha0[s][0]);
         ck_assert_double_eq(omega1[s] * (P[0][s] * alpha0[0][0] + P[1][s] * alpha0[1][0]), alpha1[s][0]);
     }
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
+    // Clean
     Cudd_Quit(manager);
 }
 
@@ -84,7 +87,9 @@ START_TEST(_backwards_2x2_1_k_j) {
         ck_assert_double_eq(P[s][0] * omega1[0] * beta1[0][0] + P[s][1] * omega1[1] * beta1[1][0], beta0[s][0]);
         ck_assert_double_eq(1, beta1[s][0]);
     }
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
+    // Clean
     Cudd_Quit(manager);
 }
 
@@ -111,8 +116,7 @@ START_TEST(_forwards_3x3_2_k_j) {
         {7, 8, 9}
     };
     DdNode* _P = matrix_3x3(manager, P, row_vars, col_vars);
-    
-    
+
     double pi[3] = {1, 2, 3};
     DdNode* _pi = vector_3x1(manager, pi, row_vars);
 
@@ -138,6 +142,10 @@ START_TEST(_forwards_3x3_2_k_j) {
         ck_assert_double_eq(omega1[s] * (P[0][s] * alpha0[0][0] + P[1][s] * alpha0[1][0] + P[2][s] * alpha0[2][0]), alpha1[s][0]);
         ck_assert_double_eq(omega2[s] * (P[0][s] * alpha1[0][0] + P[1][s] * alpha1[1][0] + P[2][s] * alpha1[2][0]), alpha2[s][0]);
     }
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
+
+    // Clean
+    Cudd_Quit(manager);
 }
 
 START_TEST(_backwards_3x3_2_k_j) {
@@ -189,6 +197,10 @@ START_TEST(_backwards_3x3_2_k_j) {
         ck_assert_double_eq(P[s][0] * omega2[0] * beta2[0][0] + P[s][1] * omega2[1] * beta2[1][0] + P[s][2] * omega2[2] * beta2[2][0], beta1[s][0]);
         ck_assert_double_eq(1, beta2[s][0]);
     }
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
+
+    // Clean
+    Cudd_Quit(manager);
 }
 
 Suite* forward_suite(void) {

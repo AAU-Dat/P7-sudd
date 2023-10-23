@@ -1,4 +1,5 @@
 #include <check.h>
+#include <unistd.h>
 #include "../base/symbolic_to_numeric.h"
 #include "cudd.h"
 #include "helper.h"
@@ -25,6 +26,7 @@ START_TEST(test_matrix_2x2) {
     ck_assert_double_eq(matrix[0][1], actual[0][1]);
     ck_assert_double_eq(matrix[1][0], actual[1][0]);
     ck_assert_double_eq(matrix[1][1], actual[1][1]);
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Cleanup
     Cudd_Quit(manager);
@@ -64,6 +66,7 @@ START_TEST(matrix_1x4) {
     ck_assert_double_eq(expected[0][1], actual[0][1]);
     ck_assert_double_eq(expected[0][2], actual[0][2]);
     ck_assert_double_eq(expected[0][3], actual[0][3]);
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Cleanup
     Cudd_RecursiveDeref(manager, add_one);
@@ -112,6 +115,7 @@ START_TEST(matrix_4x1) {
     ck_assert_double_eq(expected[1][0], actual[1][0]);
     ck_assert_double_eq(expected[2][0], actual[2][0]);
     ck_assert_double_eq(expected[3][0], actual[3][0]);
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Cleanup
     Cudd_RecursiveDeref(manager, add_one);
@@ -137,6 +141,7 @@ START_TEST(matrix_1x1) {
     // Assert
     CUDD_VALUE_TYPE expected[1][1] = {{1}};
     ck_assert_double_eq(expected[0][0], actual[0][0]);
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Cleanup
     Cudd_RecursiveDeref(manager, add_one);
@@ -256,7 +261,6 @@ START_TEST(test_matrix_3x3) {
             )
         )
     );
-    Cudd_Ref(matrix);
 
     // Act
     CUDD_VALUE_TYPE** actual = symbolic_to_numeric(matrix, 3, 3);
@@ -279,6 +283,8 @@ START_TEST(test_matrix_3x3) {
     ck_assert_double_eq(expected[2][0], actual[2][0]);
     ck_assert_double_eq(expected[2][1], actual[2][1]);
     ck_assert_double_eq(expected[2][2], actual[2][2]);
+
+    ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Cleanup
     Cudd_RecursiveDeref(manager, add1);
