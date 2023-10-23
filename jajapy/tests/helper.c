@@ -45,84 +45,197 @@ DdNode* matrix_2x2(DdManager* manager, double matrix[2][2], DdNode* row_var, DdN
     return final;
 }
 
+// This is terrible, too bad!
 DdNode* matrix_3x3(DdManager* manager, double matrix[3][3], DdNode* row_vars[2], DdNode* col_vars[2]) {
-    return Cudd_addIte(
+    DdNode* _0000 = Cudd_addConst(manager, matrix[0][0]);
+    Cudd_Ref(_0000);
+    DdNode* _0001 = Cudd_addConst(manager, matrix[0][1]);
+    Cudd_Ref(_0001);
+    DdNode* _0010 = Cudd_addConst(manager, matrix[1][0]);
+    Cudd_Ref(_0010);
+    DdNode* _0011 = Cudd_addConst(manager, matrix[1][1]);
+    Cudd_Ref(_0011);
+    DdNode* _0100 = Cudd_addConst(manager, matrix[0][2]);
+    Cudd_Ref(_0100);
+    DdNode* _0101 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_0101);
+    DdNode* _0110 = Cudd_addConst(manager, matrix[1][2]);
+    Cudd_Ref(_0110);
+    DdNode* _0111 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_0111);
+    DdNode* _1000 = Cudd_addConst(manager, matrix[2][0]);
+    Cudd_Ref(_1000);
+    DdNode* _1001 = Cudd_addConst(manager, matrix[2][1]);
+    Cudd_Ref(_1001);
+    DdNode* _1010 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_1010);
+    DdNode* _1011 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_1011);
+    DdNode* _1100 = Cudd_addConst(manager, matrix[2][2]);
+    Cudd_Ref(_1100);
+    DdNode* _1101 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_1101);
+    DdNode* _1110 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_1110);
+    DdNode* _1111 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_1111);
+
+    DdNode* _000 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _0001,
+        _0000
+    );
+    Cudd_Ref(_000);
+
+    DdNode* _001 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _0011,
+        _0010
+    );
+    Cudd_Ref(_001);
+
+    DdNode* _010 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _0101,
+        _0100
+    );
+    Cudd_Ref(_010);
+
+    DdNode* _011 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _0111,
+        _0110
+    );
+    Cudd_Ref(_011);
+
+    DdNode* _100 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _1001,
+        _1000
+    );
+    Cudd_Ref(_100);
+
+    DdNode* _101 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _1011,
+        _1010
+    );
+    Cudd_Ref(_101);
+
+    DdNode* _110 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _1101,
+        _1100
+    );
+    Cudd_Ref(_110);
+
+    DdNode* _111 = Cudd_addIte(
+        manager,
+        col_vars[1],
+        _1111,
+        _1110
+    );
+    Cudd_Ref(_111);
+    
+    DdNode* _00 = Cudd_addIte(
+        manager,
+        row_vars[1],
+        _001,
+        _000
+    );
+    Cudd_Ref(_00);
+
+    DdNode* _01 = Cudd_addIte(
+        manager,
+        row_vars[1],
+        _011,
+        _010
+    );
+    Cudd_Ref(_01);
+
+    DdNode* _10 = Cudd_addIte(
+        manager,
+        row_vars[1],
+        _101,
+        _100
+    );
+    Cudd_Ref(_10);
+
+    DdNode* _11 = Cudd_addIte(
+        manager,
+        row_vars[1],
+        _110,
+        _110
+    );
+    Cudd_Ref(_11);
+
+    DdNode* _0 = Cudd_addIte(
+        manager,
+        col_vars[0],
+        _01,
+        _00
+    );
+    Cudd_Ref(_0);
+
+    DdNode* _1 = Cudd_addIte(
+        manager,
+        col_vars[0],
+        _11,
+        _10
+    );
+    Cudd_Ref(_1);
+
+    DdNode* root = Cudd_addIte(
         manager,
         row_vars[0],
-        Cudd_addIte(
-            manager,
-            col_vars[0],
-            Cudd_addIte(
-                manager,
-                row_vars[1],
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, 0),
-                    Cudd_addConst(manager, 0)
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, 0),
-                    Cudd_addConst(manager, matrix[2][2])
-                )
-            ),
-            Cudd_addIte(
-                manager,
-                row_vars[1],
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, 0),
-                    Cudd_addConst(manager, 0)
-
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, matrix[2][1]),
-                    Cudd_addConst(manager, matrix[2][0])
-                )
-            )
-        ),
-        Cudd_addIte(
-            manager,
-            col_vars[0],
-            Cudd_addIte(
-                manager,
-                row_vars[1],
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, 0),
-                    Cudd_addConst(manager, matrix[1][2])
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, 0),
-                    Cudd_addConst(manager, matrix[0][2])
-                )
-            ),
-            Cudd_addIte(
-                manager,
-                row_vars[1],
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, matrix[1][1]),
-                    Cudd_addConst(manager, matrix[1][0])
-                ),
-                Cudd_addIte(
-                    manager,
-                    col_vars[1],
-                    Cudd_addConst(manager, matrix[0][1]),
-                    Cudd_addConst(manager, matrix[0][0])
-                )
-            )
-        )
+        _1,
+        _0
     );
+    Cudd_Ref(root);
+
+    Cudd_RecursiveDeref(manager, _0);
+    Cudd_RecursiveDeref(manager, _1);
+
+    Cudd_RecursiveDeref(manager, _00);
+    Cudd_RecursiveDeref(manager, _01);
+    Cudd_RecursiveDeref(manager, _10);
+    Cudd_RecursiveDeref(manager, _11);
+
+
+    Cudd_RecursiveDeref(manager, _000);
+    Cudd_RecursiveDeref(manager, _001);
+    Cudd_RecursiveDeref(manager, _010);
+    Cudd_RecursiveDeref(manager, _011);
+    Cudd_RecursiveDeref(manager, _100);
+    Cudd_RecursiveDeref(manager, _101);
+    Cudd_RecursiveDeref(manager, _110);
+    Cudd_RecursiveDeref(manager, _111);
+
+    Cudd_RecursiveDeref(manager, _0000);
+    Cudd_RecursiveDeref(manager, _0001);
+    Cudd_RecursiveDeref(manager, _0010);
+    Cudd_RecursiveDeref(manager, _0011);
+    Cudd_RecursiveDeref(manager, _0100);
+    Cudd_RecursiveDeref(manager, _0101);
+    Cudd_RecursiveDeref(manager, _0110);
+    Cudd_RecursiveDeref(manager, _0111);
+    Cudd_RecursiveDeref(manager, _1000);
+    Cudd_RecursiveDeref(manager, _1001);
+    Cudd_RecursiveDeref(manager, _1010);
+    Cudd_RecursiveDeref(manager, _1011);
+    Cudd_RecursiveDeref(manager, _1100);
+    Cudd_RecursiveDeref(manager, _1101);
+    Cudd_RecursiveDeref(manager, _1110);
+    Cudd_RecursiveDeref(manager, _1111);
+
+    return root;
 }
 
 DdNode* vector_2x1(DdManager* manager, double vector[2], DdNode* row_var) {
@@ -146,20 +259,47 @@ DdNode* vector_2x1(DdManager* manager, double vector[2], DdNode* row_var) {
 }
 
 DdNode* vector_3x1(DdManager* manager, double vector[3], DdNode* row_vars[2]) {
-    return Cudd_addIte(
+    DdNode* _00 = Cudd_addConst(manager, vector[0]);
+    Cudd_Ref(_00);
+    DdNode* _01 = Cudd_addConst(manager, vector[1]);
+    Cudd_Ref(_01);
+    DdNode* _10 = Cudd_addConst(manager, vector[2]);
+    Cudd_Ref(_10);
+    DdNode* _11 = Cudd_addConst(manager, 0);
+    Cudd_Ref(_11);
+
+    DdNode* _0 = Cudd_addIte(
+        manager,
+        row_vars[1],
+        _01,
+        _00
+    );
+    Cudd_Ref(_0);
+
+    DdNode* _1 = Cudd_addIte(
+        manager,
+        row_vars[1],
+        _11,
+        _10
+    );
+    Cudd_Ref(_1);
+
+
+    DdNode* root = Cudd_addIte(
         manager,
         row_vars[0],
-        Cudd_addIte(
-            manager,
-            row_vars[1],
-            Cudd_addConst(manager, 0),
-            Cudd_addConst(manager, vector[2])
-        ),
-        Cudd_addIte(
-            manager,
-            row_vars[1],
-            Cudd_addConst(manager, vector[1]),
-            Cudd_addConst(manager, vector[0])
-        )
+        _1,
+        _0
     );
+    Cudd_Ref(root);
+
+    Cudd_RecursiveDeref(manager, _1);
+    Cudd_RecursiveDeref(manager, _0);
+
+    Cudd_RecursiveDeref(manager, _00);
+    Cudd_RecursiveDeref(manager, _01);
+    Cudd_RecursiveDeref(manager, _10);
+    Cudd_RecursiveDeref(manager, _11);
+
+    return root;
 }
