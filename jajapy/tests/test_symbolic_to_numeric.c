@@ -7,18 +7,6 @@ START_TEST(test_matrix_2x2) {
     // Arrange
     DdManager *manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode* add_one = Cudd_addConst(manager, 1);
-    Cudd_Ref(add_one);
-
-    DdNode* add_two = Cudd_addConst(manager, 2);
-    Cudd_Ref(add_two);
-
-    DdNode* add_three = Cudd_addConst(manager, 3);
-    Cudd_Ref(add_three);
-
-    DdNode* add_four = Cudd_addConst(manager, 4);
-    Cudd_Ref(add_four);
-
     DdNode* row_var = Cudd_addIthVar(manager, 0);
     DdNode* col_var = Cudd_addIthVar(manager, 1);
 
@@ -230,7 +218,7 @@ START_TEST(test_matrix_3x3) {
                     add7
                 )
             )
-        ),
+        ),CUDD_VALUE_TYPE
         Cudd_addIte(
             manager,
             y1,
