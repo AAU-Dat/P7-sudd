@@ -1,12 +1,7 @@
 #include "helper.h"
 #include <cudd.h>
 
-DdNode* matrix_2x2(DdManager* manager, double matrix[2][2]) {
-    DdNode* row_var = Cudd_addNewVar(manager);
-    Cudd_Ref(row_var);
-    DdNode* col_var = Cudd_addNewVar(manager);
-    Cudd_Ref(col_var);
-
+DdNode* matrix_2x2(DdManager* manager, double matrix[2][2], DdNode* row_var, DdNode* col_var) {
     DdNode* _00 = Cudd_addConst(manager, matrix[0][0]);
     Cudd_Ref(_00);
     DdNode* _01 = Cudd_addConst(manager, matrix[0][1]);
@@ -40,8 +35,6 @@ DdNode* matrix_2x2(DdManager* manager, double matrix[2][2]) {
     );
     Cudd_Ref(final);
 
-    Cudd_RecursiveDeref(manager, row_var);
-    Cudd_RecursiveDeref(manager, col_var);
     Cudd_RecursiveDeref(manager, _00);
     Cudd_RecursiveDeref(manager, _01);
     Cudd_RecursiveDeref(manager, _10);
@@ -133,12 +126,23 @@ DdNode* matrix_3x3(DdManager* manager, double matrix[3][3], DdNode* row_vars[2],
 }
 
 DdNode* vector_2x1(DdManager* manager, double vector[2], DdNode* row_var) {
-    return Cudd_addIte(
+    DdNode* _0 = Cudd_addConst(manager, vector[0]);
+    Cudd_Ref(_0);
+    DdNode* _1 = Cudd_addConst(manager, vector[1]);
+    Cudd_Ref(_1);
+
+    DdNode* final =  Cudd_addIte(
         manager,
         row_var,
-        Cudd_addConst(manager, vector[1]),
-        Cudd_addConst(manager, vector[0])
+        _1,
+        _0
     );
+    Cudd_Ref(final);
+
+    Cudd_RecursiveDeref(manager, _1);
+    Cudd_RecursiveDeref(manager, _0);
+
+    return final;
 }
 
 DdNode* vector_3x1(DdManager* manager, double vector[3], DdNode* row_vars[2]) {
