@@ -19,7 +19,7 @@ DdNode** _forwards(
     for (int t = 1; t <= k_j; t++) {
         DdNode* PT_alpha_t = Cudd_addMatrixMultiply(manager, P, alpha[t - 1], row_vars, n_vars);
         PT_alpha_t = Cudd_addSwapVariables(manager, PT_alpha_t, column_vars, row_vars, n_vars);
-        alpha[t] = Cudd_addApply( manager, Cudd_addTimes, omega[t], PT_alpha_t);
+        alpha[t] = Cudd_addApply(manager, Cudd_addTimes, omega[t], PT_alpha_t);
     }
 
     return alpha;
