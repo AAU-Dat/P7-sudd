@@ -132,14 +132,14 @@ START_TEST(test_matrix_3x3) {
 
     DdNode* row_var_0 = Cudd_addNewVar(manager);
     Cudd_Ref(row_var_0);
-    DdNode* row_var_1 = Cudd_addNewVar(manager);
-    Cudd_Ref(row_var_1);
-    DdNode* row_vars[2] = {row_var_0, row_var_1};
-
     DdNode* col_var_0 = Cudd_addNewVar(manager);
     Cudd_Ref(col_var_0);
+    DdNode* row_var_1 = Cudd_addNewVar(manager);
+    Cudd_Ref(row_var_1);
     DdNode* col_var_1 = Cudd_addNewVar(manager);
     Cudd_Ref(col_var_1);
+
+    DdNode* row_vars[2] = {row_var_0, row_var_1};
     DdNode* col_vars[2] = {col_var_0, col_var_1};
 
     double matrix[3][3] = {
@@ -171,7 +171,6 @@ START_TEST(test_matrix_3x3) {
     ck_assert_double_eq(expected[2][0], actual[2][0]);
     ck_assert_double_eq(expected[2][1], actual[2][1]);
     ck_assert_double_eq(expected[2][2], actual[2][2]);
-
 
     // Cleanup
     Cudd_Quit(manager);
