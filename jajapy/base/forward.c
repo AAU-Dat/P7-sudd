@@ -60,5 +60,7 @@ DdNode** _backwards(
         Cudd_RecursiveDeref(manager, beta_t);
     }
 
+    Cudd_RecursiveDeref(manager, _P);
+
     return beta;
 }
