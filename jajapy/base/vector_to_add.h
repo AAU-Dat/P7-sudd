@@ -8,8 +8,8 @@
 
 #include "cudd.h"
 
-int vectorToADD(double **vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m);
-int writeVectorToFile(double **vector, int *m);
+int vectorToADD(double *vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m);
+int writeVectorToFile(double *vector, int *m);
 
 
 #endif

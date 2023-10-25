@@ -1,7 +1,7 @@
 #include "vector_to_add.h"
 
 /* function makes vector to ADD*/
-int vectorToADD(double **vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m)
+int vectorToADD(double *vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m)
 {
    // write the vector to a file
    int result = writeVectorToFile(vector, m);
@@ -36,7 +36,7 @@ int vectorToADD(double **vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode
 }
 
 /* function writes vector to file*/
-int writeVectorToFile(double **vector, int *m)
+int writeVectorToFile(double *vector, int *m)
 {
    FILE *file;
    char filename[40];
@@ -51,16 +51,16 @@ int writeVectorToFile(double **vector, int *m)
    int i;
 
    // If vector is actually a 2-dimensional matrix, and not a column vector, throw an error
-   if (vector[0][1]) {
-    perror("ERROR: Function vectorToADD was called with a 2-dimensional matrix and not a column vector");
-    fclose(file);
-    remove(filename);
-    return 1; // Return an error code
-   }
+   // if (vector[0][1]) {
+   //  perror("ERROR: Function vectorToADD was called with a 2-dimensional matrix and not a column vector");
+   //  fclose(file);
+   //  remove(filename);
+   // return 1; // Return an error code
+   // }
 
    for (i = 0; i < *m; i++)
    {
-         fprintf(file, "%d 0 %f\n", i, vector[i][0]);  
+         fprintf(file, "%d 0 %f\n", i, vector[i]);  
    }
 
    fclose(file);
