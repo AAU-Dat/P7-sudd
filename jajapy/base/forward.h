@@ -10,12 +10,6 @@
 
 #include "cudd.h"
 
-double** forward(
-    double** omega,
-    double** P, double* pi,
-    int n_states,
-    int k_j
-);
 DdNode* add_square_transpose(DdManager* manager, DdNode* matrix, int n_rows);
 DdNode** _forwards(
     DdManager* manager,
