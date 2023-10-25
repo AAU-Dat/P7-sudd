@@ -2,8 +2,8 @@ CC = gcc
 CFLAGS = -Wall -g
 LIBS = -lcudd -lm -lcheck -lsubunit
 
-TEST_DIR = jajapy/tests
-SRC_DIR = jajapy/base
+TEST_DIR = tests
+SRC_DIR = src
 OBJ_DIR = build
 
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
