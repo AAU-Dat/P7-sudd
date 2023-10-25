@@ -15,7 +15,7 @@
 #include "forward.h"
 #include "vector_to_add.h"
 
-double **forward(
+double **fb(
     DdNode **(*_fb)(
         DdManager *manager,
         DdNode **omega,

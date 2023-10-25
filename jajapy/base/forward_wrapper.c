@@ -3,7 +3,7 @@
 // parameter P - (kvadratisk) matrix (den har længden states x states)
 // parameter pi - søjle vektor (den har længden states x 1)
 
-double **forward(
+double **fb(
     DdNode **(*_fb)(
         DdManager *manager,
         DdNode **omega,

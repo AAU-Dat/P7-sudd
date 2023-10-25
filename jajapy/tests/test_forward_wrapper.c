@@ -44,7 +44,7 @@ START_TEST(fb_backwards_3x3_2_k_j)
     pi[1] = 2;
     pi[2] = 3;
 
-    CUDD_VALUE_TYPE **beta = forward(_backwards, omega, P, pi, states, k_j);
+    CUDD_VALUE_TYPE **beta = fb(_backwards, omega, P, pi, states, k_j);
 
     for (int s = 0; s < states; s++)
     {
@@ -107,7 +107,7 @@ START_TEST(fb_forwards_3x3_2_k_j)
     pi[1] = 2;
     pi[2] = 3;
 
-    CUDD_VALUE_TYPE **alpha = forward(_forwards, omega, P, pi, states, k_j);
+    CUDD_VALUE_TYPE **alpha = fb(_forwards, omega, P, pi, states, k_j);
 
     for (int s = 0; s < states; s++)
     {
