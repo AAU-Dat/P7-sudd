@@ -110,7 +110,7 @@ double** fb(
     CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
     for (int t = 0; t <= k_j; t++)
     {
-        alpha[t] = add_to_vector(_alpha[t], number_of_rows, 0, 2);
+        alpha[t] = add_to_vector(_alpha[t], number_of_rows, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
     }
 
     assert(Cudd_DebugCheck(manager) == 0);

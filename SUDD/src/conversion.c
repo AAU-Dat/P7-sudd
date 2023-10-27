@@ -48,6 +48,7 @@ int vector_to_add(
 }
 
 /* function writes vector to file*/
+// TODO why is this function written with 3 spaces indentation
 int write_vector_to_file(double* vector, int* m)
 {
    FILE* file;
@@ -148,6 +149,7 @@ CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool row_bits[], bool col_bits
         return Cudd_V(node);
     }
     
+    // TODO STOP HARDCODING VARIABLE INDEXES
     // TODO this is probably not the best way to select between row vars and col vars
     unsigned int node_index = Cudd_NodeReadIndex(node);
     bool is_row_var = node_index % (ROW_VAR_INDEX_OFFSET + ROW_VAR_INDEX_MULTIPLIER) == 0;
@@ -166,23 +168,6 @@ CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool row_bits[], bool col_bits
         } else {
             return evaluate_matrix_bdd(Cudd_E(node), row_bits, col_bits);
         }
-    }
-}
-
-void interleave(bool A[], int size_a, bool B[], int size_b, bool result[]) {
-    int a_index = 0, b_index = 0, r_index = 0;
-
-    while (a_index < size_a && b_index < size_b) {
-        result[r_index++] = A[a_index++];
-        result[r_index++] = B[b_index++];
-    }
-
-    while (a_index < size_a) {
-        result[r_index++] = A[a_index++];
-    }
-
-    while (b_index < size_b) {
-        result[r_index++] = B[b_index++];
     }
 }
 
@@ -224,6 +209,7 @@ int matrix_to_add(
       return 1; // Return an error code
    }
    // read we now take the file and make it into an ADD
+    // TODO stop hardcoding indexes
    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
    // clean up
