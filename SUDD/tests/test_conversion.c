@@ -232,6 +232,66 @@ START_TEST(matrix_to_add__3x3)
 }
 END_TEST
 
+START_TEST(add_to_matrix__4x4_same_row)
+{
+    int m = 4; // number of rows
+    int n = 4; // number of columns
+
+    DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    DdNode* E;
+    DdNode** x = (DdNode**)malloc(ceil(log2(m)) * sizeof(DdNode*));
+    DdNode** y = (DdNode**)malloc(ceil(log2(n)) * sizeof(DdNode*));
+    DdNode** xn = (DdNode**)malloc(ceil(log2(m)) * sizeof(DdNode*));
+    DdNode** yn = (DdNode**)malloc(ceil(log2(n)) * sizeof(DdNode*));
+    int nx = 0, ny = 0;
+
+    double** matrix = (double**)malloc(m * sizeof(double*));
+    for (int i = 0; i < m; i++)
+    {
+        matrix[i] = (double*)malloc(n * sizeof(double));
+    }
+
+    matrix[0][0] = 1;
+    matrix[0][1] = 2;
+    matrix[0][2] = 3;
+    matrix[0][4] = 4;
+
+    matrix[1][0] = 1;
+    matrix[1][1] = 2;
+    matrix[1][2] = 3;
+    matrix[1][4] = 4;
+
+    matrix[2][0] = 1;
+    matrix[2][1] = 2;
+    matrix[2][2] = 3;
+    matrix[2][4] = 4;
+
+    matrix[3][0] = 1;
+    matrix[3][1] = 2;
+    matrix[3][2] = 3;
+    matrix[3][4] = 4;
+
+    matrix_to_add(matrix, manager, &E, &x, &y, &xn, &yn, &nx, &ny, &m, &n);
+
+    CUDD_VALUE_TYPE**actual = add_to_matrix(E, m, n);
+
+    // Assert
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; i < n; j++) {
+            ck_assert_double_eq(matrix[i][j], actual[i][j]);
+        }
+    }
+
+    for (int i = 0; i < m; i++)
+    {
+        free(matrix[i]);
+    }
+    Cudd_Quit(manager);
+    free(matrix);
+}
+END_TEST
+
+
 START_TEST(add_to_matrix__2x2)
 {
     // Arrange
@@ -578,6 +638,7 @@ Suite* conversion_suite(void)
     tcase_add_test(tc_conversion, matrix_to_add__4x1);
     tcase_add_test(tc_conversion, matrix_to_add__1x1);
     tcase_add_test(tc_conversion, matrix_to_add__3x3);
+    tcase_add_test(tc_conversion, add_to_matrix__4x4_same_row);
     tcase_add_test(tc_conversion, add_to_matrix__2x2);
     tcase_add_test(tc_conversion, add_to_matrix__1x4);
     tcase_add_test(tc_conversion, add_to_matrix__4x1);
