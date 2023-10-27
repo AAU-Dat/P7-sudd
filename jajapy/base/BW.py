@@ -661,9 +661,9 @@ class BW:
         """
         return self.h.l(s1, s2, obs)
 
-    def _computeAlphas_timed(self, obs_seq: list, times_seq: list) -> array:
+    def _computeAlphas_timed(self, obs_seq: list[str], times_seq: list[float]) -> array:
         """
-        Compute the beta values for ``obs_seq`` and ``times_seq`` under the
+        Compute the alpha values for ``obs_seq`` and ``times_seq`` under the
         current BW hypothesis.
 
         Parameters
@@ -676,7 +676,7 @@ class BW:
         Returns
         -------
         2-D narray
-                array containing the beta values.
+                array containing the alpha values.
         """
         len_seq = len(obs_seq) - 1
         init_arr = self.h.initial_state
