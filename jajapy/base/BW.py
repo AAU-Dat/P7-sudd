@@ -1171,6 +1171,39 @@ class BW:
         if e == 0.0:
             return inf
         return self.hval[s1, s2] / e
+    
+    def _h_tau_PCTMC_matrix(
+        self
+        ) -> list:
+        p = zeros(shape=(self.nb_states, self.nb_states))
+        for s in range(self.nb_states):
+            for ss in range(self.nb_states):
+                e = self._h_e(s)
+                if e != 0:
+                    p[s][ss] = self.hval[s][ss] / e
+                    
+                elif e == 0 and s == ss:
+                    p[s][ss] = 1
+                    
+                else:
+                    p[s][ss] = 0 
+                
+                
+                
+                """ o_list = zeros(shape=(self.nb_states))
+                for o in range(sequence):
+                    if self.h.labelling[s] != o:
+                        append(o_list, 0.0)
+                        continue
+                    e = self._h_e(s)
+                    if e == 0.0:
+                        append(o_list, inf)
+                        continue
+                    append(o_list, self.hval[s,ss] / e)
+                p[s][ss]=o_list """
+                        
+                
+        return p.tolist()
 
     def _processWork_PCTMC(self, sequence: list, times: int):
         times_seq, obs_seq = self._splitTime(sequence)
