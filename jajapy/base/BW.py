@@ -1,6 +1,7 @@
 from sys import platform
 from multiprocessing import cpu_count, Pool
 from numpy.polynomial.polynomial import polyroots
+import numpy as np
 from numpy import (
     array,
     dot,
@@ -1171,6 +1172,25 @@ class BW:
         if e == 0.0:
             return inf
         return self.hval[s1, s2] / e
+
+    def _h_phi_matrix_PCTMC(
+        self,
+        obs_seq: list[str],
+        times_seq: list[float]
+    ) -> list[list[float]]:
+        rows, cols = len(obs_seq), self.nb_states
+        phi = [[0] * cols for _ in range(rows)]
+
+        for i in range(rows - 1):
+            for s in range(cols):
+                phi[i][s] = \
+                        (self.h.labelling[s] == obs_seq[i]) \
+                        * self._h_e(s) \
+                        * exp(-self._h_e(s) * times_seq[i])
+        for s in range(cols):
+            phi[-1] = (self.h.labelling[s] == obs_seq[-1])
+
+        return phi
 
     def _processWork_PCTMC(self, sequence: list, times: int):
         times_seq, obs_seq = self._splitTime(sequence)
