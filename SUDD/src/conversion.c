@@ -18,7 +18,7 @@ int vector_to_add(
     int result = write_vector_to_file(vector, m);
 
     if (result == 1) {
-       return 1;
+        return 1;
     }
 
     // read the file
@@ -28,8 +28,8 @@ int vector_to_add(
     file = fopen(filename, "r");
     if (file == NULL)
     {
-       perror("Error opening file");
-       return 1; // Return an error code
+        perror("Error opening file");
+        return 1; // Return an error code
     }
 
     // n is set to 1 as we are working with vectors
@@ -37,12 +37,13 @@ int vector_to_add(
     int nn = 1;
     n = &nn;
     // read we now take the file and make it into an ADD
+    // TODO stop hardcoding indexes
     Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
     // clean up
     fclose(file);
     remove(filename);
-   
+
     return 0;
 }
 
