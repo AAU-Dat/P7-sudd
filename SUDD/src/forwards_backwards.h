@@ -33,18 +33,18 @@ DdNode** _backwards(
     int k_j
 );
 double **fb(
-    DdNode **(*_fb)(
-        DdManager *manager,
-        DdNode **omega,
-        DdNode *P,
-        DdNode *pi,
-        DdNode **row_vars,
-        DdNode **column_vars,
+    DdNode** (*_fb)(
+        DdManager* manager,
+        DdNode** omega,
+        DdNode* P,
+        DdNode* pi,
+        DdNode** row_vars,
+        DdNode** column_vars,
         int n_vars,
         int k_j),
-    double **omega,
-    double **P,
-    double *pi,
+    double** omega,
+    double** P,
+    double* pi,
     int n_states,
     int k_j);
 

@@ -3,19 +3,19 @@
 #include <cudd.h>
 #include <stdlib.h>
 
-double **fb(
-    DdNode **(*_fb)(
-        DdManager *manager,
-        DdNode **omega,
-        DdNode *P,
-        DdNode *pi,
-        DdNode **row_vars,
-        DdNode **column_vars,
+double** fb(
+    DdNode** (*_fb)(
+        DdManager* manager,
+        DdNode** omega,
+        DdNode* P,
+        DdNode* pi,
+        DdNode** row_vars,
+        DdNode** column_vars,
         int n_vars,
         int k_j),
-    double **omega,
-    double **P,
-    double *pi,
+    double** omega,
+    double** P,
+    double* pi,
     int n_states,
     int k_j)
 {
@@ -24,21 +24,21 @@ double **fb(
     int number_of_row_variables = 0;
     int number_of_column_variables = 0;
 
-    DdManager *gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode **row_variables = (DdNode **)malloc(ceil(log2(n_states)) * sizeof(DdNode *));
-    DdNode **column_variables = (DdNode **)malloc(ceil(log2(n_states)) * sizeof(DdNode *));
+    DdNode** row_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
+    DdNode** column_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
 
-    DdNode **complemented_row_variables = (DdNode **)malloc(ceil(log2(n_states)) * sizeof(DdNode *));
-    DdNode **complemented_column_variables = (DdNode **)malloc(ceil(log2(n_states)) * sizeof(DdNode *));
+    DdNode** complemented_row_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
+    DdNode** complemented_column_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
 
-    DdNode *_P;
-    DdNode *_pi;
-    DdNode **_omega = (DdNode **)malloc((k_j + 1) * sizeof(DdNode *));
+    DdNode* _P;
+    DdNode* _pi;
+    DdNode** _omega = (DdNode**)malloc((k_j + 1) * sizeof(DdNode*));
 
-    matrixToADD(
+    matrix_to_add(
         P,
-        gbm,
+        manager,
         &_P,
         &row_variables,
         &column_variables,
@@ -49,9 +49,9 @@ double **fb(
         &number_of_rows,
         &number_of_columns);
 
-    vectorToADD(
+    vector_to_add(
         pi,
-        gbm,
+        manager,
         &_pi,
         &row_variables,
         &column_variables,
@@ -64,9 +64,9 @@ double **fb(
     // make omega into an ADD for each column
     for (int t = 0; t <= k_j; t++)
     {
-        vectorToADD(
+        vector_to_add(
             omega[t],
-            gbm,
+            manager,
             &_omega[t],
             &row_variables,
             &column_variables,
@@ -77,8 +77,8 @@ double **fb(
             &number_of_rows);
     }
 
-    DdNode **_alpha = _fb(
-        gbm,
+    DdNode** _alpha = _fb(
+        manager,
         _omega,
         _P,
         _pi,
@@ -87,15 +87,15 @@ double **fb(
         number_of_column_variables,
         k_j);
 
-    CUDD_VALUE_TYPE **alpha = (CUDD_VALUE_TYPE **)malloc(sizeof(CUDD_VALUE_TYPE *) * (k_j + 1));
+    CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
     for (int t = 0; t <= k_j; t++)
     {
-        alpha[t] = symbolic_to_numeric(_alpha[t], 1, number_of_rows)[0];
+        alpha[t] = add_to_matrix(_alpha[t], 1, number_of_rows)[0];
     }
 
-    assert(Cudd_DebugCheck(gbm) == 0);
+    assert(Cudd_DebugCheck(manager) == 0);
 
-    Cudd_Quit(gbm);
+    Cudd_Quit(manager);
     return alpha;
 }
 
@@ -107,8 +107,7 @@ DdNode** _forwards(
     DdNode** row_vars,
     DdNode** column_vars,
     int n_vars,
-    int k_j
-) {
+    int k_j) {
     DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (k_j + 1));
     alpha[0] = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
     Cudd_Ref(alpha[0]);

@@ -1,17 +1,27 @@
 #include "conversion.h"
 
 /* function makes vector to ADD*/
-int vectorToADD(double *vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m)
+int vector_to_add(
+    double* vector, 
+    DdManager* manager, 
+    DdNode** E, 
+    DdNode*** x, 
+    DdNode*** y, 
+    DdNode*** xn, 
+    DdNode*** yn, 
+    int* nx, 
+    int* ny, 
+    int* m)
 {
    // write the vector to a file
-   int result = writeVectorToFile(vector, m);
+   int result = write_vector_to_file(vector, m);
 
    if (result == 1) {
       return 1;
    }
 
    // read the file
-   FILE *file;
+   FILE* file;
    char filename[40];
    sprintf(filename, "vector%d.txt", getpid());
    file = fopen(filename, "r");
@@ -22,11 +32,11 @@ int vectorToADD(double *vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode 
    }
 
    // n is set to 1 as we are working with vectors
-   int *n;
+   int* n;
    int nn = 1;
    n = &nn;
    // read we now take the file and make it into an ADD
-   Cudd_addRead(file, gbm, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
+   Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
    // clean up
    fclose(file);
@@ -36,9 +46,9 @@ int vectorToADD(double *vector, DdManager *gbm, DdNode **E, DdNode ***x, DdNode 
 }
 
 /* function writes vector to file*/
-int writeVectorToFile(double *vector, int *m)
+int write_vector_to_file(double* vector, int* m)
 {
-   FILE *file;
+   FILE* file;
    char filename[40];
    sprintf(filename, "vector%d.txt", getpid());
    file = fopen(filename, "w");
@@ -48,15 +58,8 @@ int writeVectorToFile(double *vector, int *m)
       return 1; // Return an error code
    }
    fprintf(file, "%d 1\n", *m);
-   int i;
 
-   // If vector is actually a 2-dimensional matrix, and not a column vector, throw an error
-   // if (vector[0][1]) {
-   //  perror("ERROR: Function vectorToADD was called with a 2-dimensional matrix and not a column vector");
-   //  fclose(file);
-   //  remove(filename);
-   // return 1; // Return an error code
-   // }
+   int i;
 
    for (i = 0; i < *m; i++)
    {
@@ -68,12 +71,13 @@ int writeVectorToFile(double *vector, int *m)
    return 0;
 }
 
-CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_columns) {
+CUDD_VALUE_TYPE** add_to_matrix(DdNode* symbolic, int n_rows, int n_columns) {
     int n_row_variables = (int) ceil(log2(n_rows));
     int n_column_variables = (int) ceil(log2(n_columns));
     bool row_variables[n_row_variables];
     bool column_variables[n_column_variables];
     bool bits[n_row_variables + n_column_variables];
+
     memset(row_variables, 0, sizeof(row_variables));
     memset(column_variables, 0, sizeof(column_variables));
     CUDD_VALUE_TYPE** result = create_2d_array(n_rows, n_columns);
@@ -82,7 +86,7 @@ CUDD_VALUE_TYPE** symbolic_to_numeric(DdNode* symbolic, int n_rows, int n_column
     for (int i = 0; i < n_rows; i++) {
         for (int j = 0; j < n_columns; j++) {
             interleave(row_variables, n_row_variables, column_variables, n_column_variables, bits);
-            result[i][j] = evaluate_matrix_BDD(root, bits, 0);
+            result[i][j] = evaluate_matrix_bdd(root, bits, 0);
             increment_bit_array(column_variables, n_column_variables);
         }
         increment_bit_array(row_variables, n_row_variables);
@@ -100,30 +104,30 @@ CUDD_VALUE_TYPE** create_2d_array(int n_rows, int n_columns) {
     return array;
 }
 
-CUDD_VALUE_TYPE evaluate_matrix_BDD(DdNode* node, bool bits[], int index) {
+CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool bits[], int index) {
     if (Cudd_IsConstant(node)) {
         return Cudd_V(node);
     }
     if (bits[index]) {
-        return evaluate_matrix_BDD(Cudd_T(node), bits, index + 1);
+        return evaluate_matrix_bdd(Cudd_T(node), bits, index + 1);
     } else {
-        return evaluate_matrix_BDD(Cudd_E(node), bits, index + 1);
+        return evaluate_matrix_bdd(Cudd_E(node), bits, index + 1);
     }
 }
 
-void interleave(bool A[], int sizeA, bool B[], int sizeB, bool result[]) {
+void interleave(bool A[], int size_a, bool B[], int size_b, bool result[]) {
     int a_index = 0, b_index = 0, r_index = 0;
 
-    while (a_index < sizeA && b_index < sizeB) {
+    while (a_index < size_a && b_index < size_b) {
         result[r_index++] = A[a_index++];
         result[r_index++] = B[b_index++];
     }
 
-    while (a_index < sizeA) {
+    while (a_index < size_a) {
         result[r_index++] = A[a_index++];
     }
 
-    while (b_index < sizeB) {
+    while (b_index < size_b) {
         result[r_index++] = B[b_index++];
     }
 }
@@ -139,10 +143,21 @@ void increment_bit_array(bool array[], int array_size) {
     }
 }
 
-int matrixToADD(double **matrix, DdManager *gbm, DdNode **E, DdNode ***x, DdNode ***y, DdNode ***xn, DdNode ***yn, int *nx, int *ny, int *m, int *n)
+int matrix_to_add(
+    double** matrix, 
+    DdManager* manager, 
+    DdNode** E, 
+    DdNode*** x, 
+    DdNode*** y, 
+    DdNode*** xn, 
+    DdNode*** yn, 
+    int* nx, 
+    int* ny, 
+    int* m, 
+    int* n)
 {
    // write the matrix to a file
-   writeMatrixToFile(matrix, m, n);
+   write_matrix_to_file(matrix, m, n);
 
    // read the file
    FILE *file;
@@ -155,7 +170,7 @@ int matrixToADD(double **matrix, DdManager *gbm, DdNode **E, DdNode ***x, DdNode
       return 1; // Return an error code
    }
    // read we now take the file and make it into an ADD
-   Cudd_addRead(file, gbm, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
+   Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
    // clean up
    fclose(file);
@@ -165,7 +180,7 @@ int matrixToADD(double **matrix, DdManager *gbm, DdNode **E, DdNode ***x, DdNode
 }
 
 /* function writes matrix to file*/
-int writeMatrixToFile(double **matrix, int *m, int *n)
+int write_matrix_to_file(double** matrix, int* m, int* n)
 {
    FILE *file;
    char filename[40];
@@ -177,7 +192,9 @@ int writeMatrixToFile(double **matrix, int *m, int *n)
       return 1; // Return an error code
    }
    fprintf(file, "%d %d\n", *m, *n);
+
    int i, j;
+   
    for (i = 0; i < *m; i++)
    {
       for (j = 0; j < *n; j++)

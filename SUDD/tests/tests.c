@@ -5,10 +5,10 @@
 int main(void)
 {
     int number_failed;
-    SRunner *sr;
+    SRunner* sr;
 
-    Suite *s1 = conversion_suite();
-    Suite *s2 = forwards_backwards_suite();
+    Suite* s1 = conversion_suite();
+    Suite* s2 = forwards_backwards_suite();
 
     sr = srunner_create(s1);
     srunner_add_suite(sr, s2);
