@@ -3,6 +3,26 @@
 #include <cudd.h>
 #include <stdlib.h>
 
+double** forwards(
+    double** omega,
+    double** P,
+    double* pi,
+    int n_states,
+    int k_j
+) {
+    return fb(_forwards, omega, P, pi, n_states, k_j);
+}
+
+double** backwards(
+    double** omega,
+    double** P,
+    double* pi,
+    int n_states,
+    int k_j
+) {
+    return fb(_backwards, omega, P, pi, n_states, k_j);
+}
+
 double** fb(
     DdNode** (*_fb)(
         DdManager* manager,

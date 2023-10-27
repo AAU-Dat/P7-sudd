@@ -12,6 +12,20 @@
 #include "cudd.h"
 #include "conversion.h"
 
+double** forwards(
+    double** omega,
+    double** P,
+    double* pi,
+    int n_states,
+    int k_j
+);
+double** backwards(
+    double** omega,
+    double** P,
+    double* pi,
+    int n_states,
+    int k_j
+);
 DdNode** _forwards(
     DdManager* manager,
     DdNode** omega, 
