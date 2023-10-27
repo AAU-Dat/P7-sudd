@@ -1177,6 +1177,9 @@ class BW:
                         (self.h.labelling[s] == obs_seq[i]) \
                         * self._h_e(s) \
                         * exp(-self._h_e(s) * times_seq[i])
+        for s in range(cols):
+            phi[-1] = (self.h.labelling[s] == obs_seq[-1])
+
         return phi
 
     def _processWork_PCTMC(self, sequence: list, times: int):
