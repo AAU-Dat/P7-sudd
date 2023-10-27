@@ -678,6 +678,7 @@ class BW:
         2-D narray
                 array containing the alpha values.
         """
+        # TODO: remove this and replace with the commented code below
         len_seq = len(obs_seq) - 1
         init_arr = self.h.initial_state
         zero_arr = zeros(shape=(len_seq * self.nb_states,))
@@ -698,6 +699,10 @@ class BW:
                 alpha_matrix[k + 1, s] = dot(alpha_matrix[k], p)
         alpha_matrix[-1] *= array(self.h.labelling) == obs_seq[-1]
         return alpha_matrix.T
+        # phi = self._h_phi_matrix_PCTMC # phi = omega
+        # tau = self._tau_matrix_PCTMC # tau = P
+        # pi = self.h.initial.toList()
+        # return = fb(_forwards, phi, tau, pi, self.nb_states, len_seq - 1) # python binding goes here
 
     def _computeBetas_timed(self, obs_seq: list, times_seq: list) -> array:
         """
@@ -716,6 +721,7 @@ class BW:
         2-D narray
                 array containing the beta values.
         """
+        # TODO: remove this and replace with the commented code below
         len_seq = len(obs_seq) - 1
         init_arr = ones(self.nb_states) * (array(self.h.labelling) == obs_seq[-1])
         zero_arr = zeros(shape=(len_seq * self.nb_states,))
@@ -732,6 +738,10 @@ class BW:
                 p = p * exp(-self._h_e(s) * times_seq[k])
                 beta_matrix[k, s] = dot(beta_matrix[k + 1], p)
         return beta_matrix.T
+        # phi = self._h_phi_matrix_PCTMC # phi = omega
+        # tau = self._tau_matrix_PCTMC # tau = P
+        # pi = self.h.initial.toList()
+        # return = fb(_backwards, phi, tau, pi, self.nb_states, len_seq - 1) # python binding goes here
 
     def _splitTime(self, sequence: list) -> tuple:
         """
