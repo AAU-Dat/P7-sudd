@@ -1,32 +1,39 @@
 import ctypes
-from typing import List
+from typing import Tuple, Any
+import numpy as np
+import os
 
 module = ctypes.CDLL("build/sudd.so")
 
 
 def symbolic_compute_alphas_timed(
-    phi: List[List[float]],
-    tau: List[List[float]],
-    pi: List[float],
+    phi: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
     n_states: int,
     n_obs: int
-) -> List[List[float]]:
-    NotImplemented
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi = numpy_to_file(phi, f"phi{os.getpid()}")
+    tau = numpy_to_file(tau, f"tau{os.getpid()}")
+    pi = numpy_to_file(pi, f"pi{os.getpid()}")
+    return module.file_forwards(phi, tau, pi)
 
 
 def symbolic_compute_betas_timed(
-    phi: List[List[float]],
-    tau: List[List[float]],
-    pi: List[float],
+    phi: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
     n_states: int,
     n_obs: int
-) -> List[List[float]]:
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi = numpy_to_file(phi, f"phi{os.getpid()}")
+    tau = numpy_to_file(tau, f"tau{os.getpid()}")
+    pi = numpy_to_file(pi, f"pi{os.getpid()}")
+    return module.file_backwards(phi, tau, pi)
+
+
+def numpy_to_file(
+    arr: np.ndarray[Any, np.dtype[Any]],
+    file: str
+) -> ctypes.c_char_p:
     NotImplemented
-
-
-def python_list_to_double_pointer(matrix):
-    row_ptrs = []
-    for row in matrix:
-        row_array = (ctypes.c_double * len(row))(*row)
-        row_ptrs.append(row_array)
-    return (ctypes.POINTER(ctypes.c_double) * len(matrix))(*row_ptrs)
