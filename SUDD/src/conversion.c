@@ -247,3 +247,90 @@ int write_matrix_to_file(double** matrix, int* m, int* n)
 
    return 0;
 }
+
+/* Yelp*/
+int file_vector_to_add(
+    char *vector, 
+    DdManager* manager, 
+    DdNode** E, 
+    DdNode*** x, 
+    DdNode*** y, 
+    DdNode*** xn, 
+    DdNode*** yn, 
+    int* nx, 
+    int* ny, 
+    int* m
+) {
+    // write the vector to a file
+    //int result = write_vector_to_file(vector, m);
+
+    //if (result == 1) {
+    //    return 1;
+    //}
+
+    // read the file
+    FILE* file;
+    // char filename[40];
+    sprintf(vector, "vector%d.txt", getpid());
+    file = fopen(vector, "r");
+    if (file == NULL)
+    {
+        perror("Error opening file");
+        return 1; // Return an error code
+    }
+
+    // n is set to 1 as we are working with vectors
+    int* n;
+    int nn = 1;
+    n = &nn;
+    // read we now take the file and make it into an ADD
+    // TODO stop hardcoding indexes
+    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
+
+    // clean up
+    fclose(file);
+    remove(vector);
+
+    return 0;
+}
+
+int file_matrix_to_add(
+    char *matrix, 
+    DdManager* manager, 
+    DdNode** E, 
+    DdNode*** x, 
+    DdNode*** y, 
+    DdNode*** xn, 
+    DdNode*** yn, 
+    int* nx, 
+    int* ny, 
+    int* m, 
+    int* n)
+{
+    printf("\nin function\n");
+   // write the matrix to a file
+   // write_matrix_to_file(matrix, m, n);
+
+   // read the file
+   FILE *file;
+   // char filename[40];
+
+   sprintf(matrix, "matrix%d.txt", getpid());
+   printf("sprint done");
+   file = fopen(matrix, "r");
+   if (file == NULL)
+   {
+      perror("Error opening file");
+      return 1; // Return an error code
+   }
+   printf("\nfile read\n");
+   // read we now take the file and make it into an ADD
+    // TODO stop hardcoding indexes
+   Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
+
+   // clean up
+   fclose(file);
+   remove(matrix);
+   
+   return 0;
+}

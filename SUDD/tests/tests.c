@@ -1,6 +1,7 @@
 #include <check.h>
 #include "test_forwards_backwards.h"
 #include "test_conversion.h"
+#include "test_file_forwards_backwards.h"
 
 int main(void)
 {
@@ -9,9 +10,11 @@ int main(void)
 
     Suite* s1 = conversion_suite();
     Suite* s2 = forwards_backwards_suite();
+    Suite* s3 = file_forwards_backwards_suite();
 
     sr = srunner_create(s1);
     srunner_add_suite(sr, s2);
+    srunner_add_suite(sr, s3);
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);

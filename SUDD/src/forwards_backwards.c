@@ -23,6 +23,26 @@ double** backwards(
     return fb(_backwards, omega, P, pi, n_states, k_j);
 }
 
+double** file_forwards(
+    char **omega,
+    char *P,
+    char *pi,
+    int n_states,
+    int k_j
+) {
+    return file_fb(_forwards, omega, P, pi, n_states, k_j);
+}
+
+double** file_backwards(
+    char **omega,
+    char *P,
+    char *pi,
+    int n_states,
+    int k_j
+) {
+    return file_fb(_backwards, omega, P, pi, n_states, k_j);
+}
+
 double** fb(
     DdNode** (*_fb)(
         DdManager* manager,
@@ -85,6 +105,107 @@ double** fb(
     for (int t = 0; t <= k_j; t++)
     {
         vector_to_add(
+            omega[t],
+            manager,
+            &_omega[t],
+            &row_variables,
+            &column_variables,
+            &complemented_row_variables,
+            &complemented_column_variables,
+            &number_of_column_variables,
+            &number_of_row_variables,
+            &number_of_rows);
+    }
+
+    DdNode** _alpha = _fb(
+        manager,
+        _omega,
+        _P,
+        _pi,
+        row_variables,
+        column_variables,
+        number_of_column_variables,
+        k_j);
+
+    CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
+    for (int t = 0; t <= k_j; t++)
+    {
+        alpha[t] = add_to_vector(_alpha[t], number_of_rows, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
+    }
+
+    assert(Cudd_DebugCheck(manager) == 0);
+
+    Cudd_Quit(manager);
+    return alpha;
+}
+
+double** file_fb(
+    DdNode** (*_fb)(
+        DdManager* manager,
+        DdNode** omega,
+        DdNode* P,
+        DdNode* pi,
+        DdNode** row_vars,
+        DdNode** column_vars,
+        int n_vars,
+        int k_j),
+    char **omega,
+    char *P,
+    char *pi,
+    int n_states,
+    int k_j)
+{
+    int number_of_rows = n_states;
+    int number_of_columns = n_states;
+    int number_of_row_variables = 0;
+    int number_of_column_variables = 0;
+
+    DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+
+    DdNode** row_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
+    DdNode** column_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
+
+    DdNode** complemented_row_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
+    DdNode** complemented_column_variables = (DdNode**)malloc(ceil(log2(n_states)) * sizeof(DdNode*));
+
+    DdNode* _P;
+    DdNode* _pi;
+    DdNode** _omega = (DdNode**)malloc((k_j + 1) * sizeof(DdNode*));
+
+    printf("\nP\n");
+    printf(P);
+
+    file_matrix_to_add(
+        P,
+        manager,
+        &_P,
+        &row_variables,
+        &column_variables,
+        &complemented_row_variables,
+        &complemented_column_variables,
+        &number_of_row_variables,
+        &number_of_column_variables,
+        &number_of_rows,
+        &number_of_columns);
+
+    printf("\nfile_matrix_to_add\n");
+
+    file_vector_to_add(
+        pi,
+        manager,
+        &_pi,
+        &row_variables,
+        &column_variables,
+        &complemented_row_variables,
+        &complemented_column_variables,
+        &number_of_row_variables,
+        &number_of_column_variables,
+        &number_of_rows);
+
+    // make omega into an ADD for each column
+    for (int t = 0; t <= k_j; t++)
+    {
+        file_vector_to_add(
             omega[t],
             manager,
             &_omega[t],

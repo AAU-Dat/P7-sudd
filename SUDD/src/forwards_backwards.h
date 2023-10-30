@@ -61,5 +61,34 @@ double **fb(
     double* pi,
     int n_states,
     int k_j);
+double** file_forwards(
+    char **omega,
+    char *P,
+    char *pi,
+    int n_states,
+    int k_j
+);
+double** file_backwards(
+    char **omega,
+    char *P,
+    char *pi,
+    int n_states,
+    int k_j
+);
+double** file_fb(
+    DdNode** (*_fb)(
+        DdManager* manager,
+        DdNode** omega,
+        DdNode* P,
+        DdNode* pi,
+        DdNode** row_vars,
+        DdNode** column_vars,
+        int n_vars,
+        int k_j),
+    char **omega,
+    char *P,
+    char *pi,
+    int n_states,
+    int k_j);
 
 #endif
