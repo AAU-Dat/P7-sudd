@@ -12,7 +12,10 @@ TEST_SRCS = $(wildcard $(TEST_DIR)/*.c)
 TEST_OBJS = $(TEST_SRCS:$(TEST_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Targets
-all: build/tests
+all: build/tests build/sudd.so
+
+build/sudd.so: $(OBJECTS)
+	$(CC) $(CFLAGS) -shared -o $@ $^ $(LIBS)
 
 # Compile the main test executable
 build/tests: $(TEST_OBJS) $(OBJECTS)
@@ -20,7 +23,7 @@ build/tests: $(TEST_OBJS) $(OBJECTS)
 
 # Compile source files to object files in the build folder
 build/%.o: $(SRC_DIR)/%.c | build
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
 build/%.o: $(TEST_DIR)/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
