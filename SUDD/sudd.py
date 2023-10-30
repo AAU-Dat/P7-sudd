@@ -36,4 +36,5 @@ def numpy_to_file(
     arr: np.ndarray[Any, np.dtype[Any]],
     file: str
 ) -> ctypes.c_char_p:
+    # c_char_p = ctypes.c_char_p(python_string.encode('utf-8'))
     NotImplemented
