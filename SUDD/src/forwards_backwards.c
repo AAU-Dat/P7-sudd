@@ -1,6 +1,7 @@
 #include "forwards_backwards.h"
 #include "conversion.h"
 #include <cudd.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 double** forwards(
@@ -159,6 +160,7 @@ double** file_fb(
     int number_of_columns = n_states;
     int number_of_row_variables = 0;
     int number_of_column_variables = 0;
+    int _0 = 0;
 
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -172,11 +174,9 @@ double** file_fb(
     DdNode* _pi;
     DdNode** _omega = (DdNode**)malloc((k_j + 1) * sizeof(DdNode*));
 
-    printf("\nP\n");
-    printf(P);
-
-    file_matrix_to_add(
-        P,
+    FILE* P_fp = fopen(P, "r");
+    Cudd_addRead(
+        P_fp,
         manager,
         &_P,
         &row_variables,
@@ -186,12 +186,17 @@ double** file_fb(
         &number_of_row_variables,
         &number_of_column_variables,
         &number_of_rows,
-        &number_of_columns);
+        &number_of_columns,
+        ROW_VAR_INDEX_OFFSET,
+        ROW_VAR_INDEX_MULTIPLIER,
+        COL_VAR_INDEX_OFFSET,
+        COL_VAR_INDEX_MULTIPLIER
+    );
+    free(P_fp);
 
-    printf("\nfile_matrix_to_add\n");
-
-    file_vector_to_add(
-        pi,
+    FILE* pi_fp = fopen(pi, "r");
+    Cudd_addRead(
+        pi_fp,
         manager,
         &_pi,
         &row_variables,
@@ -200,23 +205,38 @@ double** file_fb(
         &complemented_column_variables,
         &number_of_row_variables,
         &number_of_column_variables,
-        &number_of_rows);
+        &number_of_rows,
+        &number_of_columns,
+        ROW_VAR_INDEX_OFFSET,
+        ROW_VAR_INDEX_MULTIPLIER,
+        COL_VAR_INDEX_OFFSET,
+        COL_VAR_INDEX_MULTIPLIER
+    );
+    free(pi_fp);
 
-    // make omega into an ADD for each column
+    FILE** omega_fps = (FILE**) malloc((k_j + 1) * sizeof(FILE*));
     for (int t = 0; t <= k_j; t++)
     {
-        file_vector_to_add(
-            omega[t],
+        omega_fps[t] = fopen(omega[t], "r");
+        Cudd_addRead(
+            omega_fps[t],
             manager,
             &_omega[t],
             &row_variables,
             &column_variables,
             &complemented_row_variables,
             &complemented_column_variables,
-            &number_of_column_variables,
             &number_of_row_variables,
-            &number_of_rows);
+            &number_of_column_variables,
+            &number_of_rows,
+            &number_of_columns,
+            ROW_VAR_INDEX_OFFSET,
+            ROW_VAR_INDEX_MULTIPLIER,
+            COL_VAR_INDEX_OFFSET,
+            COL_VAR_INDEX_MULTIPLIER
+        );
     }
+    free(omega_fps);
 
     DdNode** _alpha = _fb(
         manager,
@@ -226,7 +246,8 @@ double** file_fb(
         row_variables,
         column_variables,
         number_of_column_variables,
-        k_j);
+        k_j
+    );
 
     CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
     for (int t = 0; t <= k_j; t++)
