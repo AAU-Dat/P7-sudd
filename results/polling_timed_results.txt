@@ -1,0 +1,20 @@
+run1
+({'mu': 0.9910472764441776, 'gammax': 195.62526318289014}, {'learning_rounds': 4, 'learning_time': 167.979285, 'training_set_loglikelihood': 12030.138793763944658})
+run2
+({'mu': 1.0241224205636597, 'gammax': 197.5401459994437}, {'learning_rounds': 4, 'learning_time': 151.108854, 'training_set_loglikelihood': 12006.008665022614845})
+run3
+({'mu': 1.0480966822152364, 'gammax': 199.77456794826142}, {'learning_rounds': 4, 'learning_time': 151.657967, 'training_set_loglikelihood': 12202.786427308282997})
+run4
+({'mu': 0.9599389692139965, 'gammax': 203.55847952263412}, {'learning_rounds': 4, 'learning_time': 151.130893, 'training_set_loglikelihood': 12191.555855966343275})
+run5
+({'mu': 0.8732075302813657, 'gammax': 198.5269346406539}, {'learning_rounds': 4, 'learning_time': 151.537184, 'training_set_loglikelihood': 12090.376716267117357})
+run6
+({'mu': 0.8257281165703135, 'gammax': 195.30862862705263}, {'learning_rounds': 4, 'learning_time': 151.388093, 'training_set_loglikelihood': 12123.666639817437665})
+run7
+({'mu': 0.922904211479216, 'gammax': 202.33809675991048}, {'learning_rounds': 4, 'learning_time': 150.981906, 'training_set_loglikelihood': 12058.664917620687208})
+run8
+({'mu': 1.0657604978271884, 'gammax': 198.59445048498202}, {'learning_rounds': 4, 'learning_time': 151.712956, 'training_set_loglikelihood': 12015.342137043027467})
+run9
+({'mu': 1.2256988567523677, 'gammax': 199.4351663207898}, {'learning_rounds': 4, 'learning_time': 151.22149, 'training_set_loglikelihood': 12108.206359190330699})
+run10
+({'mu': 0.9064710554959903, 'gammax': 197.69303752867614}, {'learning_rounds': 4, 'learning_time': 150.740064, 'training_set_loglikelihood': 12111.983787268492732})
