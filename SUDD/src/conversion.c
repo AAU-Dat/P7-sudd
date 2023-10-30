@@ -1,4 +1,5 @@
 #include "conversion.h"
+#include <cudd.h>
 
 /* function makes vector to ADD*/
 int vector_to_add(
@@ -11,41 +12,43 @@ int vector_to_add(
     DdNode*** yn, 
     int* nx, 
     int* ny, 
-    int* m)
-{
-   // write the vector to a file
-   int result = write_vector_to_file(vector, m);
+    int* m
+) {
+    // write the vector to a file
+    int result = write_vector_to_file(vector, m);
 
-   if (result == 1) {
-      return 1;
-   }
+    if (result == 1) {
+        return 1;
+    }
 
-   // read the file
-   FILE* file;
-   char filename[40];
-   sprintf(filename, "vector%d.txt", getpid());
-   file = fopen(filename, "r");
-   if (file == NULL)
-   {
-      perror("Error opening file");
-      return 1; // Return an error code
-   }
+    // read the file
+    FILE* file;
+    char filename[40];
+    sprintf(filename, "vector%d.txt", getpid());
+    file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        perror("Error opening file");
+        return 1; // Return an error code
+    }
 
-   // n is set to 1 as we are working with vectors
-   int* n;
-   int nn = 1;
-   n = &nn;
-   // read we now take the file and make it into an ADD
-   Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
+    // n is set to 1 as we are working with vectors
+    int* n;
+    int nn = 1;
+    n = &nn;
+    // read we now take the file and make it into an ADD
+    // TODO stop hardcoding indexes
+    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
-   // clean up
-   fclose(file);
-   remove(filename);
-   
-   return 0;
+    // clean up
+    fclose(file);
+    remove(filename);
+
+    return 0;
 }
 
 /* function writes vector to file*/
+// TODO why is this function written with 3 spaces indentation
 int write_vector_to_file(double* vector, int* m)
 {
    FILE* file;
@@ -71,12 +74,49 @@ int write_vector_to_file(double* vector, int* m)
    return 0;
 }
 
+CUDD_VALUE_TYPE* new_array(int size) {
+    CUDD_VALUE_TYPE* array = (CUDD_VALUE_TYPE*) malloc(size * sizeof(CUDD_VALUE_TYPE));
+    if (array == NULL) {
+        // Handle memory allocation failure
+        fprintf(stderr, "Memory allocation failed!\n");
+        exit(EXIT_FAILURE);
+    }
+    return array;
+}
+
+CUDD_VALUE_TYPE evaluate_vector_bdd(DdNode* node, bool vars[], int var_index_offset, int var_index_multiplier) {
+    if (Cudd_IsConstant(node)) {
+        return Cudd_V(node);
+    }
+    unsigned int node_index = Cudd_NodeReadIndex(node);
+    int var_index = (node_index - var_index_offset) / var_index_multiplier;
+    if (vars[var_index]) {
+        return evaluate_vector_bdd(Cudd_T(node), vars, var_index_offset, var_index_multiplier);
+    } else {
+        return evaluate_vector_bdd(Cudd_E(node), vars, var_index_offset, var_index_multiplier);
+    }
+}
+
+CUDD_VALUE_TYPE* add_to_vector(DdNode* add, int n, int var_index_offset, int var_index_multiplier) {
+    int n_variables = (int) ceil(log2(n));
+    bool variables[n_variables];
+
+    memset(variables, 0, sizeof(variables));
+    CUDD_VALUE_TYPE* result = new_array(n);
+
+    for (int i = 0; i < n; i++) {
+        result[i] = evaluate_vector_bdd(add, variables, var_index_offset, var_index_multiplier);
+        increment_bit_array(variables, n_variables);
+    }
+
+    return result;
+}
+
 CUDD_VALUE_TYPE** add_to_matrix(DdNode* symbolic, int n_rows, int n_columns) {
     int n_row_variables = (int) ceil(log2(n_rows));
     int n_column_variables = (int) ceil(log2(n_columns));
     bool row_variables[n_row_variables];
     bool column_variables[n_column_variables];
-    bool bits[n_row_variables + n_column_variables];
 
     memset(row_variables, 0, sizeof(row_variables));
     memset(column_variables, 0, sizeof(column_variables));
@@ -85,8 +125,7 @@ CUDD_VALUE_TYPE** add_to_matrix(DdNode* symbolic, int n_rows, int n_columns) {
     DdNode* root = symbolic;
     for (int i = 0; i < n_rows; i++) {
         for (int j = 0; j < n_columns; j++) {
-            interleave(row_variables, n_row_variables, column_variables, n_column_variables, bits);
-            result[i][j] = evaluate_matrix_bdd(root, bits, 0);
+            result[i][j] = evaluate_matrix_bdd(root, row_variables, column_variables);
             increment_bit_array(column_variables, n_column_variables);
         }
         increment_bit_array(row_variables, n_row_variables);
@@ -104,31 +143,31 @@ CUDD_VALUE_TYPE** create_2d_array(int n_rows, int n_columns) {
     return array;
 }
 
-CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool bits[], int index) {
+
+CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool row_bits[], bool col_bits[]) {
     if (Cudd_IsConstant(node)) {
         return Cudd_V(node);
     }
-    if (bits[index]) {
-        return evaluate_matrix_bdd(Cudd_T(node), bits, index + 1);
+    
+    // TODO STOP HARDCODING VARIABLE INDEXES
+    // TODO this is probably not the best way to select between row vars and col vars
+    unsigned int node_index = Cudd_NodeReadIndex(node);
+    bool is_row_var = node_index % (ROW_VAR_INDEX_OFFSET + ROW_VAR_INDEX_MULTIPLIER) == 0;
+    
+    if (is_row_var) {
+        int var_index = (node_index - ROW_VAR_INDEX_OFFSET) / ROW_VAR_INDEX_MULTIPLIER;
+        if (row_bits[var_index]) {
+            return evaluate_matrix_bdd(Cudd_T(node), row_bits, col_bits);
+        } else {
+            return evaluate_matrix_bdd(Cudd_E(node), row_bits, col_bits);
+        }
     } else {
-        return evaluate_matrix_bdd(Cudd_E(node), bits, index + 1);
-    }
-}
-
-void interleave(bool A[], int size_a, bool B[], int size_b, bool result[]) {
-    int a_index = 0, b_index = 0, r_index = 0;
-
-    while (a_index < size_a && b_index < size_b) {
-        result[r_index++] = A[a_index++];
-        result[r_index++] = B[b_index++];
-    }
-
-    while (a_index < size_a) {
-        result[r_index++] = A[a_index++];
-    }
-
-    while (b_index < size_b) {
-        result[r_index++] = B[b_index++];
+        int var_index = (node_index - COL_VAR_INDEX_OFFSET) / COL_VAR_INDEX_MULTIPLIER;
+        if (col_bits[var_index]) {
+            return evaluate_matrix_bdd(Cudd_T(node), row_bits, col_bits);
+        } else {
+            return evaluate_matrix_bdd(Cudd_E(node), row_bits, col_bits);
+        }
     }
 }
 
@@ -170,6 +209,7 @@ int matrix_to_add(
       return 1; // Return an error code
    }
    // read we now take the file and make it into an ADD
+    // TODO stop hardcoding indexes
    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
 
    // clean up
