@@ -70,16 +70,20 @@ def symbolic_fb_timed(
     pi = numpy_to_file(pi, pi_file_name)
 
     # TODO free ab
-    ab = fb(phis_p, tau, pi, n_states, n_obs - 1)
+    ab_p = fb(phis_p, tau, pi, n_states, n_obs - 1)
 
     # convert ab to nparray
-    ab = c_array_to_numpy_array(ab, n_obs, n_states)
+    ab = c_array_to_numpy_array(ab_p, n_obs, n_states)
 
     # cleanup
     for phi_file_name in phi_file_names:
         os.remove(phi_file_name)
     os.remove(tau_file_name)
     os.remove(pi_file_name)
+
+    for i in range(n_obs):
+        ctypes.CDLL('libc.so.6').free(ab_p[i])
+    ctypes.CDLL('libc.so.6').free(ab_p)
 
     return ab
 
