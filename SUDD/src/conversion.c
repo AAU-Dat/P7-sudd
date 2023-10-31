@@ -1,9 +1,9 @@
 #include "conversion.h"
+#include <assert.h>
 #include <cudd.h>
 
-/* function makes vector to ADD*/
 int vector_to_add(
-    double* vector, 
+    CUDD_VALUE_TYPE* vector, 
     DdManager* manager, 
     DdNode** E, 
     DdNode*** x, 
@@ -14,7 +14,6 @@ int vector_to_add(
     int* ny, 
     int* m
 ) {
-    // write the vector to a file
     int result = write_vector_to_file(vector, m);
 
     if (result == 1) {
@@ -33,12 +32,12 @@ int vector_to_add(
     }
 
     // n is set to 1 as we are working with vectors
-    int* n;
-    int nn = 1;
-    n = &nn;
+    int n;
+
     // read we now take the file and make it into an ADD
-    // TODO stop hardcoding indexes
-    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
+    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, &n, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER, COL_VAR_INDEX_OFFSET, COL_VAR_INDEX_MULTIPLIER);
+
+    assert(n == 1);
 
     // clean up
     fclose(file);
