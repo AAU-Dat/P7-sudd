@@ -53,7 +53,8 @@ double** fb(
         DdNode** row_vars,
         DdNode** column_vars,
         int n_vars,
-        int k_j),
+        int k_j
+    ),
     double** omega,
     double** P,
     double* pi,
@@ -88,7 +89,8 @@ double** fb(
         &number_of_row_variables,
         &number_of_column_variables,
         &number_of_rows,
-        &number_of_columns);
+        &number_of_columns
+    );
 
     vector_to_add(
         pi,
@@ -100,11 +102,11 @@ double** fb(
         &complemented_column_variables,
         &number_of_row_variables,
         &number_of_column_variables,
-        &number_of_rows);
+        &number_of_rows
+    );
 
     // make omega into an ADD for each column
-    for (int t = 0; t <= k_j; t++)
-    {
+    for (int t = 0; t <= k_j; t++) {
         vector_to_add(
             omega[t],
             manager,
@@ -115,7 +117,8 @@ double** fb(
             &complemented_column_variables,
             &number_of_column_variables,
             &number_of_row_variables,
-            &number_of_rows);
+            &number_of_rows
+        );
     }
 
     DdNode** _alpha = _fb(
@@ -126,11 +129,11 @@ double** fb(
         row_variables,
         column_variables,
         number_of_column_variables,
-        k_j);
+        k_j
+    );
 
     CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
-    for (int t = 0; t <= k_j; t++)
-    {
+    for (int t = 0; t <= k_j; t++) {
         alpha[t] = add_to_vector(_alpha[t], number_of_rows, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
     }
 
@@ -149,13 +152,14 @@ double** file_fb(
         DdNode** row_vars,
         DdNode** column_vars,
         int n_vars,
-        int k_j),
+        int k_j
+    ),
     char **omega,
     char *P,
     char *pi,
     int n_states,
-    int k_j)
-{
+    int k_j
+) {
     int number_of_rows = n_states;
     int number_of_columns = n_states;
     int number_of_row_variables = 0;
@@ -214,8 +218,7 @@ double** file_fb(
     fclose(pi_fp);
 
     FILE** omega_fps = (FILE**) malloc((k_j + 1) * sizeof(FILE*));
-    for (int t = 0; t <= k_j; t++)
-    {
+    for (int t = 0; t <= k_j; t++) {
         omega_fps[t] = fopen(omega[t], "r");
         Cudd_addRead(
             omega_fps[t],
@@ -250,8 +253,7 @@ double** file_fb(
     );
 
     CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
-    for (int t = 0; t <= k_j; t++)
-    {
+    for (int t = 0; t <= k_j; t++) {
         alpha[t] = add_to_vector(_alpha[t], number_of_rows, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
     }
 
@@ -269,7 +271,8 @@ DdNode** _forwards(
     DdNode** row_vars,
     DdNode** column_vars,
     int n_vars,
-    int k_j) {
+    int k_j
+) {
     DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (k_j + 1));
     alpha[0] = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
     Cudd_Ref(alpha[0]);
