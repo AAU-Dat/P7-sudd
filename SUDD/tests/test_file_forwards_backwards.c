@@ -58,20 +58,20 @@ START_TEST(file_fb_forwards_3x3_2_k_j)
     }
 
     // clean up
-    for (int i = 0; i <= k_j; i++)
-    {
-        free(omega[i]);
-    }
-    for (int i = 0; i < states; i++)
-    {
-        free(P[i]);
-    }
-    free(omega);
-    free(P);
-    free(pi);
-    free(omegafile);
-    free(Pfile);
-    free(pifile);
+    // for (int i = 0; i <= k_j; i++)
+    // {
+    //     free(omega[i]);
+    // }
+    // for (int i = 0; i < states; i++)
+    // {
+    //     free(P[i]);
+    // }
+    // free(omega);
+    // free(P);
+    // free(pi);
+    // free(omegafile);
+    // free(Pfile);
+    // free(pifile);
 }
 END_TEST
 

@@ -160,7 +160,6 @@ double** file_fb(
     int number_of_columns = n_states;
     int number_of_row_variables = 0;
     int number_of_column_variables = 0;
-    int _0 = 0;
 
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -192,7 +191,7 @@ double** file_fb(
         COL_VAR_INDEX_OFFSET,
         COL_VAR_INDEX_MULTIPLIER
     );
-    free(P_fp);
+    fclose(P_fp);
 
     FILE* pi_fp = fopen(pi, "r");
     Cudd_addRead(
@@ -212,7 +211,7 @@ double** file_fb(
         COL_VAR_INDEX_OFFSET,
         COL_VAR_INDEX_MULTIPLIER
     );
-    free(pi_fp);
+    fclose(pi_fp);
 
     FILE** omega_fps = (FILE**) malloc((k_j + 1) * sizeof(FILE*));
     for (int t = 0; t <= k_j; t++)
@@ -235,6 +234,7 @@ double** file_fb(
             COL_VAR_INDEX_OFFSET,
             COL_VAR_INDEX_MULTIPLIER
         );
+        fclose(omega_fps[t]);
     }
     free(omega_fps);
 
@@ -245,7 +245,7 @@ double** file_fb(
         _pi,
         row_variables,
         column_variables,
-        number_of_column_variables,
+        number_of_row_variables,
         k_j
     );
 
