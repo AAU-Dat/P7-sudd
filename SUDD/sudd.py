@@ -109,3 +109,41 @@ def numpy_to_file(
                     f.write(f"{i} {j} {array[i, j]}\n")
     f.close()
     return ctypes.c_char_p(filename.encode('utf-8'))
+
+def forwards_py(
+    omega: np.ndarray[Any, np.dtype[Any]],
+    P: np.ndarray[Any, np.dtype[Any]],
+    pi: np.ndarray[Any, np.dtype[Any]],
+    n_states: int,
+    k_j: int   
+) -> np.ndarray[Any, np.dtype[Any]]:
+    alpha = np.empty((n_states,k_j+1))
+    alpha[0] = omega[0] * pi
+    print("alpha0: ", alpha[0])
+    
+    for t in range(1,k_j+1):
+        for s in range(n_states):
+            temp = 0
+            for ss in range(n_states):
+                temp += P[ss][s] * alpha[t-1][ss]
+            alpha[t][s] = omega[t][s] * temp
+    
+    return np.array(alpha)
+
+def backwards_py(
+    omega: np.ndarray[Any, np.dtype[Any]],
+    P: np.ndarray[Any, np.dtype[Any]],
+    pi: np.ndarray[Any, np.dtype[Any]],
+    n_states: int,
+    k_j: int
+) -> np.ndarray[Any, np.dtype[Any]]:
+    beta = np.empty((n_states,k_j+1))
+    beta[k_j] = 1
+    
+    for t in range(k_j-1, -1, -1):
+        for s in range(n_states):
+            temp = 0
+            for ss in range(n_states):
+                temp += P[s][ss] * beta[t + 1][ss] * omega[t + 1][ss]
+            beta[t][s] = temp
+    return np.array(beta)
