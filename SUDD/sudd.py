@@ -5,15 +5,22 @@ import os
 
 lib = ctypes.CDLL("build/sudd.so")
 
-lib.file_forwards.argtypes, lib.file_backwards.argtypes = [
+lib.file_forwards.argtypes = [
         ctypes.POINTER(ctypes.c_char_p),
         ctypes.c_char_p,
         ctypes.c_char_p,
         ctypes.c_int,
         ctypes.c_int
     ]
-lib.file_forwards.restype, lib.file_backwards.restype \
-        = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
+lib.file_backwards.argtypes = [
+        ctypes.POINTER(ctypes.c_char_p),
+        ctypes.c_char_p,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_int
+    ]
+lib.file_forwards.restype = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
+lib.file_backwards.restype = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
 
 
 def symbolic_forwards_timed(
@@ -97,15 +104,19 @@ def c_array_to_numpy_array(c_array, rows, cols):
     return np_array
 
 
-def numpy_to_file(
-    array: np.ndarray[Any, np.dtype[Any]],
-    filename: str
-) -> ctypes.c_char_p:
+def numpy_to_file(array: np.ndarray, filename: str) -> ctypes.c_char_p:
     with open(filename, 'w') as f:
-        f.write(str(array.shape[0]) + ' ' + str(array.shape[1]) + '\n')
-        for i in range(array.shape[0]):
-            for j in range(array.shape[1]):
-                if array[i, j] != 0:
-                    f.write(f"{i} {j} {array[i, j]}\n")
-    f.close()
+        if array.ndim == 1:
+            f.write(f"{array.shape[0]} 1\n")
+            for (i,), value in np.ndenumerate(array):
+                if value != 0:
+                    f.write(f"{i} 0 {value}\n")
+        elif array.ndim == 2:
+            f.write(f"{array.shape[0]} {array.shape[1]}\n")
+            for (i, j), value in np.ndenumerate(array):
+                if value != 0:
+                    f.write(f"{i} {j} {value}\n")
+        else:
+            raise ValueError("The input array must be one or two-dimensional")
+
     return ctypes.c_char_p(filename.encode('utf-8'))
