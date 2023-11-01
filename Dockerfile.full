@@ -3,16 +3,16 @@ FROM gg-summer.registry.jetbrains.space/p/p7/jajapy/base:latest
 
 WORKDIR /base/jajapy
 COPY requirements.txt dev_requirements.txt ./
-RUN pip install -r requirements.txt -r dev_requirements.txt
+RUN pip install -r requirements.txt -r dev_requirements.txt && \
+    apt-get update && \ 
+    apt-get install check -y && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
 # Build SUDD
 WORKDIR /base/jajapy/jajapy/SUDD
-RUN apt-get update && \ 
-    apt-get install check -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    make # Casper: This is kinda stupid, we remove the lists in the base image to get them here again such that we can install check, and then we remove them again. Changing this would require rebuilding the base image.
+RUN make
 
 # GO BACK
 WORKDIR /base/jajapy
