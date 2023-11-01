@@ -1,8 +1,11 @@
 FROM gg-summer.registry.jetbrains.space/p/p7/jajapy/base:latest
 
+
 WORKDIR /base/jajapy
-COPY . .
+COPY requirements.txt dev_requirements.txt ./
 RUN pip install -r requirements.txt -r dev_requirements.txt
+
+COPY . .
 
 # Build SUDD
 WORKDIR /base/jajapy/jajapy/SUDD
