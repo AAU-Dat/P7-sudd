@@ -3,7 +3,8 @@ from typing import Tuple, Any
 import numpy as np
 import os
 
-lib = ctypes.CDLL("build/sudd.so")
+lib_path = os.path.join(os.path.dirname(__file__), 'build', 'sudd.so')
+lib = ctypes.CDLL(lib_path)
 
 lib.file_forwards.argtypes = [
         ctypes.POINTER(ctypes.c_char_p),

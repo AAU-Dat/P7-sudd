@@ -29,6 +29,7 @@ from .Set import Set
 from alive_progress import alive_bar
 from .Model import MC_ID, MDP_ID, CTMC_ID, PCTMC_ID, HMM_ID, GOHMM_ID
 from sympy import sympify
+from ..SUDD import sudd
 
 
 class BW:
@@ -679,31 +680,10 @@ class BW:
         2-D narray
                 array containing the alpha values.
         """
-        # TODO: remove this and replace with the commented code below
-        len_seq = len(obs_seq) - 1
-        init_arr = self.h.initial_state
-        zero_arr = zeros(shape=(len_seq * self.nb_states,))
-        alpha_matrix = (
-            append(init_arr, zero_arr)
-            .reshape(len_seq + 1, self.nb_states)
-            .astype(longdouble)
-        )
-        for k in range(len_seq):
-            for s in range(self.nb_states):
-                p = array(
-                    [
-                        self._h_l(ss, s, obs_seq[k])
-                        * exp(-self._h_e(ss) * times_seq[k])
-                        for ss in range(self.nb_states)
-                    ]
-                )
-                alpha_matrix[k + 1, s] = dot(alpha_matrix[k], p)
-        alpha_matrix[-1] *= array(self.h.labelling) == obs_seq[-1]
-        return alpha_matrix.T
-        # phi = self._h_phi_matrix_PCTMC # phi = omega
-        # tau = self._tau_matrix_PCTMC # tau = P
-        # pi = self.h.initial.toList()
-        # return = fb(_forwards, phi, tau, pi, self.nb_states, len_seq - 1) # python binding goes here
+        phi = self._h_phi_matrix_PCTMC(obs_seq, times_seq)  # phi = omega
+        tau = self._tau_matrix_PCTMC()  # tau = P
+        pi = self.h.initial
+        return sudd.symbolic_forwards_timed(phi, tau, pi).T
 
     def _computeBetas_timed(self, obs_seq: list, times_seq: list) -> array:
         """
@@ -722,27 +702,10 @@ class BW:
         2-D narray
                 array containing the beta values.
         """
-        # TODO: remove this and replace with the commented code below
-        len_seq = len(obs_seq) - 1
-        init_arr = ones(self.nb_states) * (array(self.h.labelling) == obs_seq[-1])
-        zero_arr = zeros(shape=(len_seq * self.nb_states,))
-        beta_matrix = (
-            append(zero_arr, init_arr)
-            .reshape(len_seq + 1, self.nb_states)
-            .astype(longdouble)
-        )
-        for k in range(len_seq - 1, -1, -1):
-            for s in range(self.nb_states):
-                p = array(
-                    [self._h_l(s, ss, obs_seq[k]) for ss in range(self.nb_states)]
-                )
-                p = p * exp(-self._h_e(s) * times_seq[k])
-                beta_matrix[k, s] = dot(beta_matrix[k + 1], p)
-        return beta_matrix.T
-        # phi = self._h_phi_matrix_PCTMC # phi = omega
-        # tau = self._tau_matrix_PCTMC # tau = P
-        # pi = self.h.initial.toList()
-        # return = fb(_backwards, phi, tau, pi, self.nb_states, len_seq - 1) # python binding goes here
+        phi = self._h_phi_matrix_PCTMC(obs_seq, times_seq)  # phi = omega
+        tau = self._tau_matrix_PCTMC()  # tau = P
+        pi = self.h.initial
+        return sudd.symbolic_backwards_timed(phi, tau, pi).T
 
     def _splitTime(self, sequence: list) -> tuple:
         """
