@@ -303,3 +303,63 @@ DdNode* vector_3x1(DdManager* manager, double vector[3], DdNode* row_vars[2]) {
 
     return root;
 }
+
+double** forwards_matrix(double** omega, 
+                         double** P, 
+                         double* pi, 
+                         int n_states, 
+                         int k_j
+) {
+    // Allocate space for alpha
+    double** alpha = (double**) malloc(sizeof(double**) * (k_j + 1));
+
+    // Base case: t = 0
+    *alpha[0] = *omega[0] * *pi;
+
+    // Case: 0 < t <= k_j
+
+    for (int t = 1; t <= k_j; t++)
+    {
+        for (int s = 0; s < n_states; s++)
+        {
+            double temp = 0;
+            for (int ss = 0; ss < n_states; ss++)
+            {
+                temp += P[ss][s] * alpha[t-1][ss];
+            }
+            alpha[t][s] = omega[t][s] * temp;
+        }
+    }
+    
+    return alpha;
+}
+
+double** backwards_matrix(double** omega, 
+                         double** P, 
+                         double* pi, 
+                         int n_states, 
+                         int k_j
+) {
+    // Allocate space for beta
+    double** beta = (double**) malloc(sizeof(double**) * (k_j +1));
+
+    // Base case: t = |o|
+    *beta[k_j] = 1;
+
+    // Case: 0 <= t < k_j
+
+    for (int t = k_j - 1; 0 <= t; t--)
+    {
+        for (int s = 0; s < n_states; s++)
+        {
+            double temp = 0;
+            for (int ss = 0; ss < n_states; ss++)
+            {
+                temp += P[s][ss] * beta[t + 1][ss] * omega[t + 1][ss];
+            }
+            beta[t][s] = temp;
+        }
+    }
+
+    return beta;
+}
