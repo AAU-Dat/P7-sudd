@@ -383,13 +383,13 @@ START_TEST(file_fb_forwards_3x3_2_k_j) {
     pi[2] = 3;
 
     char** omegafile = (char**)malloc(3 * sizeof(char*));
-    omegafile[0] = "tests/matrix1.txt";
-    omegafile[1] = "tests/matrix2.txt";
-    omegafile[2] = "tests/matrix3.txt";
+    omegafile[0] = "tests/data/omega0.txt";
+    omegafile[1] = "tests/data/omega1.txt";
+    omegafile[2] = "tests/data/omega2.txt";
 
     
-    char* Pfile = "tests/P.txt";
-    char* pifile = "tests/pi.txt";
+    char* Pfile = "tests/data/P.txt";
+    char* pifile = "tests/data/pi.txt";
 
     CUDD_VALUE_TYPE** alpha = file_forwards(omegafile, Pfile, pifile, states, k_j);
 
@@ -459,13 +459,13 @@ START_TEST(file_fb_backwards_3x3_2_k_j) {
     pi[2] = 3;
 
     char** omegafile = (char**)malloc(3 * sizeof(char*));
-    omegafile[0] = "tests/matrix1.txt";
-    omegafile[1] = "tests/matrix2.txt";
-    omegafile[2] = "tests/matrix3.txt";
+    omegafile[0] = "tests/data/omega0.txt";
+    omegafile[1] = "tests/data/omega1.txt";
+    omegafile[2] = "tests/data/omega2.txt";
 
     
-    char* Pfile = "tests/P.txt";
-    char* pifile = "tests/pi.txt";
+    char* Pfile = "tests/data/P.txt";
+    char* pifile = "tests/data/pi.txt";
 
     CUDD_VALUE_TYPE** beta = file_backwards(omegafile, Pfile, pifile, states, k_j);
 
