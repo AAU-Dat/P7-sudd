@@ -312,6 +312,8 @@ class BW:
                 self.fixed_parameters = fixed_parameters
 
         elif self.type_model == PCTMC_ID:
+            self._computeAlphas = self._computeAlphas_untimed_PCTMC
+            self._computeBetas = self._computeBetas_untimed_PCTMC
             if self.verbose > 0:
                 print("Learning a PCTMC...")
             self._update = self._update_PCTMC
@@ -328,8 +330,8 @@ class BW:
                 self.h.randomInstantiation()
 
             if self.training_set.type == 4:
-                self._computeAlphas = self._computeAlphas_timed
-                self._computeBetas = self._computeBetas_timed
+                self._computeAlphas = self._computeAlphas_timed_PCTMC
+                self._computeBetas = self._computeBetas_timed_PCTMC
             self.nb_parameters = self.h.nb_parameters
             self.update_constant = update_constant
             self._h_e = self._h_e_PCTMC
@@ -955,6 +957,52 @@ class BW:
         return currentloglikelihood
 
     # PCTMC--------------------------------------------------------------------
+    def _computeAlphas_timed_PCTMC(
+        self,
+        obs_seq: list[str],
+        times_seq: list[float]
+    ) -> array:
+        tau = self._h_tau_matrix_PCTMC()
+        phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
+        pi = self.h.initial_state
+        alpha = sudd.symbolic_forwards_timed(phi, tau, pi)
+        alpha = np.vstack((pi, alpha))
+        return alpha.T
+
+    def _computeBetas_timed_PCTMC(
+        self,
+        obs_seq: list[str],
+        times_seq: list[float]
+    ) -> array:
+        tau = self._h_tau_matrix_PCTMC()
+        phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
+        pi = self.h.initial_state
+        return sudd.symbolic_backwards_timed(phi, tau, pi).T
+
+    def _computeAlphas_untimed_PCTMC(
+        self,
+        obs_seq: list[str],
+        times_seq: list[float]
+    ) -> array:
+        tau = self._h_tau_matrix_PCTMC()
+        phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
+        pi = self.h.initial_state
+        alpha = sudd.symbolic_forwards_timed(phi, tau, pi)
+        alpha = np.vstack((pi, alpha))
+        return alpha.T
+
+    def _computeBetas_untimed_PCTMC(
+        self,
+        obs_seq: list[str],
+        times_seq: list[float]
+    ) -> array:
+        tau = self._h_tau_matrix_PCTMC()
+        phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
+        pi = self.h.initial_state
+        beta = sudd.symbolic_backwards_timed(phi, tau, pi)
+        beta = np.vstack((pi, beta))
+        return beta.T
+
     def _sortParameters(self, fixed_parameters: list):
         """
         Sort the parameters into the three categories.
@@ -1193,7 +1241,7 @@ class BW:
                         * self._h_e(s) \
                         * exp(-self._h_e(s) * times_seq[i])
         for s in range(cols):
-            phi[-1] = (self.h.labelling[s] == obs_seq[-1])
+            phi[-1] = (1 if self.h.labelling[s] == obs_seq[-1] else 0)
         return np.array(phi)
 
     def _h_phi_untimed_matrix_PCTMC(
@@ -1204,7 +1252,7 @@ class BW:
         phi = [[0] * cols for _ in range(rows)]
         for i in range(rows):
             for s in range(cols):
-                phi[i][s] = (self.h.labelling[s] == obs_seq[i])
+                phi[i][s] = (1 if self.h.labelling[s] == obs_seq[i] else 0)
         return np.array(phi)
 
     def _processWork_PCTMC(self, sequence: list, times: int):
@@ -1646,9 +1694,11 @@ class BW:
         elif max_val != None:
             self.h.randomInstantiation(max_val=max_val)
 
+        self._computeAlphas = self._computeAlphas_untimed_PCTMC
+        self._computeBetas = self._computeBetas_untimed_PCTMC
         if self.training_set.type == 4:
-            self._computeAlphas = self._computeAlphas_timed
-            self._computeBetas = self._computeBetas_timed
+            self._computeAlphas = self._computeAlphas_timed_PCTMC
+            self._computeBetas = self._computeBetas_timed_PCTMC
         self.nb_parameters = self.h.nb_parameters
         self.update_constant = update_constant
         self._processWork = self._processWork_PCTMC
