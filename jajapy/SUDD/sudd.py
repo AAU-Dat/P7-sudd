@@ -131,7 +131,6 @@ def forwards_py(
     n_obs, n_states = omega.shape
     alpha = np.empty((n_states, n_obs))
     alpha[0] = omega[0] * pi
-    print("alpha0: ", alpha[0])
     for t in range(1, n_obs):
         for s in range(n_states):
             temp = 0
