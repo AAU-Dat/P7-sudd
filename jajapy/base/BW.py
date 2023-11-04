@@ -998,7 +998,7 @@ class BW:
         tau = self._h_tau_matrix_PCTMC()
         phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
         pi = self.h.initial_state
-        beta = sudd.backwards_py(phi, tau, pi)
+        beta = sudd.backwards_numeric(phi, tau, pi)
         return beta.T
 
     def _sortParameters(self, fixed_parameters: list):

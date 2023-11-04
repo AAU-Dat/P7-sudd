@@ -24,12 +24,12 @@ lib.file_forwards.restype = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
 lib.file_backwards.restype = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
 
 
-def symbolic_forwards_timed(
+def forwards_symbolic(
     phis: np.ndarray[np.float64, Tuple[int, int]],
     tau: np.ndarray[np.float64, Tuple[int, int]],
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
-    return symbolic_fb_timed(
+    return fb_symbolic(
         lib.file_forwards,
         phis,
         tau,
@@ -37,12 +37,12 @@ def symbolic_forwards_timed(
     )
 
 
-def symbolic_backwards_timed(
+def backwards_symbolic(
     phis: np.ndarray[np.float64, Tuple[int, int]],
     tau: np.ndarray[np.float64, Tuple[int, int]],
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
-    return symbolic_fb_timed(
+    return fb_symbolic(
         lib.file_backwards,
         phis,
         tau,
@@ -50,7 +50,7 @@ def symbolic_backwards_timed(
     )
 
 
-def symbolic_fb_timed(
+def fb_symbolic(
     fb: Any,
     phis: np.ndarray[np.float64, Tuple[int, int]],
     tau: np.ndarray[np.float64, Tuple[int, int]],
@@ -123,7 +123,7 @@ def numpy_to_file(array: np.ndarray, filename: str) -> ctypes.c_char_p:
     return ctypes.c_char_p(filename.encode('utf-8'))
 
 
-def forwards_py(
+def forwards_numeric(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
     pi: np.ndarray[Any, np.dtype[Any]],
@@ -140,7 +140,20 @@ def forwards_py(
     return alpha
 
 
-def backwards_py(
+def forwards_matrix_numeric(
+    omega: np.ndarray[Any, np.dtype[Any]],
+    P: np.ndarray[Any, np.dtype[Any]],
+    pi: np.ndarray[Any, np.dtype[Any]],
+) -> np.ndarray[Any, np.dtype[Any]]:
+    n_obs, n_states = omega.shape
+    alpha = np.empty((n_obs, n_states))
+    alpha[0] = omega[0] * pi
+    for t in range(1, n_obs):
+        alpha[t] = omega[t] * (P.T @ alpha[t - 1])
+    return alpha
+
+
+def backwards_numeric(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
     pi: np.ndarray[Any, np.dtype[Any]],
@@ -154,4 +167,17 @@ def backwards_py(
             for ss in range(n_states):
                 temp += P[s][ss] * beta[t + 1][ss] * omega[t + 1][ss]
             beta[t][s] = temp
+    return beta
+
+
+def backwards_matrix_numeric(
+    omega: np.ndarray[Any, np.dtype[Any]],
+    P: np.ndarray[Any, np.dtype[Any]],
+    pi: np.ndarray[Any, np.dtype[Any]],
+) -> np.ndarray[Any, np.dtype[Any]]:
+    n_obs, n_states = omega.shape
+    beta = np.empty((n_obs, n_states))
+    beta[-1] = 1
+    for t in range(n_obs - 2, -1, -1):
+        beta[t] = P @ (beta[t + 1] * omega[t + 1])
     return beta
