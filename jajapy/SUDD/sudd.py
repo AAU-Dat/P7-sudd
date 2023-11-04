@@ -122,37 +122,34 @@ def numpy_to_file(array: np.ndarray, filename: str) -> ctypes.c_char_p:
 
     return ctypes.c_char_p(filename.encode('utf-8'))
 
+
 def forwards_py(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
     pi: np.ndarray[Any, np.dtype[Any]],
-    n_states: int,
-    k_j: int   
 ) -> np.ndarray[Any, np.dtype[Any]]:
-    alpha = np.empty((n_states,k_j+1))
+    n_obs, n_states = omega.shape
+    alpha = np.empty((n_states, n_obs))
     alpha[0] = omega[0] * pi
     print("alpha0: ", alpha[0])
-    
-    for t in range(1,k_j+1):
+    for t in range(1, n_obs):
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):
                 temp += P[ss][s] * alpha[t-1][ss]
             alpha[t][s] = omega[t][s] * temp
-    
     return np.array(alpha)
+
 
 def backwards_py(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
     pi: np.ndarray[Any, np.dtype[Any]],
-    n_states: int,
-    k_j: int
 ) -> np.ndarray[Any, np.dtype[Any]]:
-    beta = np.empty((n_states,k_j+1))
-    beta[k_j] = 1
-    
-    for t in range(k_j-1, -1, -1):
+    n_obs, n_states = omega.shape
+    beta = np.empty((n_states, n_obs))
+    beta[n_obs - 1] = 1
+    for t in range(n_obs - 2, -1, -1):
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):

@@ -19,10 +19,7 @@ def test_symbolic_forwards_timed():
     alpha = sudd.symbolic_forwards_timed(phi, tau, pi)
 
     # Assert
-    for s in range(3):
-        assert pi[s] * phi[0][s] == alpha[0][s]
-        assert phi[1][s] * (tau[0][s] * alpha[0][0] + tau[1][s] * alpha[0][1] + tau[2][s] * alpha[0][2]) == alpha[1][s]
-        phi[2][s] * (tau[0][s] * alpha[1][0] + tau[1][s] * alpha[1][1] + tau[2][s] * alpha[1][2]) == alpha[2][s]
+    assert (alpha == sudd.forwards_py(phi, tau, pi)).all
 
 
 def test_symbolic_backwards_timed():
@@ -41,7 +38,4 @@ def test_symbolic_backwards_timed():
     beta = sudd.symbolic_backwards_timed(phi, tau, pi)
 
     # Assert
-    for s in range(3):
-        assert tau[s][0] * phi[1][0] * beta[1][0] + tau[s][1] * phi[1][1] * beta[1][1] + tau[s][2] * phi[1][2] * beta[1][2] == beta[0][s]
-        assert tau[s][0] * phi[2][0] * beta[2][0] + tau[s][1] * phi[2][1] * beta[2][1] + tau[s][2] * phi[2][2] * beta[2][2] == beta[1][s]
-        assert 1 == beta[2][s]
+    assert (beta == sudd.backwards_py(phi, tau, pi)).all
