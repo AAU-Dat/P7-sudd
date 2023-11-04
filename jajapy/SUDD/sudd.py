@@ -129,7 +129,7 @@ def forwards_py(
     pi: np.ndarray[Any, np.dtype[Any]],
 ) -> np.ndarray[Any, np.dtype[Any]]:
     n_obs, n_states = omega.shape
-    alpha = np.empty((n_states, n_obs))
+    alpha = np.empty((n_obs, n_states))
     alpha[0] = omega[0] * pi
     for t in range(1, n_obs):
         for s in range(n_states):
@@ -137,7 +137,7 @@ def forwards_py(
             for ss in range(n_states):
                 temp += P[ss][s] * alpha[t-1][ss]
             alpha[t][s] = omega[t][s] * temp
-    return np.array(alpha)
+    return alpha
 
 
 def backwards_py(
@@ -146,12 +146,12 @@ def backwards_py(
     pi: np.ndarray[Any, np.dtype[Any]],
 ) -> np.ndarray[Any, np.dtype[Any]]:
     n_obs, n_states = omega.shape
-    beta = np.empty((n_states, n_obs))
-    beta[n_obs - 1] = 1
+    beta = np.empty((n_obs, n_states))
+    beta[-1] = 1
     for t in range(n_obs - 2, -1, -1):
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):
                 temp += P[s][ss] * beta[t + 1][ss] * omega[t + 1][ss]
             beta[t][s] = temp
-    return np.array(beta)
+    return beta
