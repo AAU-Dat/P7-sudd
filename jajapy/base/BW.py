@@ -1239,7 +1239,7 @@ class BW:
                         * self._h_e(s) \
                         * exp(-self._h_e(s) * times_seq[i])
         for s in range(cols):
-            phi[-1] = (1 if self.h.labelling[s] == obs_seq[-1] else 0)
+            phi[-1][s] = (1 if self.h.labelling[s] == obs_seq[-1] else 0)
         return np.array(phi)
 
     def _h_phi_untimed_matrix_PCTMC(
