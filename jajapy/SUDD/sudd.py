@@ -77,11 +77,10 @@ def fb_symbolic(
     pi_file_name = f"pi_{os.getpid()}"
     pi = numpy_to_file(pi, pi_file_name)
 
-    # TODO free ab
-    ab_p = fb(phis_p, tau, pi, n_states, n_obs - 1)
+    ab_p = fb(phis_p, tau, pi, n_states, n_obs)
 
     # convert ab to nparray
-    ab = c_array_to_numpy_array(ab_p, n_obs, n_states)
+    ab = c_array_to_numpy_array(ab_p, n_obs + 1, n_states)
 
     # cleanup
     for phi_file_name in phi_file_names:
@@ -89,7 +88,7 @@ def fb_symbolic(
     os.remove(tau_file_name)
     os.remove(pi_file_name)
 
-    for i in range(n_obs):
+    for i in range(n_obs + 1):
         ctypes.CDLL('libc.so.6').free(ab_p[i])
     ctypes.CDLL('libc.so.6').free(ab_p)
 
