@@ -185,7 +185,9 @@ class PCTMCTestclass(unittest.TestCase):
             ["mu1a", "mu1b", "mu2", "kappa"], [0.5, 0.5, 0.5, 0.5]
         )
         training_set = loadSet("jajapy/tests/materials/pctmc/training_set_PCTMC.txt")
-        output_gotten = BW().fit_parameters(
+        bw = BW()
+        # bw.processes = 1  # uncomment this when debugging
+        output_gotten = bw.fit_parameters(
             training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"]
         )
         output_expected = {
