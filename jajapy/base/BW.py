@@ -1261,6 +1261,7 @@ class BW:
             timed = True
         alpha_matrix = self._computeAlphas(obs_seq, times_seq)
         beta_matrix = self._computeBetas(obs_seq, times_seq)
+        symbolic = self._computeBetas_untimed_PCTMC(obs_seq, times_seq)
         proba_seq = alpha_matrix.T[-1].sum()
         if proba_seq == 0.0:
             return False
@@ -1692,8 +1693,8 @@ class BW:
         elif max_val != None:
             self.h.randomInstantiation(max_val=max_val)
 
-        self._computeAlphas = self._computeAlphas_untimed_PCTMC
-        self._computeBetas = self._computeBetas_untimed_PCTMC
+        # self._computeAlphas = self._computeAlphas_untimed_PCTMC
+        # self._computeBetas = self._computeBetas_untimed_PCTMC
         if self.training_set.type == 4:
             self._computeAlphas = self._computeAlphas_timed_PCTMC
             self._computeBetas = self._computeBetas_timed_PCTMC

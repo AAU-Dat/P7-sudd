@@ -311,9 +311,9 @@ DdNode** _backwards(
     for (int t = n_obs - 1; 0 <= t; t--) {
         DdNode* beta_temp_0 = Cudd_addMatrixMultiply(manager, _P, beta[t + 1], row_vars, n_vars);
         Cudd_Ref(beta_temp_0);
-        DdNode* beta_temp_1 = Cudd_addApply(manager, Cudd_addTimes, omega[t], beta_temp_0);
+        DdNode* beta_temp_1 = Cudd_addSwapVariables(manager, beta_temp_0, column_vars, row_vars, n_vars);
         Cudd_Ref(beta_temp_1);
-        beta[t] = Cudd_addSwapVariables(manager, beta_temp_1, column_vars, row_vars, n_vars);
+        beta[t] = Cudd_addApply(manager, Cudd_addTimes, omega[t], beta_temp_1);
         Cudd_Ref(beta[t]);
         Cudd_RecursiveDeref(manager, beta_temp_0);
         Cudd_RecursiveDeref(manager, beta_temp_1);
