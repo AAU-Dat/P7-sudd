@@ -1,9 +1,10 @@
-open a ubuntu terminal
+Open a Ubuntu terminal and Docker.
+Insure your Ubuntu can run docker
 run following commands:
 `cd jajapy`
-`summer.registry.jetbrains.space/p/p7/jajapy/full:latest -f Dockerfile.full .`
+`gg-summer.registry.jetbrains.space/p/p7/jajapy/full:latest -f Dockerfile.full .`
 `docker run -it gg-summer.registry.jetbrains.space/p/p7/jajapy/full:latest bash`
-`python3 -m memray run script.py`
+`python3 -m memray run <script_name>.py`
 Do not close the image after the run is done. 
 
 After the script is done, open a new terminal in another window.
