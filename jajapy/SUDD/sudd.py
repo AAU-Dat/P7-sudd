@@ -129,14 +129,14 @@ def forwards_numeric(
     pi: np.ndarray[Any, np.dtype[Any]],
 ) -> np.ndarray[Any, np.dtype[Any]]:
     n_obs, n_states = omega.shape
-    alpha = np.empty((n_obs, n_states))
-    alpha[0] = omega[0] * pi
-    for t in range(1, n_obs):
+    alpha = np.empty((n_obs + 1, n_states))
+    alpha[0] = pi
+    for t in range(1, n_obs + 1):
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):
-                temp += P[ss][s] * alpha[t-1][ss]
-            alpha[t][s] = omega[t][s] * temp
+                temp += P[ss][s] * omega[t-1][ss] * alpha[t-1][ss]
+            alpha[t][s] = temp
     return alpha
 
 
@@ -146,10 +146,10 @@ def forwards_matrix_numeric(
     pi: np.ndarray[Any, np.dtype[Any]],
 ) -> np.ndarray[Any, np.dtype[Any]]:
     n_obs, n_states = omega.shape
-    alpha = np.empty((n_obs, n_states))
-    alpha[0] = omega[0] * pi
-    for t in range(1, n_obs):
-        alpha[t] = omega[t] * (P.T @ alpha[t - 1])
+    alpha = np.empty((n_obs + 1, n_states))
+    alpha[0] = pi
+    for t in range(1, n_obs + 1):
+        alpha[t] = P.T @ (omega[t - 1] * alpha[t - 1])
     return alpha
 
 
@@ -159,14 +159,14 @@ def backwards_numeric(
     pi: np.ndarray[Any, np.dtype[Any]],
 ) -> np.ndarray[Any, np.dtype[Any]]:
     n_obs, n_states = omega.shape
-    beta = np.empty((n_obs, n_states))
+    beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 1
-    for t in range(n_obs - 2, -1, -1):
+    for t in range(n_obs - 1, -1, -1):
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):
-                temp += P[s][ss] * beta[t + 1][ss] * omega[t + 1][ss]
-            beta[t][s] = temp
+                temp += beta[t+1][ss] * P[s][ss]
+            beta[t][s] = omega[t][s] * temp
     return beta
 
 
@@ -176,8 +176,8 @@ def backwards_matrix_numeric(
     pi: np.ndarray[Any, np.dtype[Any]],
 ) -> np.ndarray[Any, np.dtype[Any]]:
     n_obs, n_states = omega.shape
-    beta = np.empty((n_obs, n_states))
+    beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 1
-    for t in range(n_obs - 2, -1, -1):
-        beta[t] = P @ (beta[t + 1] * omega[t + 1])
+    for t in range(n_obs - 1, -1, -1):
+        beta[t] = omega[t] * (P @ beta[t + 1])
     return beta
