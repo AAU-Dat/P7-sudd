@@ -1,0 +1,20 @@
+run1
+({'alpha': 0.35550665915433505, 'betax': 0.09167354490544678, 'zetax': 0.17183266132265504}, {'learning_rounds': 3, 'learning_time': 3141.740462, 'training_set_loglikelihood': -3124.755615367914869})
+run2
+({'alpha': 0.39264029747723456, 'betax': 0.10345478720308063, 'zetax': 0.19112720777550446}, {'learning_rounds': 3, 'learning_time': 3170.413792, 'training_set_loglikelihood': -3058.1430396990726652})
+run3
+({'alpha': 0.377212851068353, 'betax': 0.10426225943723536, 'zetax': 0.19412111486245612}, {'learning_rounds': 3, 'learning_time': 3158.620424, 'training_set_loglikelihood': -3048.198503518857013})
+run4
+({'alpha': 0.3500086409063252, 'betax': 0.11806058468999422, 'zetax': 0.20433304031706695}, {'learning_rounds': 3, 'learning_time': 3207.503658, 'training_set_loglikelihood': -2993.841645260911186})
+run5
+({'alpha': 0.3730005671954348, 'betax': 0.10123696023467792, 'zetax': 0.19898594392820534}, {'learning_rounds': 3, 'learning_time': 3224.33203, 'training_set_loglikelihood': -3044.411533557117025})
+run6
+({'alpha': 0.3567512160770153, 'betax': 0.10142233875757234, 'zetax': 0.18526589076873454}, {'learning_rounds': 3, 'learning_time': 3245.534503, 'training_set_loglikelihood': -3134.685367561222548})
+run7
+({'alpha': 0.3498105319893779, 'betax': 0.10436550164182852, 'zetax': 0.22981334752823998}, {'learning_rounds': 3, 'learning_time': 3236.881586, 'training_set_loglikelihood': -3157.732458056082718})
+run8
+({'alpha': 0.36157994541233557, 'betax': 0.10472885918315243, 'zetax': 0.1963473757913214}, {'learning_rounds': 3, 'learning_time': 3246.060897, 'training_set_loglikelihood': -3146.6268823951319633})
+run9
+({'alpha': 0.35346147893986357, 'betax': 0.08792818982414886, 'zetax': 0.21170797165258223}, {'learning_rounds': 3, 'learning_time': 3248.278754, 'training_set_loglikelihood': -3272.0640227559414486})
+run10
+({'alpha': 0.36881597792778975, 'betax': 0.10440931815341033, 'zetax': 0.21415633081970847}, {'learning_rounds': 3, 'learning_time': 3248.333566, 'training_set_loglikelihood': -2920.797623104709204})
