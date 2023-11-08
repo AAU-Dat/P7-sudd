@@ -966,7 +966,6 @@ class BW:
         phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
         pi = self.h.initial_state
         alpha = sudd.forwards_symbolic(phi, tau, pi)
-        alpha = np.vstack((alpha, pi))
         return alpha.T
 
     def _computeBetas_timed_PCTMC(
@@ -978,7 +977,6 @@ class BW:
         phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
         pi = self.h.initial_state
         beta = sudd.backwards_symbolic(phi, tau, pi)
-        beta = np.vstack((tau @ (beta[0] * phi[0]), beta))
         return beta.T
 
     def _computeAlphas_untimed_PCTMC(
@@ -990,7 +988,6 @@ class BW:
         phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
         pi = self.h.initial_state
         alpha = sudd.forwards_symbolic(phi, tau, pi)
-        alpha = np.vstack((alpha, pi))
         return alpha.T
 
     def _computeBetas_untimed_PCTMC(
@@ -1002,7 +999,6 @@ class BW:
         phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
         pi = self.h.initial_state
         beta = sudd.backwards_symbolic(phi, tau, pi)
-        beta = np.vstack((tau @ (beta[0] * phi[0]), beta))
         return beta.T
 
     def _sortParameters(self, fixed_parameters: list):

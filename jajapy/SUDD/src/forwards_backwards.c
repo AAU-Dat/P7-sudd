@@ -9,9 +9,9 @@ double** forwards(
     double** P,
     double* pi,
     int n_states,
-    int k_j
+    int n_obs
 ) {
-    return fb(_forwards, omega, P, pi, n_states, k_j);
+    return fb(_forwards, omega, P, pi, n_states, n_obs);
 }
 
 double** backwards(
@@ -19,9 +19,9 @@ double** backwards(
     double** P,
     double* pi,
     int n_states,
-    int k_j
+    int n_obs
 ) {
-    return fb(_backwards, omega, P, pi, n_states, k_j);
+    return fb(_backwards, omega, P, pi, n_states, n_obs);
 }
 
 double** file_forwards(
@@ -29,9 +29,9 @@ double** file_forwards(
     char *P,
     char *pi,
     int n_states,
-    int k_j
+    int n_obs
 ) {
-    return file_fb(_forwards, omega, P, pi, n_states, k_j);
+    return file_fb(_forwards, omega, P, pi, n_states, n_obs);
 }
 
 double** file_backwards(
@@ -39,9 +39,9 @@ double** file_backwards(
     char *P,
     char *pi,
     int n_states,
-    int k_j
+    int n_obs
 ) {
-    return file_fb(_backwards, omega, P, pi, n_states, k_j);
+    return file_fb(_backwards, omega, P, pi, n_states, n_obs);
 }
 
 double** fb(
@@ -53,14 +53,14 @@ double** fb(
         DdNode** row_vars,
         DdNode** column_vars,
         int n_vars,
-        int k_j
+        int n_obs
     ),
     double** omega,
     double** P,
     double* pi,
     int n_states,
-    int k_j)
-{
+    int n_obs
+) {
     int number_of_rows = n_states;
     int number_of_columns = n_states;
     int number_of_row_variables = 0;
@@ -76,7 +76,7 @@ double** fb(
 
     DdNode* _P;
     DdNode* _pi;
-    DdNode** _omega = (DdNode**)malloc((k_j + 1) * sizeof(DdNode*));
+    DdNode** _omega = (DdNode**)malloc((n_obs) * sizeof(DdNode*));
 
     matrix_to_add(
         P,
@@ -106,7 +106,7 @@ double** fb(
     );
 
     // make omega into an ADD for each column
-    for (int t = 0; t <= k_j; t++) {
+    for (int t = 0; t <= n_obs - 1; t++) {
         vector_to_add(
             omega[t],
             manager,
@@ -129,11 +129,11 @@ double** fb(
         row_variables,
         column_variables,
         number_of_column_variables,
-        k_j
+        n_obs
     );
 
-    CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
-    for (int t = 0; t <= k_j; t++) {
+    CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (n_obs + 1));
+    for (int t = 0; t <= n_obs; t++) {
         alpha[t] = add_to_vector(_alpha[t], number_of_rows, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
     }
 
@@ -152,13 +152,13 @@ double** file_fb(
         DdNode** row_vars,
         DdNode** column_vars,
         int n_vars,
-        int k_j
+        int n_obs
     ),
     char **omega,
     char *P,
     char *pi,
     int n_states,
-    int k_j
+    int n_obs
 ) {
     int number_of_rows = n_states;
     int number_of_columns = n_states;
@@ -175,7 +175,7 @@ double** file_fb(
 
     DdNode* _P;
     DdNode* _pi;
-    DdNode** _omega = (DdNode**)malloc((k_j + 1) * sizeof(DdNode*));
+    DdNode** _omega = (DdNode**)malloc((n_obs + 1) * sizeof(DdNode*));
 
     FILE* P_fp = fopen(P, "r");
     Cudd_addRead(
@@ -217,8 +217,8 @@ double** file_fb(
     );
     fclose(pi_fp);
 
-    FILE** omega_fps = (FILE**) malloc((k_j + 1) * sizeof(FILE*));
-    for (int t = 0; t <= k_j; t++) {
+    FILE** omega_fps = (FILE**) malloc((n_obs) * sizeof(FILE*));
+    for (int t = 0; t <= n_obs - 1; t++) {
         omega_fps[t] = fopen(omega[t], "r");
         Cudd_addRead(
             omega_fps[t],
@@ -249,11 +249,11 @@ double** file_fb(
         row_variables,
         column_variables,
         number_of_row_variables,
-        k_j
+        n_obs
     );
 
-    CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (k_j + 1));
-    for (int t = 0; t <= k_j; t++) {
+    CUDD_VALUE_TYPE** alpha = (CUDD_VALUE_TYPE**)malloc(sizeof(CUDD_VALUE_TYPE*) * (n_obs + 1));
+    for (int t = 0; t <= n_obs; t++) {
         alpha[t] = add_to_vector(_alpha[t], number_of_rows, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
     }
 
@@ -271,20 +271,21 @@ DdNode** _forwards(
     DdNode** row_vars,
     DdNode** column_vars,
     int n_vars,
-    int k_j
+    int n_obs
 ) {
-    DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (k_j + 1));
+    DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
     alpha[0] = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
     Cudd_Ref(alpha[0]);
 
-    for (int t = 1; t <= k_j; t++) {
-        DdNode* PT_alpha_t = Cudd_addMatrixMultiply(manager, P, alpha[t - 1], row_vars, n_vars);
-        Cudd_Ref(PT_alpha_t);
-        PT_alpha_t = Cudd_addSwapVariables(manager, PT_alpha_t, column_vars, row_vars, n_vars);
-        Cudd_Ref(PT_alpha_t);
-        alpha[t] = Cudd_addApply(manager, Cudd_addTimes, omega[t], PT_alpha_t);
+    for (int t = 1; t <= n_obs; t++) {
+        DdNode* alpha_temp_0 = Cudd_addApply(manager, Cudd_addTimes, omega[t - 1], alpha[t - 1]);
+        Cudd_Ref(alpha_temp_0);
+        DdNode* alpha_temp_1 = Cudd_addMatrixMultiply(manager, P, alpha_temp_0, row_vars, n_vars);
+        Cudd_Ref(alpha_temp_1);
+        alpha[t] = Cudd_addSwapVariables(manager, alpha_temp_1, column_vars, row_vars, n_vars);
         Cudd_Ref(alpha[t]);
-        Cudd_RecursiveDeref(manager, PT_alpha_t);
+        Cudd_RecursiveDeref(manager, alpha_temp_0);
+        Cudd_RecursiveDeref(manager, alpha_temp_1);
     }
 
     return alpha;
@@ -298,26 +299,24 @@ DdNode** _backwards(
     DdNode** row_vars,
     DdNode** column_vars,
     int n_vars,
-    int k_j
+    int n_obs
 ) {
     DdNode* _P = Cudd_addSwapVariables(manager, P, column_vars, row_vars, n_vars);
     Cudd_Ref(_P);
 
-    DdNode** beta = (DdNode**) malloc(sizeof(DdNode*) * (k_j + 1));
-    beta[k_j] = Cudd_addConst(manager, 1);
-    Cudd_Ref(beta[k_j]);
+    DdNode** beta = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
+    beta[n_obs] = Cudd_addConst(manager, 1);
+    Cudd_Ref(beta[n_obs]);
 
-    for (int t = k_j - 1; 0 <= t; t--) {
-        DdNode* beta_hadamard_omega_t 
-            = Cudd_addApply(manager, Cudd_addTimes, beta[t + 1], omega[t + 1]);
-        Cudd_Ref(beta_hadamard_omega_t);
-        DdNode* beta_t 
-            = Cudd_addMatrixMultiply(manager, _P, beta_hadamard_omega_t, row_vars, n_vars);
-        Cudd_Ref(beta_t);
-        beta[t] = Cudd_addSwapVariables(manager, beta_t, column_vars, row_vars, n_vars);
+    for (int t = n_obs - 1; 0 <= t; t--) {
+        DdNode* beta_temp_0 = Cudd_addMatrixMultiply(manager, _P, beta[t + 1], row_vars, n_vars);
+        Cudd_Ref(beta_temp_0);
+        DdNode* beta_temp_1 = Cudd_addSwapVariables(manager, beta_temp_0, column_vars, row_vars, n_vars);
+        Cudd_Ref(beta_temp_1);
+        beta[t] = Cudd_addApply(manager, Cudd_addTimes, omega[t], beta_temp_1);
         Cudd_Ref(beta[t]);
-        Cudd_RecursiveDeref(manager, beta_hadamard_omega_t);
-        Cudd_RecursiveDeref(manager, beta_t);
+        Cudd_RecursiveDeref(manager, beta_temp_0);
+        Cudd_RecursiveDeref(manager, beta_temp_1);
     }
 
     Cudd_RecursiveDeref(manager, _P);
