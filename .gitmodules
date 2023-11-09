@@ -1,0 +1,3 @@
+[submodule "cudd"]
+	path = cudd
+	url = https://git.jetbrains.space/gg-summer/p7/cudd.git

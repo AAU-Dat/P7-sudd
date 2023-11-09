@@ -7,21 +7,23 @@ lib_path = os.path.join(os.path.dirname(__file__), 'build', 'sudd.so')
 lib = ctypes.CDLL(lib_path)
 
 lib.file_forwards.argtypes = [
-        ctypes.POINTER(ctypes.c_char_p),
-        ctypes.c_char_p,
-        ctypes.c_char_p,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
         ctypes.c_int,
-        ctypes.c_int
+        ctypes.c_int,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
     ]
 lib.file_backwards.argtypes = [
-        ctypes.POINTER(ctypes.c_char_p),
-        ctypes.c_char_p,
-        ctypes.c_char_p,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
         ctypes.c_int,
-        ctypes.c_int
+        ctypes.c_int,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
     ]
-lib.file_forwards.restype = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
-lib.file_backwards.restype = ctypes.POINTER(ctypes.POINTER(ctypes.c_double))
+lib.file_forwards.restype = ctypes.c_int
+lib.file_backwards.restype = ctypes.c_int
 
 
 def forwards_symbolic(
@@ -52,47 +54,14 @@ def backwards_symbolic(
 
 def fb_symbolic(
     fb: Any,
-    phis: np.ndarray[np.float64, Tuple[int, int]],
+    phi: np.ndarray[np.float64, Tuple[int, int]],
     tau: np.ndarray[np.float64, Tuple[int, int]],
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
-
-    n_obs, n_states = phis.shape
-
-    # convert / make files
-    phi_file_names = [
-        f"phi_{i}_{os.getpid()}"
-        for i, phi in enumerate(phis)
-    ]
-    phis = [
-        numpy_to_file(phi, f"phi_{i}_{os.getpid()}")
-        for i, phi in enumerate(phis)
-    ]
-    # TODO len(phis) might be wrong
-    phis_p = (ctypes.c_char_p * len(phis))(*phis)
-
-    tau_file_name = f"tau_{os.getpid()}"
-    tau = numpy_to_file(tau, tau_file_name)
-
-    pi_file_name = f"pi_{os.getpid()}"
-    pi = numpy_to_file(pi, pi_file_name)
-
-    ab_p = fb(phis_p, tau, pi, n_states, n_obs)
-
-    # convert ab to nparray
-    ab = c_array_to_numpy_array(ab_p, n_obs + 1, n_states)
-
-    # cleanup
-    for phi_file_name in phi_file_names:
-        os.remove(phi_file_name)
-    os.remove(tau_file_name)
-    os.remove(pi_file_name)
-
-    for i in range(n_obs + 1):
-        ctypes.CDLL('libc.so.6').free(ab_p[i])
-    ctypes.CDLL('libc.so.6').free(ab_p)
-
-    return ab
+    n_obs, n_states = phi.shape
+    alpha = np.empty((n_obs + 1, n_states))
+    fb(phi, tau, pi, n_states, n_obs, alpha)
+    return alpha
 
 
 def c_array_to_numpy_array(c_array, rows, cols):

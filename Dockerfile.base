@@ -28,8 +28,7 @@ RUN pip install setuptools==68.2.2
 RUN git clone --branch 14.25 --single-branch --depth 1 https://github.com/moves-rwth/carl-storm.git /base/carl-storm && \
     git clone --branch 2.2.0 --single-branch --depth 1 https://github.com/moves-rwth/pycarl.git /base/pycarl && \
     git clone --branch 1.8.1 --single-branch --depth 1 https://github.com/moves-rwth/storm.git /base/storm && \
-    git clone --branch 1.8.0 --single-branch --depth 1 https://github.com/moves-rwth/stormpy.git /base/stormpy && \
-    git clone                --single-branch --depth 1 https://github.com/ivmai/cudd.git /base/cudd
+    git clone --branch 1.8.0 --single-branch --depth 1 https://github.com/moves-rwth/stormpy.git /base/stormpy
 
 
 # Build CArL-storm
@@ -49,10 +48,3 @@ RUN cmake .. && \
 # Install Stormpy
 WORKDIR /base/stormpy
 RUN python3 setup.py build_ext --jobs $number_of_threads develop
-
-# Install CUDD
-WORKDIR /base/cudd
-RUN ln -s /usr/bin/aclocal-1.16 /usr/bin/aclocal-1.14 && \ 
-    ln -s /usr/bin/automake-1.16 /usr/bin/automake-1.14 && \
-    ./configure --enable-shared && \
-    make install -j$number_of_threads
