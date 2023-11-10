@@ -19,8 +19,8 @@ def test_symbolic_forwards_timed():
     alpha = sudd.forwards_symbolic(phi, tau, pi)
 
     # Assert
-    assert (alpha == sudd.forwards_numeric(phi, tau, pi)).all
-    assert (alpha == sudd.forwards_matrix_numeric(phi, tau, pi)).all
+    assert np.array_equal(alpha, sudd.forwards_numeric(phi, tau, pi))
+    assert np.array_equal(alpha, sudd.forwards_matrix_numeric(phi, tau, pi))
 
 
 def test_symbolic_backwards_timed():
@@ -39,5 +39,5 @@ def test_symbolic_backwards_timed():
     beta = sudd.backwards_symbolic(phi, tau, pi)
 
     # Assert
-    assert (beta == sudd.backwards_numeric(phi, tau, pi)).all
-    assert (beta == sudd.backwards_matrix_numeric(phi, tau, pi)).all
+    assert np.array_equal(beta, sudd.backwards_numeric(phi, tau, pi))
+    assert np.array_equal(beta, sudd.backwards_matrix_numeric(phi, tau, pi))
