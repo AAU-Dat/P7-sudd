@@ -323,23 +323,7 @@ double** forwards_numeric(double** omega,
         alpha[0][s] = pi[s];
     }
     
-    // Case: 0 < t <= k_j
-
-    int rows = 0;
-    int cols = 0;
-    for (int t = 0; t < n_obs; t++)
-        {
-            rows +=1;
-            for (int s = 0; s < n_states+1; s++)
-            {   
-                if (t==0)
-                {
-                    cols +=1;
-                }
-            }
-            
-        } 
-    
+    // Case: 0 < t <= k_j  
     for (int t = 0; t < n_obs; t++)
     {
         for (int s = 0; s < n_states; s++)
@@ -354,17 +338,6 @@ double** forwards_numeric(double** omega,
         }
     }
 
-    for (int t = 0; t < n_obs+1; t++)
-    {
-        for (int s = 0; s < n_states; s++)
-        {
-            printf("alpha[%d][%d]: %lf\n", t,s,alpha[t][s]);
-        }
-        
-    }
-
-    printf("Size of alpha is: %d,%d \n", rows,cols);
-    
     return alpha;
 }
 
@@ -377,26 +350,28 @@ double** backwards_numeric(double** omega,
 ) { 
     // Allocate space for beta
     double** beta = (double**) malloc(sizeof(double**) * (n_obs + 1));
-    for(int i = 0; i < n_states; i++) {
-        beta[i] = (double*) malloc(sizeof(double) * n_states);
+    for(int i = 0; i < n_states + 1; i++) {
+        beta[i] = (double*) malloc(sizeof(double) * (n_states + 1));
     }
 
     // Base case: t = |o|
     *beta[n_obs] = 1;
+    for (int s = 0; s < n_states; s++)
+    {
+        beta[n_obs][s] = 1;
+    }
 
     // Case: 0 <= t < k_j
-
-    
-    for (int t = n_obs - 1; 0 <= t; t--)
+    for (int t = n_obs; 0 < t; t--)
     {
         for (int s = 0; s < n_states; s++)
         {
             double temp = 0;
             for (int ss = 0; ss < n_states; ss++)
             {
-                temp += beta[t + 1][ss] * P[s][ss];
+                temp += beta[t][ss] * P[s][ss];
             }
-            beta[t][s] = omega[t][s] * temp;
+            beta[t-1][s] = omega[t-1][s] * temp;
         }
     }
 
