@@ -82,88 +82,88 @@ int fb(
     DdNode* _pi;
     DdNode** _omega = (DdNode**) malloc((n_obs) * sizeof(DdNode*));
 
-    // Sudd_addRead(
-    //     P,
-    //     n_states,
-    //     n_states,
-    //     dd,
-    //     &_P,
-    //     &row_vars,
-    //     &col_vars,
-    //     &comp_row_vars,
-    //     &comp_col_vars,
-    //     &n_row_vars,
-    //     &n_col_vars,
-    //     &dump_n_rows,
-    //     &dump_n_cols,
-    //     ROW_VAR_INDEX_OFFSET,
-    //     ROW_VAR_INDEX_MULTIPLIER,
-    //     COL_VAR_INDEX_OFFSET,
-    //     COL_VAR_INDEX_MULTIPLIER
-    // );
+    Sudd_addRead(
+        P,
+        n_states,
+        n_states,
+        dd,
+        &_P,
+        &row_vars,
+        &col_vars,
+        &comp_row_vars,
+        &comp_col_vars,
+        &n_row_vars,
+        &n_col_vars,
+        &dump_n_rows,
+        &dump_n_cols,
+        ROW_VAR_INDEX_OFFSET,
+        ROW_VAR_INDEX_MULTIPLIER,
+        COL_VAR_INDEX_OFFSET,
+        COL_VAR_INDEX_MULTIPLIER
+    );
 
-    // Sudd_addRead(
-    //     pi,
-    //     n_states,
-    //     1,
-    //     dd,
-    //     &_pi,
-    //     &row_vars,
-    //     &col_vars,
-    //     &comp_row_vars,
-    //     &comp_col_vars,
-    //     &n_row_vars,
-    //     &n_col_vars,
-    //     &dump_n_rows,
-    //     &dump_n_cols,
-    //     ROW_VAR_INDEX_OFFSET,
-    //     ROW_VAR_INDEX_MULTIPLIER,
-    //     COL_VAR_INDEX_OFFSET,
-    //     COL_VAR_INDEX_MULTIPLIER
-    // );
-    //
-    // for (ssize_t t = 0; t < n_obs; t++) {
-    //     Sudd_addRead(
-    //         &omega[t * n_states],
-    //         n_states,
-    //         1,
-    //         dd,
-    //         &_omega[t],
-    //         &row_vars,
-    //         &col_vars,
-    //         &comp_row_vars,
-    //         &comp_col_vars,
-    //         &n_row_vars,
-    //         &n_col_vars,
-    //         &dump_n_rows,
-    //         &dump_n_cols,
-    //         ROW_VAR_INDEX_OFFSET,
-    //         ROW_VAR_INDEX_MULTIPLIER,
-    //         COL_VAR_INDEX_OFFSET,
-    //         COL_VAR_INDEX_MULTIPLIER
-    //     );
-    // }
-    //
-    // DdNode** _ab = _fb(
-    //     dd,
-    //     _omega,
-    //     _P,
-    //     _pi,
-    //     row_vars,
-    //     col_vars,
-    //     n_row_vars,
-    //     n_obs
-    // );
-    //
-    // for (size_t t = 0; t <= n_obs; t++) {
-    //     add_to_vector_in_place(
-    //         _ab[t],
-    //         n_states,
-    //         ROW_VAR_INDEX_OFFSET,
-    //         ROW_VAR_INDEX_MULTIPLIER,
-    //         &ab[t * n_states]
-    //     );
-    // }
+    Sudd_addRead(
+        pi,
+        n_states,
+        1,
+        dd,
+        &_pi,
+        &row_vars,
+        &col_vars,
+        &comp_row_vars,
+        &comp_col_vars,
+        &n_row_vars,
+        &n_col_vars,
+        &dump_n_rows,
+        &dump_n_cols,
+        ROW_VAR_INDEX_OFFSET,
+        ROW_VAR_INDEX_MULTIPLIER,
+        COL_VAR_INDEX_OFFSET,
+        COL_VAR_INDEX_MULTIPLIER
+    );
+
+    for (ssize_t t = 0; t < n_obs; t++) {
+        Sudd_addRead(
+            &omega[t * n_states],
+            n_states,
+            1,
+            dd,
+            &_omega[t],
+            &row_vars,
+            &col_vars,
+            &comp_row_vars,
+            &comp_col_vars,
+            &n_row_vars,
+            &n_col_vars,
+            &dump_n_rows,
+            &dump_n_cols,
+            ROW_VAR_INDEX_OFFSET,
+            ROW_VAR_INDEX_MULTIPLIER,
+            COL_VAR_INDEX_OFFSET,
+            COL_VAR_INDEX_MULTIPLIER
+        );
+    }
+
+    DdNode** _ab = _fb(
+        dd,
+        _omega,
+        _P,
+        _pi,
+        row_vars,
+        col_vars,
+        n_row_vars,
+        n_obs
+    );
+
+    for (size_t t = 0; t <= n_obs; t++) {
+        add_to_vector_in_place(
+            _ab[t],
+            n_states,
+            ROW_VAR_INDEX_OFFSET,
+            ROW_VAR_INDEX_MULTIPLIER,
+            &ab[t * n_states]
+        );
+    }
 
     int err = Cudd_DebugCheck(dd);
     Cudd_Quit(dd);
@@ -301,7 +301,7 @@ DdNode** _forwards(
     int n_obs
 ) {
     DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
-    alpha[0] = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
+    alpha[0] = pi;
     Cudd_Ref(alpha[0]);
 
     for (int t = 1; t <= n_obs; t++) {

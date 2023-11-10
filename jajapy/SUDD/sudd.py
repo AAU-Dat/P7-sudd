@@ -58,6 +58,9 @@ def fb_symbolic(
     tau: np.ndarray[np.float64, Tuple[int, int]],
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi = phi.astype(np.float64)
+    tau = tau.astype(np.float64)
+    pi = pi.astype(np.float64)
     n_obs, n_states = phi.shape
     alpha = np.zeros((n_obs + 1, n_states))
     fb(phi, tau, pi, n_states, n_obs, alpha)
