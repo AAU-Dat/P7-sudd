@@ -6,26 +6,26 @@
 
 #define MALLOC_VARS(n_states) (DdNode**) malloc(ceil(log2(n_states)) * sizeof(DdNode*))
 
-void forwards(
+int forwards(
     CUDD_VALUE_TYPE* omega,
     CUDD_VALUE_TYPE* P,
     CUDD_VALUE_TYPE* pi,
     ssize_t n_states,
     ssize_t n_obs,
-    CUDD_VALUE_TYPE** alpha
+    CUDD_VALUE_TYPE* alpha
 ) {
-    fb(_forwards, omega, P, pi, n_states, n_obs, alpha);
+    return fb(_forwards, omega, P, pi, n_states, n_obs, alpha);
 }
 
-void backwards(
+int backwards(
     CUDD_VALUE_TYPE* omega,
     CUDD_VALUE_TYPE* P,
     CUDD_VALUE_TYPE* pi,
     ssize_t n_states,
     ssize_t n_obs,
-    CUDD_VALUE_TYPE** beta
+    CUDD_VALUE_TYPE*beta
 ) {
-    fb(_backwards, omega, P, pi, n_states, n_obs, beta);
+    return fb(_backwards, omega, P, pi, n_states, n_obs, beta);
 }
 
 double** file_forwards(
@@ -64,7 +64,7 @@ int fb(
     CUDD_VALUE_TYPE* pi,
     ssize_t n_states,
     ssize_t n_obs,
-    CUDD_VALUE_TYPE** alpha // output variable
+    CUDD_VALUE_TYPE* ab // output variable
 ) {
     DdManager* dd = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -82,85 +82,90 @@ int fb(
     DdNode* _pi;
     DdNode** _omega = (DdNode**) malloc((n_obs) * sizeof(DdNode*));
 
-    Sudd_addRead(
-        P,
-        n_states,
-        n_states,
-        dd,
-        &_P,
-        &row_vars,
-        &col_vars,
-        &comp_row_vars,
-        &comp_col_vars,
-        &n_row_vars,
-        &n_col_vars,
-        &dump_n_rows,
-        &dump_n_cols,
-        ROW_VAR_INDEX_OFFSET,
-        ROW_VAR_INDEX_MULTIPLIER,
-        COL_VAR_INDEX_OFFSET,
-        COL_VAR_INDEX_MULTIPLIER
-    );
+    // Sudd_addRead(
+    //     P,
+    //     n_states,
+    //     n_states,
+    //     dd,
+    //     &_P,
+    //     &row_vars,
+    //     &col_vars,
+    //     &comp_row_vars,
+    //     &comp_col_vars,
+    //     &n_row_vars,
+    //     &n_col_vars,
+    //     &dump_n_rows,
+    //     &dump_n_cols,
+    //     ROW_VAR_INDEX_OFFSET,
+    //     ROW_VAR_INDEX_MULTIPLIER,
+    //     COL_VAR_INDEX_OFFSET,
+    //     COL_VAR_INDEX_MULTIPLIER
+    // );
 
-    Sudd_addRead(
-        pi,
-        n_states,
-        1,
-        dd,
-        &_pi,
-        &row_vars,
-        &col_vars,
-        &comp_row_vars,
-        &comp_col_vars,
-        &n_row_vars,
-        &n_col_vars,
-        &dump_n_rows,
-        &dump_n_cols,
-        ROW_VAR_INDEX_OFFSET,
-        ROW_VAR_INDEX_MULTIPLIER,
-        COL_VAR_INDEX_OFFSET,
-        COL_VAR_INDEX_MULTIPLIER
-    );
+    // Sudd_addRead(
+    //     pi,
+    //     n_states,
+    //     1,
+    //     dd,
+    //     &_pi,
+    //     &row_vars,
+    //     &col_vars,
+    //     &comp_row_vars,
+    //     &comp_col_vars,
+    //     &n_row_vars,
+    //     &n_col_vars,
+    //     &dump_n_rows,
+    //     &dump_n_cols,
+    //     ROW_VAR_INDEX_OFFSET,
+    //     ROW_VAR_INDEX_MULTIPLIER,
+    //     COL_VAR_INDEX_OFFSET,
+    //     COL_VAR_INDEX_MULTIPLIER
+    // );
+    //
+    // for (ssize_t t = 0; t < n_obs; t++) {
+    //     Sudd_addRead(
+    //         &omega[t * n_states],
+    //         n_states,
+    //         1,
+    //         dd,
+    //         &_omega[t],
+    //         &row_vars,
+    //         &col_vars,
+    //         &comp_row_vars,
+    //         &comp_col_vars,
+    //         &n_row_vars,
+    //         &n_col_vars,
+    //         &dump_n_rows,
+    //         &dump_n_cols,
+    //         ROW_VAR_INDEX_OFFSET,
+    //         ROW_VAR_INDEX_MULTIPLIER,
+    //         COL_VAR_INDEX_OFFSET,
+    //         COL_VAR_INDEX_MULTIPLIER
+    //     );
+    // }
+    //
+    // DdNode** _ab = _fb(
+    //     dd,
+    //     _omega,
+    //     _P,
+    //     _pi,
+    //     row_vars,
+    //     col_vars,
+    //     n_row_vars,
+    //     n_obs
+    // );
+    //
+    // for (size_t t = 0; t <= n_obs; t++) {
+    //     add_to_vector_in_place(
+    //         _ab[t],
+    //         n_states,
+    //         ROW_VAR_INDEX_OFFSET,
+    //         ROW_VAR_INDEX_MULTIPLIER,
+    //         &ab[t * n_states]
+    //     );
+    // }
 
-    // make omega into an ADD for each column
-    for (ssize_t t = 0; t < n_obs; t++) {
-        Sudd_addRead(
-            omega[t * n_states],
-            n_states,
-            1,
-            dd,
-            &_pi,
-            &row_vars,
-            &col_vars,
-            &comp_row_vars,
-            &comp_col_vars,
-            &n_row_vars,
-            &n_col_vars,
-            &dump_n_rows,
-            &dump_n_cols,
-            ROW_VAR_INDEX_OFFSET,
-            ROW_VAR_INDEX_MULTIPLIER,
-            COL_VAR_INDEX_OFFSET,
-            COL_VAR_INDEX_MULTIPLIER
-        );
-    }
-
-    DdNode** _alpha = _fb(
-        dd,
-        _omega,
-        _P,
-        _pi,
-        row_vars,
-        col_vars,
-        n_row_vars,
-        n_obs
-    );
-
-    for (size_t t = 0; t <= n_obs; t++) {
-        alpha[t] = add_to_vector(_alpha[t * n_states], n_states, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER);
-    }
-
-    int err = Cudd_DebugCheck(dd) == 0;
+    int err = Cudd_DebugCheck(dd);
     Cudd_Quit(dd);
     return err;
 }

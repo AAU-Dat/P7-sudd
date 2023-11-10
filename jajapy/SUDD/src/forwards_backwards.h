@@ -12,21 +12,21 @@
 #include "cudd.h"
 #include "conversion.h"
 
-void forwards(
+int forwards(
     CUDD_VALUE_TYPE* omega,
     CUDD_VALUE_TYPE* P,
     CUDD_VALUE_TYPE* pi,
     ssize_t n_states,
     ssize_t n_obs,
-    CUDD_VALUE_TYPE** alpha
+    CUDD_VALUE_TYPE* alpha
 );
-void backwards(
+int backwards(
     CUDD_VALUE_TYPE* omega,
     CUDD_VALUE_TYPE* P,
     CUDD_VALUE_TYPE* pi,
     ssize_t n_states,
     ssize_t n_obs,
-    CUDD_VALUE_TYPE** beta
+    CUDD_VALUE_TYPE* beta
 );
 DdNode** _forwards(
     DdManager* manager,
@@ -64,7 +64,7 @@ int fb(
     CUDD_VALUE_TYPE* pi,
     ssize_t n_states,
     ssize_t n_obs,
-    CUDD_VALUE_TYPE** alpha // output variable
+    CUDD_VALUE_TYPE* alpha // output variable
 );
 double** file_forwards(
     char **omega,

@@ -96,6 +96,24 @@ CUDD_VALUE_TYPE evaluate_vector_bdd(DdNode* node, bool vars[], int var_index_off
     }
 }
 
+void add_to_vector_in_place(
+    DdNode* add,
+    int n,
+    int var_index_offset,
+    int var_index_multiplier,
+    CUDD_VALUE_TYPE* vector
+) {
+    int n_variables = (int) ceil(log2(n));
+    bool variables[n_variables];
+
+    memset(variables, 0, sizeof(variables));
+
+    for (int i = 0; i < n; i++) {
+        vector[i] = evaluate_vector_bdd(add, variables, var_index_offset, var_index_multiplier);
+        increment_bit_array(variables, n_variables);
+    }
+}
+
 CUDD_VALUE_TYPE* add_to_vector(DdNode* add, int n, int var_index_offset, int var_index_multiplier) {
     int n_variables = (int) ceil(log2(n));
     bool variables[n_variables];

@@ -48,6 +48,7 @@ int matrix_to_add(
     int* n);
 int write_matrix_to_file(double **matrix, int *m, int *n);
 CUDD_VALUE_TYPE* add_to_vector(DdNode* add, int n, int var_index_offset, int var_index_multiplier);
+void add_to_vector_in_place(DdNode* add, int n, int var_index_offset, int var_index_multiplier, CUDD_VALUE_TYPE* vector);
 int file_vector_to_add(
     char *vector, 
     DdManager* manager, 

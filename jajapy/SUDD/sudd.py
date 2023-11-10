@@ -6,7 +6,7 @@ import os
 lib_path = os.path.join(os.path.dirname(__file__), 'build', 'sudd.so')
 lib = ctypes.CDLL(lib_path)
 
-lib.file_forwards.argtypes = [
+lib.forwards.argtypes = [
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
         np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
@@ -14,7 +14,7 @@ lib.file_forwards.argtypes = [
         ctypes.c_int,
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
     ]
-lib.file_backwards.argtypes = [
+lib.backwards.argtypes = [
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
         np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
@@ -32,7 +32,7 @@ def forwards_symbolic(
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
     return fb_symbolic(
-        lib.file_forwards,
+        lib.forwards,
         phis,
         tau,
         pi
@@ -45,7 +45,7 @@ def backwards_symbolic(
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
     return fb_symbolic(
-        lib.file_backwards,
+        lib.backwards,
         phis,
         tau,
         pi
@@ -59,7 +59,7 @@ def fb_symbolic(
     pi: np.ndarray[np.float64, Tuple[int]],
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
     n_obs, n_states = phi.shape
-    alpha = np.empty((n_obs + 1, n_states))
+    alpha = np.zeros((n_obs + 1, n_states))
     fb(phi, tau, pi, n_states, n_obs, alpha)
     return alpha
 
