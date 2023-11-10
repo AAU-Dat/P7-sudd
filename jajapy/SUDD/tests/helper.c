@@ -312,29 +312,58 @@ double** forwards_numeric(double** omega,
                          int n_obs
 ) {
     // Allocate space for alpha
-    double** alpha = (double**) malloc(sizeof(double*) * (n_obs + 1));
-    for(int i = 0; i < n_states; i++) {
-        alpha[i] = (double*) malloc(sizeof(double) * n_states);
+    double** alpha = (double**) malloc(sizeof(double*) * (n_obs+1));
+    for(int s = 0; s < n_states+1; s++) {
+        alpha[s] = (double*) malloc(sizeof(double) * (n_states+1));
     }
 
-    double temp = 0;
     // Base case: t = 0
-    *alpha[0] = *pi;
+    for (int s = 0; s < n_states; s++)
+    {
+        alpha[0][s] = pi[s];
+    }
     
     // Case: 0 < t <= k_j
 
-    for (int t = 1; t <= n_obs; t++)
+    int rows = 0;
+    int cols = 0;
+    for (int t = 0; t < n_obs; t++)
+        {
+            rows +=1;
+            for (int s = 0; s < n_states+1; s++)
+            {   
+                if (t==0)
+                {
+                    cols +=1;
+                }
+            }
+            
+        } 
+    
+    for (int t = 0; t < n_obs; t++)
     {
         for (int s = 0; s < n_states; s++)
         {
-            temp = 0;
+            double temp = 0;
             for (int ss = 0; ss < n_states; ss++)
             {
-                temp += P[ss][s] * omega[t-1][ss] * alpha[t-1][ss];
+                temp += P[ss][s] * omega[t][ss] * alpha[t][ss];
+                
             }
-            alpha[t][s] = temp;
+            alpha[t+1][s] = temp;            
         }
     }
+
+    for (int t = 0; t < n_obs+1; t++)
+    {
+        for (int s = 0; s < n_states; s++)
+        {
+            printf("alpha[%d][%d]: %lf\n", t,s,alpha[t][s]);
+        }
+        
+    }
+
+    printf("Size of alpha is: %d,%d \n", rows,cols);
     
     return alpha;
 }
@@ -348,9 +377,12 @@ double** backwards_numeric(double** omega,
 ) { 
     // Allocate space for beta
     double** beta = (double**) malloc(sizeof(double**) * (n_obs + 1));
+    for(int i = 0; i < n_states; i++) {
+        beta[i] = (double*) malloc(sizeof(double) * n_states);
+    }
 
     // Base case: t = |o|
-    *beta[-1] = 1;
+    *beta[n_obs] = 1;
 
     // Case: 0 <= t < k_j
 
@@ -364,7 +396,7 @@ double** backwards_numeric(double** omega,
             {
                 temp += beta[t + 1][ss] * P[s][ss];
             }
-            beta[t][s] = omega[t + 1][s] * temp;
+            beta[t][s] = omega[t][s] * temp;
         }
     }
 
