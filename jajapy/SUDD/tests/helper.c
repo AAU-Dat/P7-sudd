@@ -341,7 +341,7 @@ double** forwards_numeric(double** omega,
     return alpha;
 }
 
-// Calculates alpha numerically
+// Calculates beta numerically
 double** backwards_numeric(double** omega, 
                          double** P, 
                          double* pi,
