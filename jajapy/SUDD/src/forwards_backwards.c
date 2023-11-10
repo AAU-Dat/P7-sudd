@@ -274,7 +274,7 @@ DdNode** _forwards(
     int n_obs
 ) {
     DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
-    alpha[0] = Cudd_addApply(manager, Cudd_addTimes, omega[0], pi);
+    alpha[0] = pi;
     Cudd_Ref(alpha[0]);
 
     for (int t = 1; t <= n_obs; t++) {
