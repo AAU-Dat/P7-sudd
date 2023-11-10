@@ -526,10 +526,10 @@ END_TEST
 
 START_TEST(fb_forwards_3x3_2_k_j)
 {
-    int states = 3, k_j = 2;
+    int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
-    double** omega = (double**)malloc((k_j + 1) * sizeof(double*));
-    for (int i = 0; i < k_j + 1; i++)
+    double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
+    for (int i = 0; i < n_obs + 1; i++)
     {
         omega[i] = (double*)malloc(states * sizeof(double));
     }
@@ -564,17 +564,23 @@ START_TEST(fb_forwards_3x3_2_k_j)
     pi[1] = 2;
     pi[2] = 3;
 
-    CUDD_VALUE_TYPE** alpha = forwards(omega, P, pi, states, k_j);
+    CUDD_VALUE_TYPE** alpha = forwards(omega, P, pi, states, n_obs);
+    double** alphanum = (double**) malloc(sizeof(double**) * (n_obs + 1));
+    for (int s = 0; s <= states; s++)
+    {
+        alphanum[s] = (double*)malloc(states * sizeof(double));
+    }
+    alphanum = forwards_numeric(omega, P, pi, states, n_obs);
 
     for (int s = 0; s < states; s++)
     {
-        ck_assert_double_eq(pi[s] * omega[0][s], alpha[0][s]);
-        ck_assert_double_eq(omega[1][s] * (P[0][s] * alpha[0][0] + P[1][s] * alpha[0][1] + P[2][s] * alpha[0][2]), alpha[1][s]);
-        ck_assert_double_eq(omega[2][s] * (P[0][s] * alpha[1][0] + P[1][s] * alpha[1][1] + P[2][s] * alpha[1][2]), alpha[2][s]);
+        ck_assert_double_eq(alphanum[0][s], alpha[0][s]);
+        ck_assert_double_eq(alphanum[1][s], alpha[1][s]);
+        ck_assert_double_eq(alphanum[2][s], alpha[2][s]);
     }
 
     // clean up
-    for (int i = 0; i <= k_j; i++)
+    for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
     }
@@ -582,9 +588,14 @@ START_TEST(fb_forwards_3x3_2_k_j)
     {
         free(P[i]);
     }
+    for (int i = 0; i < states; i++)
+    {
+        free(alphanum[i]);
+    }
     free(omega);
     free(P);
     free(pi);
+    free(alphanum);
 }
 END_TEST
 
@@ -879,7 +890,7 @@ Suite* forwards_backwards_suite(void)
     tcase_add_test(tc_forwards_backwards, _backwards_2x2_1_k_j);
     tcase_add_test(tc_forwards_backwards, _forwards_3x3_2_k_j);
     tcase_add_test(tc_forwards_backwards, _backwards_3x3_2_k_j);
-    // tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_2_k_j);
+    tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_2_k_j);
     // tcase_add_test(tc_forwards_backwards, fb_backwards_3x3_2_k_j);
     // tcase_add_test(tc_forwards_backwards, file_fb_forwards_3x3_2_k_j);
     // tcase_add_test(tc_forwards_backwards, file_fb_backwards_3x3_2_k_j);
