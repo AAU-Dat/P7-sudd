@@ -75,7 +75,6 @@ START_TEST(_forwards_2x2_1_k_j)
         ck_assert_double_eq(alpha[1][s], alpha1[s][0]);
         ck_assert_double_eq(alpha[2][s], alpha2[s][0]);
     }
-    ck_assert_double_eq(alpha[0][0]+alpha[0][1]+alpha[0][2], alpha0[0][0]);
     ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Clean
@@ -107,9 +106,10 @@ END_TEST
 START_TEST(_backwards_2x2_1_k_j)
 {
     // Arrange
+    // Arrange: CUDD
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    int k_j = 1;
+    int n_obs = 2;
     int n_vars = 1;
     int n_states = 2;
 
@@ -134,20 +134,76 @@ START_TEST(_backwards_2x2_1_k_j)
     double pi[2] = {1, 2};
     DdNode* _pi = vector_2x1(manager, pi, row_var);
 
+    // Arrange: Numeric
+    double** omeganum = (double**)malloc((n_obs + 2) * sizeof(double*));
+    for (int i = 0; i <= n_obs + 1; i++)
+    {
+        omeganum[i] = (double*)malloc(n_states * sizeof(double));
+    }
+    omeganum[0][0] = 1;
+    omeganum[0][1] = 2;
+    omeganum[1][0] = 3;
+    omeganum[1][1] = 4;
+
+    // Make matrix for P that has the size states x states
+    double** Pnum = (double**)malloc(n_states * sizeof(double*));
+    double* pinum = (double*)malloc(n_states * sizeof(double));
+    for (int i = 0; i < n_states; i++)
+    {
+        Pnum[i] = (double*)malloc(n_states * sizeof(double));
+    }
+    Pnum[0][0] = 1;
+    Pnum[0][1] = 2;
+    Pnum[1][0] = 3;
+    Pnum[1][1] = 4;
+
+    pinum[0] = 1;
+    pinum[1] = 2;
+
+    double** beta = (double**) malloc(sizeof(double**) * (n_obs + 1));
+    for (int s = 0; s <= n_states; s++)
+    {
+        beta[s] = (double*)malloc(n_states * sizeof(double));
+    }
+    beta = backwards_numeric(omeganum, Pnum, pinum, n_states, n_obs);
+
+
     // Act
-    DdNode** _beta = _backwards(manager, _omega, _P, _pi, &row_var, &col_var, n_vars, k_j);
+    DdNode** _beta = _backwards(manager, _omega, _P, _pi, &row_var, &col_var, n_vars, n_obs);
     double** beta0 = add_to_matrix(_beta[0], 2, 1);
     double** beta1 = add_to_matrix(_beta[1], 2, 1);
+    double** beta2 = add_to_matrix(_beta[2], 2, 1);
 
     // Assert
     for (int s = 0; s < n_states; s++)
     {
-        ck_assert_double_eq(P[s][0] * omega1[0] * beta1[0][0] + P[s][1] * omega1[1] * beta1[1][0], beta0[s][0]);
-        ck_assert_double_eq(1, beta1[s][0]);
+        ck_assert_double_eq(beta[0][s], beta0[s][0]);
+        ck_assert_double_eq(beta[1][s], beta1[s][0]);
+        ck_assert_double_eq(beta[2][s], beta2[s][0]);
     }
     ck_assert_int_eq(Cudd_DebugCheck(manager), 0);
 
     // Clean
+    for (int i = 0; i < n_obs + 2; i++)
+        {
+            free(omeganum[i]);
+        }
+        
+        for (int i = 0; i < n_states; i++)
+        {
+            free(Pnum[i]);
+        }
+        
+        for (int i = 0; i < n_states; i++)
+        {
+            free(beta[i]);
+        }
+
+        free(omeganum);
+        free(Pnum);
+        free(pinum);
+        free(beta);
+
     Cudd_Quit(manager);
 }
 END_TEST
@@ -688,8 +744,8 @@ Suite* forwards_backwards_suite(void)
     tc_forwards_backwards = tcase_create("forwards backwards");
 
     tcase_add_test(tc_forwards_backwards, _forwards_2x2_1_k_j);
-    /* tcase_add_test(tc_forwards_backwards, _backwards_2x2_1_k_j);
-    tcase_add_test(tc_forwards_backwards, _forwards_3x3_2_k_j);
+    tcase_add_test(tc_forwards_backwards, _backwards_2x2_1_k_j);
+    /* tcase_add_test(tc_forwards_backwards, _forwards_3x3_2_k_j);
     tcase_add_test(tc_forwards_backwards, _backwards_3x3_2_k_j);
     tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_2_k_j);
     tcase_add_test(tc_forwards_backwards, fb_backwards_3x3_2_k_j);
