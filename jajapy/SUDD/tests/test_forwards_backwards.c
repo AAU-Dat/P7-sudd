@@ -405,7 +405,7 @@ START_TEST(_backwards_3x3_3_n_obs)
     double** beta2 = add_to_matrix(_beta[2], n_states, 1);
     double** beta3 = add_to_matrix(_beta[3], n_states, 1);
 
-        // Assert
+    // Assert
     for (int s = 0; s < n_states; s++)
     {
         ck_assert_double_eq(beta[0][s], beta0[s][0]);
@@ -441,6 +441,7 @@ END_TEST
 
 START_TEST(fb_backwards_3x3_3_n_obs)
 {
+    // Arrange
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -479,10 +480,12 @@ START_TEST(fb_backwards_3x3_3_n_obs)
     pi[1] = 2;
     pi[2] = 3;
 
+    // Act
     CUDD_VALUE_TYPE** beta = backwards(omega, P, pi, states, n_obs);
 
     double** betanum = backwards_numeric(omega, P, pi, states, n_obs);
 
+    // Assert
     for (int s = 0; s < states; s++)
     {
         ck_assert_double_eq(betanum[0][s], beta[0][s]);
@@ -491,7 +494,7 @@ START_TEST(fb_backwards_3x3_3_n_obs)
         ck_assert_double_eq(betanum[3][s], beta[3][s]);
     }
 
-    // clean up
+    // Clean
     for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
@@ -513,6 +516,7 @@ END_TEST
 
 START_TEST(fb_forwards_3x3_3_n_obs)
 {
+    // Arrange
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -551,9 +555,11 @@ START_TEST(fb_forwards_3x3_3_n_obs)
     pi[1] = 2;
     pi[2] = 3;
 
+    // Act
     CUDD_VALUE_TYPE** alpha = forwards(omega, P, pi, states, n_obs);
     double** alphanum = forwards_numeric(omega, P, pi, states, n_obs);
 
+    // Assert
     for (int s = 0; s < states; s++)
     {
         ck_assert_double_eq(alphanum[0][s], alpha[0][s]);
@@ -562,7 +568,7 @@ START_TEST(fb_forwards_3x3_3_n_obs)
         ck_assert_double_eq(alphanum[3][s], alpha[3][s]);
     }
 
-    // clean up
+    // Clean
     for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
@@ -583,6 +589,7 @@ START_TEST(fb_forwards_3x3_3_n_obs)
 END_TEST
 
 START_TEST(file_fb_forwards_3x3_3_n_obs) {
+    // Arrange
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -630,10 +637,12 @@ START_TEST(file_fb_forwards_3x3_3_n_obs) {
     char* Pfile = "tests/data/P.txt";
     char* pifile = "tests/data/pi.txt";
 
+    // Act
     CUDD_VALUE_TYPE** alpha = file_forwards(omegafile, Pfile, pifile, states, n_obs);
 
     double** alphanum = forwards_numeric(omega, P, pi, states, n_obs);
 
+    // Assert
     for (int s = 0; s < states; s++)
     {
         ck_assert_double_eq(alphanum[0][s], alpha[0][s]);
@@ -642,7 +651,7 @@ START_TEST(file_fb_forwards_3x3_3_n_obs) {
         ck_assert_double_eq(alphanum[3][s], alpha[3][s]);
     }
 
-    // clean up
+    // Clean
     for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
@@ -668,6 +677,7 @@ START_TEST(file_fb_forwards_3x3_3_n_obs) {
 END_TEST
 
 START_TEST(file_fb_backwards_3x3_3_n_obs) {
+    // Arrange
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -715,10 +725,12 @@ START_TEST(file_fb_backwards_3x3_3_n_obs) {
     char* Pfile = "tests/data/P.txt";
     char* pifile = "tests/data/pi.txt";
 
+    // Act
     CUDD_VALUE_TYPE** beta = file_backwards(omegafile, Pfile, pifile, states, n_obs);
 
     double** betanum = backwards_numeric(omega, P, pi, states, n_obs);
 
+    // Assert
     for (int s = 0; s < states; s++)
     {
         ck_assert_double_eq(betanum[0][s], beta[0][s]);
@@ -727,7 +739,7 @@ START_TEST(file_fb_backwards_3x3_3_n_obs) {
         ck_assert_double_eq(betanum[3][s], beta[3][s]);
     }
 
-    // clean up
+    // Clean
     for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
@@ -753,6 +765,7 @@ START_TEST(file_fb_backwards_3x3_3_n_obs) {
 END_TEST
 
 START_TEST(numerical_forwardstest) {
+    // Arrange
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -790,9 +803,14 @@ START_TEST(numerical_forwardstest) {
     pi[0] = 1;
     pi[1] = 2;
     pi[2] = 3;
-
+    
+    // Act
     double** alpha = forwards_numeric(omega, P, pi, states, n_obs);
-    // clean up
+
+    // Assert
+    ck_assert_double_eq(1, 1);
+
+    // Clean
     for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
@@ -809,12 +827,11 @@ START_TEST(numerical_forwardstest) {
     free(P);
     free(pi);
     free(alpha);
-
-    ck_assert_double_eq(1, 1);
 }
 END_TEST
 
 START_TEST(numerical_backwardstest) {
+    // Arrange
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -853,8 +870,13 @@ START_TEST(numerical_backwardstest) {
     pi[1] = 2;
     pi[2] = 3;
  
+    // Act
     double** beta = backwards_numeric(omega, P, pi, states, n_obs);
-    // clean up
+
+    // Assert
+    ck_assert_double_eq(1, 1);
+
+    // Clean
     for (int i = 0; i <= n_obs; i++)
     {
         free(omega[i]);
@@ -871,8 +893,6 @@ START_TEST(numerical_backwardstest) {
     free(P);
     free(pi);
     free(beta);
-
-    ck_assert_double_eq(1, 1);
 }
 END_TEST
 
