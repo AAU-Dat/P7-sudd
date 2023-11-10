@@ -1,5 +1,5 @@
 #include "test_forwards_backwards.h"
-START_TEST(_forwards_2x2_1_k_j)
+START_TEST(_forwards_2x2_2_n_obs)
 {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
@@ -98,7 +98,7 @@ START_TEST(_forwards_2x2_1_k_j)
 }
 END_TEST
 
-START_TEST(_backwards_2x2_1_k_j)
+START_TEST(_backwards_2x2_2_n_obs)
 {
     // Arrange
     // Arrange: CUDD
@@ -197,7 +197,7 @@ START_TEST(_backwards_2x2_1_k_j)
 }
 END_TEST
 
-START_TEST(_forwards_3x3_2_k_j)
+START_TEST(_forwards_3x3_3_n_obs)
 {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
@@ -319,7 +319,7 @@ START_TEST(_forwards_3x3_2_k_j)
 }
 END_TEST
 
-START_TEST(_backwards_3x3_2_k_j)
+START_TEST(_backwards_3x3_3_n_obs)
 {
     // Arrange
     DdManager* manager = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
@@ -439,7 +439,7 @@ START_TEST(_backwards_3x3_2_k_j)
 }
 END_TEST
 
-START_TEST(fb_backwards_3x3_2_k_j)
+START_TEST(fb_backwards_3x3_3_n_obs)
 {
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
@@ -511,7 +511,7 @@ START_TEST(fb_backwards_3x3_2_k_j)
 }
 END_TEST
 
-START_TEST(fb_forwards_3x3_2_k_j)
+START_TEST(fb_forwards_3x3_3_n_obs)
 {
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
@@ -582,7 +582,7 @@ START_TEST(fb_forwards_3x3_2_k_j)
 }
 END_TEST
 
-START_TEST(file_fb_forwards_3x3_2_k_j) {
+START_TEST(file_fb_forwards_3x3_3_n_obs) {
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -667,7 +667,7 @@ START_TEST(file_fb_forwards_3x3_2_k_j) {
 }
 END_TEST
 
-START_TEST(file_fb_backwards_3x3_2_k_j) {
+START_TEST(file_fb_backwards_3x3_3_n_obs) {
     int states = 3, n_obs = 3;
     // make matrix for omega that has the size k_j+1 x states
     double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
@@ -885,14 +885,14 @@ Suite* forwards_backwards_suite(void)
 
     tc_forwards_backwards = tcase_create("forwards backwards");
 
-    tcase_add_test(tc_forwards_backwards, _forwards_2x2_1_k_j);
-    tcase_add_test(tc_forwards_backwards, _backwards_2x2_1_k_j);
-    tcase_add_test(tc_forwards_backwards, _forwards_3x3_2_k_j);
-    tcase_add_test(tc_forwards_backwards, _backwards_3x3_2_k_j);
-    tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_2_k_j);
-    tcase_add_test(tc_forwards_backwards, fb_backwards_3x3_2_k_j);
-    tcase_add_test(tc_forwards_backwards, file_fb_forwards_3x3_2_k_j);
-    tcase_add_test(tc_forwards_backwards, file_fb_backwards_3x3_2_k_j);
+    tcase_add_test(tc_forwards_backwards, _forwards_2x2_2_n_obs);
+    tcase_add_test(tc_forwards_backwards, _backwards_2x2_2_n_obs);
+    tcase_add_test(tc_forwards_backwards, _forwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, _backwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, fb_backwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, file_fb_forwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, file_fb_backwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, numerical_forwardstest);
     tcase_add_test(tc_forwards_backwards, numerical_backwardstest);
 
