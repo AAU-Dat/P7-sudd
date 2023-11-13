@@ -641,14 +641,18 @@ Suite* conversion_suite(void)
     tcase_add_test(tc_conversion, matrix_to_add__3x3);
     tcase_add_test(tc_conversion, add_to_matrix__4x4_same_row);
     tcase_add_test(tc_conversion, add_to_matrix__2x2);
+    
     // tcase_add_test(tc_conversion, add_to_matrix__1x4);
     // tcase_add_test(tc_conversion, add_to_matrix__4x1);
+    
     tcase_add_test(tc_conversion, add_to_matrix__1x1);
     tcase_add_test(tc_conversion, add_to_matrix__3x3);
     tcase_add_test(tc_conversion, vector_to_add__4x1);
     tcase_add_test(tc_conversion, vector_to_add__1x1);
+    
     // tcase_add_test(tc_core, matrix_2x2);
     // tcase_add_test(tc_core, matrix_3x3);
+    
     suite_add_tcase(s, tc_conversion);
 
     return s;
