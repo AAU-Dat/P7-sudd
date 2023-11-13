@@ -179,12 +179,10 @@ class PCTMCTestclass(unittest.TestCase):
         l21 = m.logLikelihood(set2)
         var.assertAlmostEqual(l21, -6.553342509457142)
 
-    def test_PCTMC_parameters_learning(var):
+    def test_PCTMC_parameters_learning_untimed(var):
         initial_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        initial_model.instantiate(
-            ["mu1a", "mu1b", "mu2", "kappa"], [0.5, 0.5, 0.5, 0.5]
-        )
-        training_set = loadSet("jajapy/tests/materials/pctmc/training_set_PCTMC.txt")
+        initial_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.5, 0.5, 0.5, 0.5])
+        training_set = loadSet("jajapy/tests/materials/pctmc/untimed_training_set_PCTMC.txt")
         bw = BW()
         # bw.processes = 1  # uncomment this when debugging
         output_gotten = bw.fit_parameters(
@@ -195,6 +193,24 @@ class PCTMCTestclass(unittest.TestCase):
             "mu1b": 1.7589871248425895,
             "mu2": 2.287450015307295,
             "kappa": 4.0504485338277245,
+        }
+        for key, _ in output_gotten.items():
+            var.assertAlmostEqual(output_expected[key], output_gotten[key], 7)
+
+    def test_PCTMC_parameters_learning_timed(var):
+        initial_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        initial_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.5, 0.5, 0.5, 0.5])
+        training_set = loadSet("jajapy/tests/materials/pctmc/timed_training_set_PCTMC.txt")
+        bw = BW()
+        # bw.processes = 1  # uncomment this when debugging
+        output_gotten = bw.fit_parameters(
+            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"]
+        )
+        output_expected = {
+            "mu1a": 0.1867468928590901,
+            "mu1b": 1.771859556215226,
+            "mu2": 2.1383724969908315,
+            "kappa": 4.051248447744933,
         }
         for key, _ in output_gotten.items():
             var.assertAlmostEqual(output_expected[key], output_gotten[key], 7)

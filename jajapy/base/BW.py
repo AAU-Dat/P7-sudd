@@ -966,6 +966,8 @@ class BW:
         phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
         pi = self.h.initial_state
         alpha = sudd.forwards_symbolic(phi, tau, pi)
+        alpha = alpha[:-1]
+        alpha[-1] *= array(self.h.labelling) == obs_seq[-1]
         return alpha.T
 
     def _computeBetas_timed_PCTMC(
@@ -977,6 +979,7 @@ class BW:
         phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
         pi = self.h.initial_state
         beta = sudd.backwards_symbolic(phi, tau, pi)
+        beta = beta[:-1]
         return beta.T
 
     def _computeAlphas_untimed_PCTMC(
