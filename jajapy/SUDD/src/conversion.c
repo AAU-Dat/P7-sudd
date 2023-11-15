@@ -127,32 +127,3 @@ void increment_bit_array(bool array[], int array_size) {
         }
     }
 }
-
-/* function writes matrix to file*/
-int write_matrix_to_file(double** matrix, int* m, int* n)
-{
-   FILE *file;
-   char filename[40];
-   sprintf(filename, "matrix%d.txt", getpid());
-   file = fopen(filename, "w");
-   if (file == NULL)
-   {
-      perror("Error opening file");
-      return 1; // Return an error code
-   }
-   fprintf(file, "%d %d\n", *m, *n);
-
-   int i, j;
-   
-   for (i = 0; i < *m; i++)
-   {
-      for (j = 0; j < *n; j++)
-      {
-         fprintf(file, "%d %d %f\n", i, j, matrix[i][j]);
-      }
-   }
-
-   fclose(file);
-
-   return 0;
-}
