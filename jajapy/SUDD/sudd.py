@@ -73,15 +73,6 @@ def fb_symbolic(
     return alpha
 
 
-def c_array_to_numpy_array(c_array, rows, cols):
-    # Create an uninitialized array of given shape and type
-    np_array = np.empty((rows, cols), dtype=np.float64)
-    for i in range(rows):
-        for j in range(cols):
-            np_array[i, j] = c_array[i][j]
-    return np_array
-
-
 def numpy_to_file(array: np.ndarray, filename: str) -> ctypes.c_char_p:
     with open(filename, 'w') as f:
         if array.ndim == 1:
