@@ -128,43 +128,6 @@ void increment_bit_array(bool array[], int array_size) {
     }
 }
 
-int matrix_to_add(
-    double** matrix, 
-    DdManager* manager, 
-    DdNode** E, 
-    DdNode*** x, 
-    DdNode*** y, 
-    DdNode*** xn, 
-    DdNode*** yn, 
-    int* nx, 
-    int* ny, 
-    int* m, 
-    int* n)
-{
-   // write the matrix to a file
-   write_matrix_to_file(matrix, m, n);
-
-   // read the file
-   FILE *file;
-   char filename[40];
-   sprintf(filename, "matrix%d.txt", getpid());
-   file = fopen(filename, "r");
-   if (file == NULL)
-   {
-      perror("Error opening file");
-      return 1; // Return an error code
-   }
-   // read we now take the file and make it into an ADD
-    // TODO stop hardcoding indexes
-   Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, n, 0, 2, 1, 2);
-
-   // clean up
-   fclose(file);
-   remove(filename);
-   
-   return 0;
-}
-
 /* function writes matrix to file*/
 int write_matrix_to_file(double** matrix, int* m, int* n)
 {
