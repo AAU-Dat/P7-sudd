@@ -63,7 +63,13 @@ def fb_symbolic(
     pi = pi.astype(np.float64)
     n_obs, n_states = phi.shape
     alpha = np.zeros((n_obs + 1, n_states))
-    fb(phi, tau, pi, n_states, n_obs, alpha)
+    err = fb(phi, tau, pi, n_states, n_obs, alpha)
+    if err == 0:
+        pass
+    elif err == 1:
+        raise Exception("Inconsistencies occurred in cudd manager")
+    else:
+        raise Exception("Cudd manager ran out memory")
     return alpha
 
 
