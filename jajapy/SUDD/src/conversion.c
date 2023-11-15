@@ -2,33 +2,6 @@
 #include <assert.h>
 #include <cudd.h>
 
-/* function writes vector to file*/
-// TODO why is this function written with 3 spaces indentation
-int write_vector_to_file(double* vector, int* m)
-{
-   FILE* file;
-   char filename[40];
-   sprintf(filename, "vector%d.txt", getpid());
-   file = fopen(filename, "w");
-   if (file == NULL)
-   {
-      perror("Error opening file");
-      return 1; // Return an error code
-   }
-   fprintf(file, "%d 1\n", *m);
-
-   int i;
-
-   for (i = 0; i < *m; i++)
-   {
-         fprintf(file, "%d 0 %f\n", i, vector[i]);  
-   }
-
-   fclose(file);
-
-   return 0;
-}
-
 CUDD_VALUE_TYPE* new_array(int size) {
     CUDD_VALUE_TYPE* array = (CUDD_VALUE_TYPE*) malloc(size * sizeof(CUDD_VALUE_TYPE));
     if (array == NULL) {
