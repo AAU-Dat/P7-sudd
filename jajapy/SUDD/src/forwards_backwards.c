@@ -28,16 +28,6 @@ int backwards(
     return fb(_backwards, omega, P, pi, n_states, n_obs, beta);
 }
 
-double** file_backwards(
-    char **omega,
-    char *P,
-    char *pi,
-    int n_states,
-    int n_obs
-) {
-    return file_fb(_backwards, omega, P, pi, n_states, n_obs);
-}
-
 int fb(
     DdNode** (*_fb)(
         DdManager* manager,
