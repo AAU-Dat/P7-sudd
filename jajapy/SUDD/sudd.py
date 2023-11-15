@@ -73,24 +73,6 @@ def fb_symbolic(
     return alpha
 
 
-def numpy_to_file(array: np.ndarray, filename: str) -> ctypes.c_char_p:
-    with open(filename, 'w') as f:
-        if array.ndim == 1:
-            f.write(f"{array.shape[0]} 1\n")
-            for (i,), value in np.ndenumerate(array):
-                if value != 0:
-                    f.write(f"{i} 0 {value}\n")
-        elif array.ndim == 2:
-            f.write(f"{array.shape[0]} {array.shape[1]}\n")
-            for (i, j), value in np.ndenumerate(array):
-                if value != 0:
-                    f.write(f"{i} {j} {value}\n")
-        else:
-            raise ValueError("The input array must be one or two-dimensional")
-
-    return ctypes.c_char_p(filename.encode('utf-8'))
-
-
 def forwards_numeric(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
