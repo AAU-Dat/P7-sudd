@@ -2,7 +2,7 @@ import unittest
 from ..pctmc import *
 from os import remove
 from ..base.Set import *
-from ..base.BW import BW
+from ..base.BW import BW, ComputeAlphaBetaHow
 from ..with_stormpy.model_converter import loadPrism
 
 

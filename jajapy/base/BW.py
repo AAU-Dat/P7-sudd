@@ -30,6 +30,15 @@ from alive_progress import alive_bar
 from .Model import MC_ID, MDP_ID, CTMC_ID, PCTMC_ID, HMM_ID, GOHMM_ID
 from sympy import sympify
 from ..SUDD import sudd
+import enum
+from typing import Any
+
+
+class ComputeAlphaBetaHow(enum.Enum):
+    CLASSIC = 1
+    ELEMENT = 2
+    MATRIX = 3
+    ADD = 4
 
 
 class BW:
@@ -959,50 +968,90 @@ class BW:
     # PCTMC--------------------------------------------------------------------
     def _computeAlphas_timed_PCTMC(
         self,
+        forwards: Any,
         obs_seq: list[str],
         times_seq: list[float]
     ) -> array:
         tau = self._h_tau_matrix_PCTMC()
         phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
         pi = self.h.initial_state
-        alpha = sudd.forwards_symbolic(phi, tau, pi)
+        alpha = forwards(phi, tau, pi)
         alpha = alpha[:-1]
         alpha[-1] *= array(self.h.labelling) == obs_seq[-1]
         return alpha.T
 
+    def _computedAlphas_timed_element_PCTMC(self, obs_seq, time_seq):
+        return self._computeAlphas_timed_PCTMC(sudd.forwards_numeric, obs_seq, time_seq)
+
+    def _computedAlphas_timed_matrix_PCTMC(self, obs_seq, time_seq):
+        return self._computeAlphas_timed_PCTMC(sudd.forwards_matrix_numeric, obs_seq, time_seq)
+
+    def _computedAlphas_timed_add_PCTMC(self, obs_seq, time_seq):
+        return self._computeAlphas_timed_PCTMC(sudd.forwards_symbolic, obs_seq, time_seq)
+
     def _computeBetas_timed_PCTMC(
         self,
+        backwards: Any,
         obs_seq: list[str],
         times_seq: list[float]
     ) -> array:
         tau = self._h_tau_matrix_PCTMC()
         phi = self._h_phi_timed_matrix_PCTMC(obs_seq, times_seq)
         pi = self.h.initial_state
-        beta = sudd.backwards_symbolic(phi, tau, pi)
+        beta = backwards(phi, tau, pi)
         beta = beta[:-1]
         return beta.T
 
+    def _computedBetas_timed_element_PCTMC(self, obs_seq, time_seq):
+        return self._computeBetas_timed_PCTMC(sudd.backwards_numeric, obs_seq, time_seq)
+
+    def _computedBetas_timed_matrix_PCTMC(self, obs_seq, time_seq):
+        return self._computeBetas_timed_PCTMC(sudd.backwards_matrix_numeric, obs_seq, time_seq)
+
+    def _computedBetas_timed_add_PCTMC(self, obs_seq, time_seq):
+        return self._computeBetas_timed_PCTMC(sudd.backwards_symbolic, obs_seq, time_seq)
+
     def _computeAlphas_untimed_PCTMC(
         self,
+        forwards: Any,
         obs_seq: list[str],
         times_seq: list[float]
     ) -> array:
         tau = self._h_tau_matrix_PCTMC()
         phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
         pi = self.h.initial_state
-        alpha = sudd.forwards_symbolic(phi, tau, pi)
+        alpha = forwards(phi, tau, pi)
         return alpha.T
+
+    def _computedAlphas_untimed_element_PCTMC(self, obs_seq, time_seq):
+        return self._computeAlphas_untimed_PCTMC(sudd.forwards_numeric, obs_seq, time_seq)
+
+    def _computedAlphas_untimed_matrix_PCTMC(self, obs_seq, time_seq):
+        return self._computeAlphas_untimed_PCTMC(sudd.forwards_matrix_numeric, obs_seq, time_seq)
+
+    def _computedAlphas_untimed_add_PCTMC(self, obs_seq, time_seq):
+        return self._computeAlphas_untimed_PCTMC(sudd.forwards_symbolic, obs_seq, time_seq)
 
     def _computeBetas_untimed_PCTMC(
         self,
+        backwards: Any,
         obs_seq: list[str],
         times_seq: list[float]
     ) -> array:
         tau = self._h_tau_matrix_PCTMC()
         phi = self._h_phi_untimed_matrix_PCTMC(obs_seq)
         pi = self.h.initial_state
-        beta = sudd.backwards_symbolic(phi, tau, pi)
+        beta = backwards(phi, tau, pi)
         return beta.T
+
+    def _computedBetas_untimed_element_PCTMC(self, obs_seq, time_seq):
+        return self._computeBetas_untimed_PCTMC(sudd.backwards_numeric, obs_seq, time_seq)
+
+    def _computedBetas_untimed_matrix_PCTMC(self, obs_seq, time_seq):
+        return self._computeBetas_untimed_PCTMC(sudd.backwards_matrix_numeric, obs_seq, time_seq)
+
+    def _computedBetas_untimed_add_PCTMC(self, obs_seq, time_seq):
+        return self._computeBetas_untimed_PCTMC(sudd.backwards_symbolic, obs_seq, time_seq)
 
     def _sortParameters(self, fixed_parameters: list):
         """
@@ -1479,6 +1528,7 @@ class BW:
         return_data: bool = False,
         min_val: float = None,
         max_val: float = None,
+        compute_alpha_beta_how: ComputeAlphaBetaHow = ComputeAlphaBetaHow.CLASSIC
     ) -> dict:
         """
         For PCTMC learning only.
@@ -1549,6 +1599,7 @@ class BW:
             return_data,
             min_val,
             max_val,
+            compute_alpha_beta_how
         )
 
     def fit_parameters(
@@ -1563,6 +1614,7 @@ class BW:
         return_data: bool = False,
         min_val: float = None,
         max_val: float = None,
+        compute_alpha_beta_how: ComputeAlphaBetaHow = ComputeAlphaBetaHow.ADD
     ) -> dict:
         """
         For PCTMC learning only.
@@ -1695,11 +1747,38 @@ class BW:
         elif max_val != None:
             self.h.randomInstantiation(max_val=max_val)
 
-        self._computeAlphas = self._computeAlphas_untimed_PCTMC
-        self._computeBetas = self._computeBetas_untimed_PCTMC
-        if self.training_set.type == 4:
-            self._computeAlphas = self._computeAlphas_timed_PCTMC
-            self._computeBetas = self._computeBetas_timed_PCTMC
+        if (compute_alpha_beta_how == ComputeAlphaBetaHow.CLASSIC
+                and not self.training_set.type == 4):
+            pass
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.CLASSIC
+                and self.training_set.type == 4):
+            self._computeAlphas = self._computeAlphas_timed
+            self._computeBetas = self._computeBetas_timed
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.ELEMENT
+                and not self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_untimed_element_PCTMC
+            self._computeBetas = self._computedBetas_untimed_element_PCTMC
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.ELEMENT
+                and self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_timed_element_PCTMC
+            self._computeBetas = self._computedBetas_timed_element_PCTMC
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.MATRIX
+                and not self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_untimed_matrix_PCTMC
+            self._computeBetas = self._computedBetas_untimed_matrix_PCTMC
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.MATRIX
+                and self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_timed_matrix_PCTMC
+            self._computeBetas = self._computedBetas_timed_matrix_PCTMC
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.ADD
+                and not self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_untimed_add_PCTMC
+            self._computeBetas = self._computedBetas_untimed_add_PCTMC
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.ADD
+                and self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_timed_add_PCTMC
+            self._computeBetas = self._computedBetas_timed_add_PCTMC
+
         self.nb_parameters = self.h.nb_parameters
         self.update_constant = update_constant
         self._processWork = self._processWork_PCTMC
