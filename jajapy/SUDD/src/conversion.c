@@ -2,50 +2,6 @@
 #include <assert.h>
 #include <cudd.h>
 
-int vector_to_add(
-    CUDD_VALUE_TYPE* vector, 
-    DdManager* manager, 
-    DdNode** E, 
-    DdNode*** x, 
-    DdNode*** y, 
-    DdNode*** xn, 
-    DdNode*** yn, 
-    int* nx, 
-    int* ny, 
-    int* m
-) {
-    int result = write_vector_to_file(vector, m);
-
-    if (result == 1) {
-        return 1;
-    }
-
-    // read the file
-    FILE* file;
-    char filename[40];
-    sprintf(filename, "vector%d.txt", getpid());
-    file = fopen(filename, "r");
-    if (file == NULL)
-    {
-        perror("Error opening file");
-        return 1; // Return an error code
-    }
-
-    // n is set to 1 as we are working with vectors
-    int n;
-
-    // read we now take the file and make it into an ADD
-    Cudd_addRead(file, manager, E, x, y, xn, yn, nx, ny, m, &n, ROW_VAR_INDEX_OFFSET, ROW_VAR_INDEX_MULTIPLIER, COL_VAR_INDEX_OFFSET, COL_VAR_INDEX_MULTIPLIER);
-
-    assert(n == 1);
-
-    // clean up
-    fclose(file);
-    remove(filename);
-
-    return 0;
-}
-
 /* function writes vector to file*/
 // TODO why is this function written with 3 spaces indentation
 int write_vector_to_file(double* vector, int* m)
