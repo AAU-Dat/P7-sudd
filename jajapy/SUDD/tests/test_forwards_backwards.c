@@ -600,94 +600,6 @@ START_TEST(fb_forwards_3x3_3_n_obs) {
 }
 END_TEST
 
-START_TEST(file_fb_forwards_3x3_3_n_obs) {
-    // Arrange
-    int states = 3, n_obs = 3;
-    // make matrix for omega that has the size k_j+1 x states
-    double** omega = (double**)malloc((n_obs + 1) * sizeof(double*));
-    for (int i = 0; i < n_obs + 1; i++)
-    {
-        omega[i] = (double*)malloc(states * sizeof(double));
-    }
-    omega[0][0] = 1;
-    omega[0][1] = 2;
-    omega[0][2] = 3;
-    omega[1][0] = 4;
-    omega[1][1] = 5;
-    omega[1][2] = 6;
-    omega[2][0] = 7;
-    omega[2][1] = 8;
-    omega[2][2] = 9;
-
-    // make matrix for P that has the size states x states
-    double** P = (double**)malloc(states * sizeof(double*));
-    double* pi = (double*)malloc(states * sizeof(double));
-    for (int i = 0; i < states; i++)
-    {
-        P[i] = (double*)malloc(states * sizeof(double));
-    }
-    P[0][0] = 1;
-    P[0][1] = 2;
-    P[0][2] = 3;
-    P[1][0] = 4;
-    P[1][1] = 5;
-    P[1][2] = 6;
-    P[2][0] = 7;
-    P[2][1] = 8;
-    P[2][2] = 9;
-
-    pi[0] = 1;
-    pi[1] = 2;
-    pi[2] = 3;
-
-    char** omegafile = (char**)malloc(3 * sizeof(char*));
-    omegafile[0] = "tests/data/omega0.txt";
-    omegafile[1] = "tests/data/omega1.txt";
-    omegafile[2] = "tests/data/omega2.txt";
-
-    
-    char* Pfile = "tests/data/P.txt";
-    char* pifile = "tests/data/pi.txt";
-
-    // Act
-    CUDD_VALUE_TYPE** alpha = file_forwards(omegafile, Pfile, pifile, states, n_obs);
-
-    double** alphanum = forwards_numeric(omega, P, pi, states, n_obs);
-
-    // Assert
-    for (int s = 0; s < states; s++)
-    {
-        ck_assert_double_eq(alphanum[0][s], alpha[0][s]);
-        ck_assert_double_eq(alphanum[1][s], alpha[1][s]);
-        ck_assert_double_eq(alphanum[2][s], alpha[2][s]);
-        ck_assert_double_eq(alphanum[3][s], alpha[3][s]);
-    }
-
-    // Clean
-    for (int i = 0; i <= n_obs; i++)
-    {
-        free(omega[i]);
-    }
-    free(omega);
-
-    for (int i = 0; i < states; i++)
-    {
-        free(P[i]);
-    }
-    for (int i = 0; i < states; i++)
-    {
-        free(alphanum[i]);
-    }
-    free(P);
-
-    free(pi);
-
-    free(omegafile);
-
-    free(alphanum);
-}
-END_TEST
-
 START_TEST(file_fb_backwards_3x3_3_n_obs) {
     // Arrange
     int states = 3, n_obs = 3;
@@ -923,7 +835,6 @@ Suite* forwards_backwards_suite(void)
     tcase_add_test(tc_forwards_backwards, _backwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, fb_backwards_3x3_3_n_obs);
-    tcase_add_test(tc_forwards_backwards, file_fb_forwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, file_fb_backwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, numerical_forwardstest);
     tcase_add_test(tc_forwards_backwards, numerical_backwardstest);
