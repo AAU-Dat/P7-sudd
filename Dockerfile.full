@@ -24,3 +24,5 @@ RUN make build/sudd.so
 
 # GO BACK
 WORKDIR /base/jajapy
+RUN chmod +x command_script.sh
+#ENTRYPOINT ./command_script.sh

@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  jajapy-testing:
+    build:
+      context: .
+      dockerfile: Dockerfile.full
