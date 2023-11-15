@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "cudd.h"
 
@@ -16,12 +17,15 @@
 #define COL_VAR_INDEX_OFFSET 1
 #define COL_VAR_INDEX_MULTIPLIER 2
 
+void add_to_vector_in_place(
+    DdNode* add,
+    int n,
+    int var_index_offset,
+    int var_index_multiplier,
+    CUDD_VALUE_TYPE* vector
+);
+CUDD_VALUE_TYPE* add_to_vector(DdNode* add, int n, int var_index_offset, int var_index_multiplier);
 CUDD_VALUE_TYPE** add_to_matrix(DdNode* symbolic, int n_rows, int n_columns);
-CUDD_VALUE_TYPE** create_2d_array(int n_rows, int n_columns);
-void interleave(bool A[], int size_a, bool B[], int size_b, bool result[]);
-CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool row_bits[], bool col_bits[]);
-void increment_bit_array(bool array[], int array_size);
-void printMatrix(CUDD_VALUE_TYPE** matrix);
 int vector_to_add(
     double* vector, 
     DdManager* manager, 
@@ -33,7 +37,6 @@ int vector_to_add(
     int* nx, 
     int* ny, 
     int* m);
-int write_vector_to_file(double* vector, int* m);
 int matrix_to_add(
     double **matrix, 
     DdManager* manager, 
@@ -45,33 +48,11 @@ int matrix_to_add(
     int* nx, 
     int* ny, 
     int* m, 
-    int* n);
-int write_matrix_to_file(double **matrix, int *m, int *n);
-CUDD_VALUE_TYPE* add_to_vector(DdNode* add, int n, int var_index_offset, int var_index_multiplier);
-void add_to_vector_in_place(DdNode* add, int n, int var_index_offset, int var_index_multiplier, CUDD_VALUE_TYPE* vector);
-int file_vector_to_add(
-    char *vector, 
-    DdManager* manager, 
-    DdNode** E, 
-    DdNode*** x, 
-    DdNode*** y, 
-    DdNode*** xn, 
-    DdNode*** yn, 
-    int* nx, 
-    int* ny, 
-    int* m
+    int* n
 );
-int file_matrix_to_add(
-    char *matrix, 
-    DdManager* manager, 
-    DdNode** E, 
-    DdNode*** x, 
-    DdNode*** y, 
-    DdNode*** xn, 
-    DdNode*** yn, 
-    int* nx, 
-    int* ny, 
-    int* m, 
-    int* n);
-
+CUDD_VALUE_TYPE evaluate_vector_bdd(DdNode* node, bool vars[], int var_index_offset, int var_index_multiplier);
+CUDD_VALUE_TYPE evaluate_matrix_bdd(DdNode* node, bool row_bits[], bool col_bits[]);
+void increment_bit_array(bool array[], int array_size);
+CUDD_VALUE_TYPE* new_array(int size);
+CUDD_VALUE_TYPE** create_2d_array(int n_rows, int n_columns);
 #endif
