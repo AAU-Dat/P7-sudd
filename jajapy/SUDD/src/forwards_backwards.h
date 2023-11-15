@@ -28,6 +28,24 @@ int backwards(
     ssize_t n_obs,
     CUDD_VALUE_TYPE* beta
 );
+int fb(
+    DdNode** (*_fb)(
+        DdManager* manager,
+        DdNode** omega,
+        DdNode* P,
+        DdNode* pi,
+        DdNode** row_vars,
+        DdNode** column_vars,
+        int n_vars,
+        int n_obs
+    ),
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* alpha // output variable
+);
 DdNode** _forwards(
     DdManager* manager,
     DdNode** omega, 
@@ -47,23 +65,5 @@ DdNode** _backwards(
     DdNode** column_vars,
     int n_vars,
     int k_j
-);
-int fb(
-    DdNode** (*_fb)(
-        DdManager* manager,
-        DdNode** omega,
-        DdNode* P,
-        DdNode* pi,
-        DdNode** row_vars,
-        DdNode** column_vars,
-        int n_vars,
-        int n_obs
-    ),
-    CUDD_VALUE_TYPE* omega,
-    CUDD_VALUE_TYPE* P,
-    CUDD_VALUE_TYPE* pi,
-    ssize_t n_states,
-    ssize_t n_obs,
-    CUDD_VALUE_TYPE* alpha // output variable
 );
 #endif
