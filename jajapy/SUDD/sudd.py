@@ -22,8 +22,8 @@ lib.backwards.argtypes = [
         ctypes.c_int,
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
     ]
-lib.file_forwards.restype = ctypes.c_int
-lib.file_backwards.restype = ctypes.c_int
+lib.forwards.restype = ctypes.c_int
+lib.backwards.restype = ctypes.c_int
 
 
 def forwards_symbolic(
