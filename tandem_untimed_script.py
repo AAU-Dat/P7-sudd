@@ -1,7 +1,8 @@
 import jajapy as ja
 import os.path
 
-name = "results_tandem_timed.txt"
+
+name = "results_tandem_untimed.txt"
 file1 = open(name, "w")
 original_model = ja.loadPrism("examples/materials/tandem_3.sm")
 original_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.2, 1.8, 2.0, 4.0])
