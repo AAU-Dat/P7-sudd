@@ -1528,7 +1528,7 @@ class BW:
         return_data: bool = False,
         min_val: float = None,
         max_val: float = None,
-        compute_alpha_beta_how: ComputeAlphaBetaHow = ComputeAlphaBetaHow.CLASSIC
+        compute_alpha_beta_how: ComputeAlphaBetaHow = ComputeAlphaBetaHow.ADD
     ) -> dict:
         """
         For PCTMC learning only.

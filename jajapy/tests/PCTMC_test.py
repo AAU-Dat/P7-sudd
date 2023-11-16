@@ -186,7 +186,7 @@ class PCTMCTestclass(unittest.TestCase):
         bw = BW()
         # bw.processes = 1  # uncomment this when debugging
         output_gotten = bw.fit_parameters(
-            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"]
+            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX
         )
         output_expected = {
             "mu1a": 0.19154272606453604,
@@ -204,7 +204,7 @@ class PCTMCTestclass(unittest.TestCase):
         bw = BW()
         # bw.processes = 1  # uncomment this when debugging
         output_gotten = bw.fit_parameters(
-            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"]
+            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX
         )
         output_expected = {
             "mu1a": 0.1867468928590901,
@@ -214,6 +214,70 @@ class PCTMCTestclass(unittest.TestCase):
         }
         for key, _ in output_gotten.items():
             var.assertAlmostEqual(output_expected[key], output_gotten[key], 7)
+
+    def test_PCTMC_parameters_learning_untimed_all_methods_equal(var):
+        # Arrange
+        training_set = loadSet("jajapy/tests/materials/pctmc/untimed_training_set_PCTMC.txt")
+
+        classic_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        classic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        classic_bw = BW()
+
+        element_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        element_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_bw = BW()
+
+        matrix_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        matrix_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        matrix_bw = BW()
+
+        add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        add_bw = BW()
+
+        # Act
+        # classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
+        # element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
+        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
+        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+
+        # Assert
+        for key, _ in matrix_output.items():
+            # var.assertAlmostEqual(classic_output[key], element_output[key], 7)
+            # var.assertAlmostEqual(element_output[key], matrix_output[key], 7)
+            var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
+
+    def test_PCTMC_parameters_learningntimed_all_methods_equal(var):
+        # Arrange
+        training_set = loadSet("jajapy/tests/materials/pctmc/timed_training_set_PCTMC.txt")
+
+        classic_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        classic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        classic_bw = BW()
+
+        element_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        element_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_bw = BW()
+
+        matrix_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        matrix_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        matrix_bw = BW()
+
+        add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        add_bw = BW()
+
+        # Act
+        # classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
+        # element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
+        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
+        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+
+        # Assert
+        for key, _ in matrix_output.items():
+            # var.assertAlmostEqual(classic_output[key], element_output[key], 7)
+            # var.assertAlmostEqual(element_output[key], matrix_output[key], 7)
+            var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
 
 
 if __name__ == "__main__":
