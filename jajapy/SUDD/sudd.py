@@ -22,8 +22,26 @@ lib.backwards.argtypes = [
         ctypes.c_int,
         np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
     ]
+lib.forwards_numeric_numpy.argtypes = [
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
+        ctypes.c_int,
+        ctypes.c_int,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
+    ]
+lib.backwards_numeric_numpy.argtypes = [
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
+        ctypes.c_int,
+        ctypes.c_int,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
+    ]
 lib.forwards.restype = ctypes.c_int
 lib.backwards.restype = ctypes.c_int
+lib.forwards_numeric_numpy.restype = ctypes.c_int
+lib.backwards_numeric_numpy.restype = ctypes.c_int
 
 
 def forwards_symbolic(
@@ -131,3 +149,47 @@ def backwards_matrix_numeric(
     for t in range(n_obs - 1, -1, -1):
         beta[t] = omega[t] * (P @ beta[t + 1])
     return beta
+
+def forwards_numeric_c(
+    phis: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    return fb_numeric_c(
+        lib.forwards_numeric_numpy,
+        phis,
+        tau,
+        pi
+    )
+    
+def backwards_numeric_c(
+    phis: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    return fb_numeric_c(
+        lib.backwards_numeric_numpy,
+        phis,
+        tau,
+        pi
+    )
+
+def fb_numeric_c(
+    fw: Any,
+    phi: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi = phi.astype(np.float64)
+    tau = tau.astype(np.float64)
+    pi = pi.astype(np.float64)
+    n_obs, n_states = phi.shape
+    alpha = np.zeros((n_obs + 1, n_states))
+    err = fw(phi, tau, pi, n_states, n_obs, alpha)
+    if err == 0:
+        pass
+    elif err == 1:
+        raise Exception("Inconsistencies occurred in cudd manager")
+    else:
+        raise Exception("Cudd manager ran out memory")
+    return alpha

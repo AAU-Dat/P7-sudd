@@ -207,3 +207,66 @@ DdNode** _backwards(
     return beta;
 }
 
+// Calculates alpha numerically but using numpy arrays
+int forwards_numeric_numpy(double* omega, 
+                         double* P, 
+                         double* pi,
+                         int n_states,
+                         int n_obs,
+                         double* alpha
+) {
+
+    // Base case: t = 0
+    for (int s = 0; s < n_states; s++)
+    {
+        alpha[0 * n_states + s] = pi[s];
+    }
+    
+    // Case: 0 < t <= k_j  
+    for (int t = 0; t < n_obs; t++)
+    {
+        for (int s = 0; s < n_states; s++)
+        {
+            double temp = 0;
+            for (int ss = 0; ss < n_states; ss++)
+            {
+                temp += P[ss * n_states + s] * omega[t * n_states + ss] * alpha[t * n_states + ss];
+                
+            }
+            alpha[(t+1) * n_states + s] = temp;            
+        }
+    }
+
+    return 0;
+}
+
+// Calculates beta numerically but using numpy arrays
+int backwards_numeric_numpy(double* omega, 
+                         double* P, 
+                         double* pi,
+                         int n_states,
+                         int n_obs,
+                         double* beta
+) { 
+    // Base case: t = |o|
+    for (int s = 0; s < n_states; s++)
+    {
+        beta[n_obs * n_states + s] = 1;
+    }
+
+    // Case: 0 <= t < k_j
+    for (int t = n_obs; 0 < t; t--)
+    {
+        for (int s = 0; s < n_states; s++)
+        {
+            double temp = 0;
+            for (int ss = 0; ss < n_states; ss++)
+            {
+                temp += beta[t * n_states + ss] * P[s * n_states + ss];
+            }
+            beta[(t-1) * n_states + s] = omega[(t-1) * n_states + s] * temp;
+        }
+    }
+
+    return 0;
+}

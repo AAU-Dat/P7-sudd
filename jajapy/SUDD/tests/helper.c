@@ -408,7 +408,7 @@ int forwards_numeric_numpy(double* omega,
         }
     }
 
-    return 1;
+    return 0;
 }
 
 // Calculates beta numerically but using numpy arrays
@@ -439,5 +439,5 @@ int backwards_numeric_numpy(double* omega,
         }
     }
 
-    return 1;
+    return 0;
 }

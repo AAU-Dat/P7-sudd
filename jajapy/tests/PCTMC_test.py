@@ -234,18 +234,26 @@ class PCTMCTestclass(unittest.TestCase):
         add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
         add_bw = BW()
+        
+        element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_c_bw = BW()
 
         # Act
         # classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
         # element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
         matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
-        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+        # add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENTC)
 
         # Assert
-        for key, _ in matrix_output.items():
+        #for key, _ in matrix_output.items():
             # var.assertAlmostEqual(classic_output[key], element_output[key], 7)
             # var.assertAlmostEqual(element_output[key], matrix_output[key], 7)
-            var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
+            # var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
+        
+        for key, _ in matrix_output.items():
+            var.assertAlmostEqual(matrix_output[key], element_c_output[key], 7)
 
     def test_PCTMC_parameters_learningntimed_all_methods_equal(var):
         # Arrange
@@ -266,18 +274,25 @@ class PCTMCTestclass(unittest.TestCase):
         add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
         add_bw = BW()
+        
+        element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_c_bw = BW()
 
         # Act
         # classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
         # element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
         matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
-        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
-
+        # add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENTC)
         # Assert
         for key, _ in matrix_output.items():
+            var.assertAlmostEqual(matrix_output[key], element_c_output[key], 7)
+        # for key, _ in matrix_output.items():
             # var.assertAlmostEqual(classic_output[key], element_output[key], 7)
             # var.assertAlmostEqual(element_output[key], matrix_output[key], 7)
-            var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
+            # var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
+            
 
 
 if __name__ == "__main__":

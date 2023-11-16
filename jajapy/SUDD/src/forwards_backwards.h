@@ -66,4 +66,19 @@ DdNode** _backwards(
     int n_vars,
     int k_j
 );
+int backwards_numeric_numpy(double* omega, 
+                         double* P, 
+                         double* pi,
+                         int n_states,
+                         int n_obs,
+                         double* beta
+);
+
+int forwards_numeric_numpy(double* omega, 
+                         double* P, 
+                         double* pi,
+                         int n_states,
+                         int n_obs,
+                         double* alpha
+);
 #endif
