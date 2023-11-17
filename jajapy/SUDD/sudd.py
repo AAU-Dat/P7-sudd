@@ -4,47 +4,29 @@ import numpy as np
 import os
 import math
 
-from numpy._typing import NDArray
 
 lib_path = os.path.join(os.path.dirname(__file__), 'build', 'sudd.so')
 lib = ctypes.CDLL(lib_path)
 
-lib.forwards.argtypes = [
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
-        ctypes.c_int,
-        ctypes.c_int,
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
-    ]
-lib.backwards.argtypes = [
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
-        ctypes.c_int,
-        ctypes.c_int,
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
-    ]
-lib.forwards.restype = ctypes.c_int
-lib.backwards.restype = ctypes.c_int
-lib.log_forwards.argtypes = [
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
-        ctypes.c_int,
-        ctypes.c_int,
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
-    ]
-lib.log_backwards.argtypes = [
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
-        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
-        ctypes.c_int,
-        ctypes.c_int,
-        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
-    ]
-lib.log_forwards.restype = ctypes.c_int
-lib.log_backwards.restype = ctypes.c_int
+
+def set_function_types(func, argtypes, restype=ctypes.c_int):
+    func.argtypes = argtypes
+    func.restype = restype
+
+
+common_argtypes = [
+    np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+    np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+    np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
+    ctypes.c_int,
+    ctypes.c_int,
+    np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
+]
+
+set_function_types(lib.forwards, common_argtypes)
+set_function_types(lib.backwards, common_argtypes)
+set_function_types(lib.log_forwards, common_argtypes)
+set_function_types(lib.log_backwards, common_argtypes)
 
 
 def forwards_symbolic(
@@ -220,6 +202,7 @@ def backwards_matrix_numeric(
     for t in range(n_obs - 1, -1, -1):
         beta[t] = omega[t] * (P @ beta[t + 1])
     return beta
+
 
 def log_add(x, y):
     """ Perform log-space addition: log(exp(x) + exp(y)) """
