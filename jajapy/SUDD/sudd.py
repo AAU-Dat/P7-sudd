@@ -2,6 +2,9 @@ import ctypes
 from typing import Tuple, Any
 import numpy as np
 import os
+import math
+
+from numpy._typing import NDArray
 
 lib_path = os.path.join(os.path.dirname(__file__), 'build', 'sudd.so')
 lib = ctypes.CDLL(lib_path)
@@ -90,6 +93,27 @@ def forwards_numeric(
     return alpha
 
 
+def forwards_log_semiring(
+    omega,
+    P,
+    pi
+):
+    n_obs, n_states = omega.shape
+    omega = np.log(omega)
+    P = np.log(P)
+    pi = np.log(pi)
+    alpha = np.empty((n_obs + 1, n_states))
+    alpha[0] = pi
+    for t in range(1, n_obs + 1):
+        for s in range(n_states):
+            temp = P[0][s] + omega[t-1][0] + alpha[t-1][0]
+            for ss in range(1, n_states):
+                temp = log_add(temp, P[ss][s] + omega[t-1][ss] + alpha[t-1][ss])
+            alpha[t][s] = temp
+    alpha = np.exp(alpha)
+    return alpha
+
+
 def forwards_matrix_numeric(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
@@ -120,6 +144,27 @@ def backwards_numeric(
     return beta
 
 
+def backwards_log_semiring(
+    omega,
+    P,
+    pi
+):
+    n_obs, n_states = omega.shape
+    omega = np.log(omega)
+    P = np.log(P)
+    pi = np.log(pi)
+    beta = np.empty((n_obs + 1, n_states))
+    beta[-1] = 0
+    for t in range(n_obs - 1, -1, -1):
+        for s in range(n_states):
+            temp = beta[t+1][0] + P[s][0]
+            for ss in range(1, n_states):
+                temp = log_add(temp, beta[t+1][ss] + P[s][ss])
+            beta[t][s] = omega[t][s] + temp
+    beta = np.exp(beta)
+    return beta
+
+
 def backwards_matrix_numeric(
     omega: np.ndarray[Any, np.dtype[Any]],
     P: np.ndarray[Any, np.dtype[Any]],
@@ -131,3 +176,12 @@ def backwards_matrix_numeric(
     for t in range(n_obs - 1, -1, -1):
         beta[t] = omega[t] * (P @ beta[t + 1])
     return beta
+
+def log_add(x, y):
+    """ Perform log-space addition: log(exp(x) + exp(y)) """
+    # Ensuring x is the larger number for numerical stability
+    if y > x:
+        x, y = y, x
+    if x == float('-inf'):
+        return x
+    return x + math.log1p(math.exp(y - x))
