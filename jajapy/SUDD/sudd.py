@@ -27,6 +27,24 @@ lib.backwards.argtypes = [
     ]
 lib.forwards.restype = ctypes.c_int
 lib.backwards.restype = ctypes.c_int
+lib.log_forwards.argtypes = [
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
+        ctypes.c_int,
+        ctypes.c_int,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
+    ]
+lib.log_backwards.argtypes = [
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous'),
+        np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
+        ctypes.c_int,
+        ctypes.c_int,
+        np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
+    ]
+lib.log_forwards.restype = ctypes.c_int
+lib.log_backwards.restype = ctypes.c_int
 
 
 def forwards_symbolic(
@@ -49,6 +67,32 @@ def backwards_symbolic(
 ) -> np.ndarray[np.float64, Tuple[int, int]]:
     return fb_symbolic(
         lib.backwards,
+        phis,
+        tau,
+        pi
+    )
+
+
+def forwards_log_symbolic(
+    phis: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    return fb_symbolic(
+        lib.log_forwards,
+        phis,
+        tau,
+        pi
+    )
+
+
+def backwards_log_symbolic(
+    phis: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    return fb_symbolic(
+        lib.log_backwards,
         phis,
         tau,
         pi
