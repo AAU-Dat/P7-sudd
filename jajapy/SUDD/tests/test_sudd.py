@@ -53,7 +53,6 @@ def test_log_symbolic_backwards_timed():
     # Arrange
     tau, phi, pi = setup_test_variables()
 
-
     # Act
     alpha = sudd.backwards_log_symbolic(phi, tau, pi)
 
