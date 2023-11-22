@@ -1,5 +1,6 @@
 #include "forwards_backwards.h"
 #include <cudd.h>
+#include <stdio.h>
 
 #define MALLOC_VARS(n_states) (DdNode**) malloc(ceil(log2(n_states)) * sizeof(DdNode*))
 
@@ -167,7 +168,6 @@ int fb(
 
     int err = Cudd_DebugCheck(dd);
     Cudd_Quit(dd);
-    free(omega);
     return err;
 }
 
@@ -255,7 +255,7 @@ DdNode** _log_forwards(
     DdNode** log_alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
     log_alpha[0] = log_pi;
     Cudd_Ref(log_alpha[0]);
-    for (int t = 1; t < n_obs + 1; t++) {
+    for (size_t t = 1; t < n_obs + 1; t++) {
         DdNode* log_alpha_temp_0 = Cudd_addApply(dd, Cudd_addPlus, log_omega[t - 1], log_alpha[t - 1]);
         Cudd_Ref(log_alpha_temp_0);
         DdNode* log_alpha_temp_1 = Cudd_addLogMatrixMultiply(dd, log_P, log_alpha_temp_0, row_vars, n_vars);
@@ -267,7 +267,7 @@ DdNode** _log_forwards(
     }
 
     DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
-    for (int t = 0; t < n_obs + 1; t++) {
+    for (size_t t = 0; t < n_obs + 1; t++) {
         alpha[t] = Cudd_addMonadicApply(dd, Cudd_addExp, log_alpha[t]);
         Cudd_Ref(alpha[t]);
         Cudd_RecursiveDeref(dd, log_alpha[t]);
@@ -309,7 +309,7 @@ DdNode** _log_backwards(
     log_beta[n_obs] = Cudd_addConst(dd, 0);
     Cudd_Ref(log_beta[n_obs]);
 
-    for (int t = n_obs - 1; 0 <= t; t--) {
+    for (ssize_t t = n_obs - 1; 0 <= t; t--) {
         DdNode* log_beta_temp_0 = Cudd_addLogMatrixMultiply(dd, log_P, log_beta[t + 1], row_vars, n_vars);
         Cudd_Ref(log_beta_temp_0);
         DdNode* log_beta_temp_1 = Cudd_addSwapVariables(dd, log_beta_temp_0, column_vars, row_vars, n_vars);
@@ -321,7 +321,7 @@ DdNode** _log_backwards(
     }
 
     DdNode** beta = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
-    for (int t = 0; t < n_obs + 1; t++) {
+    for (size_t t = 0; t < n_obs + 1; t++) {
         beta[t] = Cudd_addMonadicApply(dd, Cudd_addExp, log_beta[t]);
         Cudd_Ref(beta[t]);
         Cudd_RecursiveDeref(dd, log_beta[t]);

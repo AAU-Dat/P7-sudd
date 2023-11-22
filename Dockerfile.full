@@ -6,6 +6,7 @@ COPY requirements.txt dev_requirements.txt ./
 RUN pip install -r requirements.txt -r dev_requirements.txt && \
     apt-get update && \ 
     apt-get install check -y && \
+    apt-get install gdb -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . .

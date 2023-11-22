@@ -55,6 +55,14 @@ def backwards_symbolic(
     )
 
 
+def test(n: int):
+    return n + 1
+
+
+def test0(n: bool):
+    return test(n)
+
+
 def forwards_log_symbolic(
     phis: np.ndarray[np.float64, Tuple[int, int]],
     tau: np.ndarray[np.float64, Tuple[int, int]],
