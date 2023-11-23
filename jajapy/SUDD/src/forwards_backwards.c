@@ -68,6 +68,7 @@ int fb(
     CUDD_VALUE_TYPE* ab // output variable
 ) {
     DdManager* dd = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    Cudd_SetEpsilon(dd, 0);
 
     int dump_n_rows = n_states;
     int dump_n_cols = n_states;
