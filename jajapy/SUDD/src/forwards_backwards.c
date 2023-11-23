@@ -1,6 +1,4 @@
 #include "forwards_backwards.h"
-#include <cudd.h>
-#include <stdio.h>
 
 #define MALLOC_VARS(n_states) (DdNode**) malloc(ceil(log2(n_states)) * sizeof(DdNode*))
 
