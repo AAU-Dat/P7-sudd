@@ -1049,7 +1049,7 @@ class BW:
     def _computedAlphas_untimed_log_semiring_PCTMC(self, obs_seq, time_seq):
         return self._computeAlphas_untimed_PCTMC(sudd.forwards_log_semiring, obs_seq, time_seq)
 
-    def _computedAlphas_untimed_log_semiring_PCTMC(self, obs_seq, time_seq):
+    def _computedAlphas_untimed_log_symbolic_PCTMC(self, obs_seq, time_seq):
         return self._computeAlphas_untimed_PCTMC(sudd.forwards_log_symbolic, obs_seq, time_seq)
 
     def _computeBetas_untimed_PCTMC(
@@ -1076,7 +1076,7 @@ class BW:
     def _computedBetas_untimed_log_semiring_PCTMC(self, obs_seq, time_seq):
         return self._computeBetas_untimed_PCTMC(sudd.backwards_log_semiring, obs_seq, time_seq)
 
-    def _computedBetas_untimed_log_semiring_PCTMC(self, obs_seq, time_seq):
+    def _computedBetas_untimed_log_symbolic_PCTMC(self, obs_seq, time_seq):
         return self._computeBetas_untimed_PCTMC(sudd.backwards_log_symbolic, obs_seq, time_seq)
 
 
