@@ -6,15 +6,14 @@ COPY requirements.txt dev_requirements.txt ./
 RUN pip install -r requirements.txt -r dev_requirements.txt && \
     apt-get update && \ 
     apt-get install check -y && \
+    apt-get install gdb -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
 # Install CUDD
 WORKDIR /base/jajapy/cudd
-RUN ln -s /usr/bin/aclocal-1.16 /usr/bin/aclocal-1.14 && \ 
-    ln -s /usr/bin/automake-1.16 /usr/bin/automake-1.14 && \
-    ./configure --enable-shared && \
+RUN ./configure --enable-shared && \
     make install -j$number_of_threads && \
     ldconfig
 

@@ -25,6 +25,29 @@ int backwards(
     return fb(_backwards, omega, P, pi, n_states, n_obs, beta);
 }
 
+int log_forwards(
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* alpha
+) {
+    return fb(_log_forwards, omega, P, pi, n_states, n_obs, alpha);
+}
+
+
+int log_backwards(
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* alpha
+) {
+    return fb(_log_backwards, omega, P, pi, n_states, n_obs, alpha);
+}
+
 int fb(
     DdNode** (*_fb)(
         DdManager* manager,
@@ -209,3 +232,107 @@ DdNode** _backwards(
     return beta;
 }
 
+DdNode** _log_forwards(
+    DdManager* dd,
+    DdNode** omega,
+    DdNode* P,
+    DdNode* pi,
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
+    int n_obs
+) {
+    DdNode* log_P = Cudd_addMonadicApply(dd, Cudd_addLog, P);
+    Cudd_Ref(log_P);
+    DdNode* log_pi = Cudd_addMonadicApply(dd, Cudd_addLog, pi);
+    Cudd_Ref(log_pi);
+    DdNode** log_omega = (DdNode**) malloc(sizeof(DdNode*) * (n_obs));
+    for (size_t t = 0; t < n_obs; t++) {
+        log_omega[t] = Cudd_addMonadicApply(dd, Cudd_addLog, omega[t]);
+        Cudd_Ref(log_omega[t]);
+    }
+
+    DdNode** log_alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
+    log_alpha[0] = log_pi;
+    Cudd_Ref(log_alpha[0]);
+    for (size_t t = 1; t < n_obs + 1; t++) {
+        DdNode* log_alpha_temp_0 = Cudd_addApply(dd, Cudd_addPlus, log_omega[t - 1], log_alpha[t - 1]);
+        Cudd_Ref(log_alpha_temp_0);
+        DdNode* log_alpha_temp_1 = Cudd_addLogMatrixMultiply(dd, log_P, log_alpha_temp_0, row_vars, n_vars);
+        Cudd_Ref(log_alpha_temp_1);
+        log_alpha[t] = Cudd_addSwapVariables(dd, log_alpha_temp_1, column_vars, row_vars, n_vars);
+        Cudd_Ref(log_alpha[t]);
+        Cudd_RecursiveDeref(dd, log_alpha_temp_0);
+        Cudd_RecursiveDeref(dd, log_alpha_temp_1);
+    }
+
+    DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
+    for (size_t t = 0; t < n_obs + 1; t++) {
+        alpha[t] = Cudd_addMonadicApply(dd, Cudd_addExp, log_alpha[t]);
+        Cudd_Ref(alpha[t]);
+        Cudd_RecursiveDeref(dd, log_alpha[t]);
+    }
+    free(log_alpha);
+
+    Cudd_RecursiveDeref(dd, log_P);
+    Cudd_RecursiveDeref(dd, log_pi);
+    for (size_t t = 0; t < n_obs; t++) {
+        Cudd_RecursiveDeref(dd, log_omega[t]);
+    }
+    free(log_omega);
+
+    return alpha;
+}
+
+DdNode** _log_backwards(
+    DdManager* dd,
+    DdNode** omega,
+    DdNode* P,
+    DdNode* pi,
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
+    int n_obs
+) {
+    DdNode* _P = Cudd_addSwapVariables(dd, P, column_vars, row_vars, n_vars);
+    Cudd_Ref(_P);
+    DdNode* log_P = Cudd_addMonadicApply(dd, Cudd_addLog, _P);
+    Cudd_Ref(log_P);
+    Cudd_RecursiveDeref(dd, _P);
+    DdNode** log_omega = (DdNode**) malloc(sizeof(DdNode*) * (n_obs));
+    for (size_t t = 0; t < n_obs; t++) {
+        log_omega[t] = Cudd_addMonadicApply(dd, Cudd_addLog, omega[t]);
+        Cudd_Ref(log_omega[t]);
+    }
+
+    DdNode** log_beta = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
+    log_beta[n_obs] = Cudd_addConst(dd, 0);
+    Cudd_Ref(log_beta[n_obs]);
+
+    for (ssize_t t = n_obs - 1; 0 <= t; t--) {
+        DdNode* log_beta_temp_0 = Cudd_addLogMatrixMultiply(dd, log_P, log_beta[t + 1], row_vars, n_vars);
+        Cudd_Ref(log_beta_temp_0);
+        DdNode* log_beta_temp_1 = Cudd_addSwapVariables(dd, log_beta_temp_0, column_vars, row_vars, n_vars);
+        Cudd_Ref(log_beta_temp_1);
+        log_beta[t] = Cudd_addApply(dd, Cudd_addPlus, log_omega[t], log_beta_temp_1);
+        Cudd_Ref(log_beta[t]);
+        Cudd_RecursiveDeref(dd, log_beta_temp_0);
+        Cudd_RecursiveDeref(dd, log_beta_temp_1);
+    }
+
+    DdNode** beta = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
+    for (size_t t = 0; t < n_obs + 1; t++) {
+        beta[t] = Cudd_addMonadicApply(dd, Cudd_addExp, log_beta[t]);
+        Cudd_Ref(beta[t]);
+        Cudd_RecursiveDeref(dd, log_beta[t]);
+    }
+    free(log_beta);
+
+    Cudd_RecursiveDeref(dd, log_P);
+    for (size_t t = 0; t < n_obs; t++) {
+        Cudd_RecursiveDeref(dd, log_omega[t]);
+    }
+    free(log_omega);
+
+    return beta;
+}
