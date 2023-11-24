@@ -1,6 +1,7 @@
 import ctypes
-from typing import Tuple, Any
+from typing import Any
 import numpy as np
+from numpy.typing import NDArray
 import os
 import math
 
@@ -30,52 +31,52 @@ set_function_types(lib.log_backwards, common_argtypes)
 
 
 def forwards_symbolic(
-    phis: np.ndarray[np.float64, Tuple[int, int]],
-    tau: np.ndarray[np.float64, Tuple[int, int]],
-    pi: np.ndarray[np.float64, Tuple[int]],
-) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi: np.ndarray,
+    tau: np.ndarray,
+    pi: np.ndarray,
+) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.forwards,
-        phis,
+        phi,
         tau,
         pi
     )
 
 
 def backwards_symbolic(
-    phis: np.ndarray[np.float64, Tuple[int, int]],
-    tau: np.ndarray[np.float64, Tuple[int, int]],
-    pi: np.ndarray[np.float64, Tuple[int]],
-) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi: np.ndarray,
+    tau: np.ndarray,
+    pi: np.ndarray,
+) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.backwards,
-        phis,
+        phi,
         tau,
         pi
     )
 
 
 def forwards_log_symbolic(
-    phis: np.ndarray[np.float64, Tuple[int, int]],
-    tau: np.ndarray[np.float64, Tuple[int, int]],
-    pi: np.ndarray[np.float64, Tuple[int]],
-) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi: np.ndarray,
+    tau: np.ndarray,
+    pi: np.ndarray,
+) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.log_forwards,
-        phis,
+        phi,
         tau,
         pi
     )
 
 
 def backwards_log_symbolic(
-    phis: np.ndarray[np.float64, Tuple[int, int]],
-    tau: np.ndarray[np.float64, Tuple[int, int]],
-    pi: np.ndarray[np.float64, Tuple[int]],
-) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi: np.ndarray,
+    tau: np.ndarray,
+    pi: np.ndarray,
+) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.log_backwards,
-        phis,
+        phi,
         tau,
         pi
     )
@@ -83,10 +84,10 @@ def backwards_log_symbolic(
 
 def fb_symbolic(
     fb: Any,
-    phi: np.ndarray[np.float64, Tuple[int, int]],
-    tau: np.ndarray[np.float64, Tuple[int, int]],
-    pi: np.ndarray[np.float64, Tuple[int]],
-) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi: np.ndarray,
+    tau: np.ndarray,
+    pi: np.ndarray,
+) -> NDArray[np.float64]:
     phi = phi.astype(np.float64)
     tau = tau.astype(np.float64)
     pi = pi.astype(np.float64)
@@ -103,10 +104,10 @@ def fb_symbolic(
 
 
 def forwards_numeric(
-    omega: np.ndarray[Any, np.dtype[Any]],
-    P: np.ndarray[Any, np.dtype[Any]],
-    pi: np.ndarray[Any, np.dtype[Any]],
-) -> np.ndarray[Any, np.dtype[Any]]:
+    omega: np.ndarray,
+    P: np.ndarray,
+    pi: np.ndarray,
+) -> np.ndarray:
     n_obs, n_states = omega.shape
     alpha = np.empty((n_obs + 1, n_states))
     alpha[0] = pi
@@ -120,10 +121,10 @@ def forwards_numeric(
 
 
 def forwards_log_semiring(
-    omega,
-    P,
-    pi
-):
+    omega: np.ndarray,
+    P: np.ndarray,
+    pi: np.ndarray,
+) -> np.ndarray:
     n_obs, n_states = omega.shape
     omega = np.log(omega)
     P = np.log(P)
@@ -141,10 +142,10 @@ def forwards_log_semiring(
 
 
 def forwards_matrix_numeric(
-    omega: np.ndarray[Any, np.dtype[Any]],
-    P: np.ndarray[Any, np.dtype[Any]],
-    pi: np.ndarray[Any, np.dtype[Any]],
-) -> np.ndarray[Any, np.dtype[Any]]:
+    omega: np.ndarray,
+    P: np.ndarray,
+    pi: np.ndarray,
+) -> np.ndarray:
     n_obs, n_states = omega.shape
     alpha = np.empty((n_obs + 1, n_states))
     alpha[0] = pi
@@ -154,10 +155,10 @@ def forwards_matrix_numeric(
 
 
 def backwards_numeric(
-    omega: np.ndarray[Any, np.dtype[Any]],
-    P: np.ndarray[Any, np.dtype[Any]],
-    pi: np.ndarray[Any, np.dtype[Any]],
-) -> np.ndarray[Any, np.dtype[Any]]:
+    omega: np.ndarray,
+    P: np.ndarray,
+    pi: np.ndarray,
+) -> np.ndarray:
     n_obs, n_states = omega.shape
     beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 1
@@ -171,10 +172,10 @@ def backwards_numeric(
 
 
 def backwards_log_semiring(
-    omega,
-    P,
-    pi
-):
+    omega: np.ndarray,
+    P: np.ndarray,
+    pi: np.ndarray,
+) -> np.ndarray:
     n_obs, n_states = omega.shape
     omega = np.log(omega)
     P = np.log(P)
@@ -192,10 +193,10 @@ def backwards_log_semiring(
 
 
 def backwards_matrix_numeric(
-    omega: np.ndarray[Any, np.dtype[Any]],
-    P: np.ndarray[Any, np.dtype[Any]],
-    pi: np.ndarray[Any, np.dtype[Any]],
-) -> np.ndarray[Any, np.dtype[Any]]:
+    omega: np.ndarray,
+    P: np.ndarray,
+    pi: np.ndarray,
+) -> np.ndarray:
     n_obs, n_states = omega.shape
     beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 1
