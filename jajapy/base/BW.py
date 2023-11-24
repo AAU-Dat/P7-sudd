@@ -40,7 +40,7 @@ class ComputeAlphaBetaHow(enum.Enum):
     MATRIX = 3
     ADD = 4
     LOG_SEMIRING = 5
-    ADD_LOG = 5
+    ADD_LOG = 6
 
 
 class BW:
