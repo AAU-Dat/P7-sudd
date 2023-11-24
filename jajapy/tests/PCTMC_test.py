@@ -252,13 +252,13 @@ class PCTMCTestclass(unittest.TestCase):
 
         classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
 
-        element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
+        element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC)
 
-        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
+        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX_NUMERIC)
 
-        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC)
 
-        log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD_LOG)
+        log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING)
 
         # Assert
         for key, _ in log_semiring_output.items():
@@ -301,13 +301,13 @@ class PCTMCTestclass(unittest.TestCase):
 
         classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
 
-        element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
+        element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC)
 
-        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
+        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX_NUMERIC)
 
-        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
+        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC)
 
-        log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD_LOG)
+        log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING)
 
         # Assert
         for key, _ in log_semiring_output.items():
