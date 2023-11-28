@@ -1,0 +1,21 @@
+
+run 1
+({'alpha': 0.3796451906217013, 'betax': 0.10926188466374849, 'zetax': 0.18146542172993782}, {'learning_rounds': 11, 'learning_time': 735.347543, 'training_set_loglikelihood': -1940.2987193766892})
+run 2
+({'alpha': 0.40930195608322056, 'betax': 0.11225318224319318, 'zetax': 0.21140150372307742}, {'learning_rounds': 13, 'learning_time': 869.514451, 'training_set_loglikelihood': -1961.9334695962239})
+run 3
+({'alpha': 0.40900090166199304, 'betax': 0.11854208300052832, 'zetax': 0.18306530082449587}, {'learning_rounds': 14, 'learning_time': 936.530184, 'training_set_loglikelihood': -1937.1846523009112})
+run 4
+({'alpha': 0.4382029573835496, 'betax': 0.12172105829826223, 'zetax': 0.2153099950350183}, {'learning_rounds': 14, 'learning_time': 935.837906, 'training_set_loglikelihood': -1969.9694335809675})
+run 5
+({'alpha': 0.42051325549634694, 'betax': 0.10454474000478796, 'zetax': 0.2567887240491581}, {'learning_rounds': 16, 'learning_time': 1071.520011, 'training_set_loglikelihood': -1964.445585731685})
+run 6
+({'alpha': 0.3793997886330553, 'betax': 0.10732887636345892, 'zetax': 0.22341360909316493}, {'learning_rounds': 14, 'learning_time': 935.746019, 'training_set_loglikelihood': -1912.983617791857})
+run 7
+({'alpha': 0.3698675394332341, 'betax': 0.10300630141462984, 'zetax': 0.228477377550657}, {'learning_rounds': 14, 'learning_time': 937.87159, 'training_set_loglikelihood': -1968.5697528449589})
+run 8
+({'alpha': 0.38760974758332994, 'betax': 0.10379155361908222, 'zetax': 0.21085631311008016}, {'learning_rounds': 14, 'learning_time': 937.431761, 'training_set_loglikelihood': -1928.647957164202})
+run 9
+({'alpha': 0.3827089204441326, 'betax': 0.1043746752085466, 'zetax': 0.17106014431311614}, {'learning_rounds': 14, 'learning_time': 938.435102, 'training_set_loglikelihood': -1919.8689539579602})
+run 10
+({'alpha': 0.3546107143768012, 'betax': 0.10787181074698751, 'zetax': 0.23532863828000733}, {'learning_rounds': 14, 'learning_time': 940.737344, 'training_set_loglikelihood': -2006.8545320299384})

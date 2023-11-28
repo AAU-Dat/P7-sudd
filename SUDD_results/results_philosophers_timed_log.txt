@@ -1,0 +1,21 @@
+
+run 1
+({'alpha': 0.3530328661811227, 'betax': 0.1049379349401534, 'zetax': 0.21831352929260806}, {'learning_rounds': 3, 'learning_time': 213.888773, 'training_set_loglikelihood': -3110.8504864067613})
+run 2
+({'alpha': 0.36238350159244015, 'betax': 0.10236075136170728, 'zetax': 0.19678041006793787}, {'learning_rounds': 3, 'learning_time': 213.749966, 'training_set_loglikelihood': -3080.4313119471126})
+run 3
+({'alpha': 0.3695920708495519, 'betax': 0.0997347293552634, 'zetax': 0.18895110045941335}, {'learning_rounds': 3, 'learning_time': 213.59534, 'training_set_loglikelihood': -3114.915317746282})
+run 4
+({'alpha': 0.36566367393464194, 'betax': 0.10191489662005543, 'zetax': 0.22163105019036422}, {'learning_rounds': 3, 'learning_time': 213.538375, 'training_set_loglikelihood': -3049.5382710689814})
+run 5
+({'alpha': 0.3422473326560823, 'betax': 0.10348041579241513, 'zetax': 0.20781169393656473}, {'learning_rounds': 3, 'learning_time': 212.196009, 'training_set_loglikelihood': -3114.0083238267534})
+run 6
+({'alpha': 0.3764057593263014, 'betax': 0.09902421892673723, 'zetax': 0.1764447640043858}, {'learning_rounds': 3, 'learning_time': 212.805082, 'training_set_loglikelihood': -3122.49875062367})
+run 7
+({'alpha': 0.35286066111463327, 'betax': 0.10045956755909738, 'zetax': 0.19081381712503614}, {'learning_rounds': 3, 'learning_time': 214.333686, 'training_set_loglikelihood': -3144.0631282360346})
+run 8
+({'alpha': 0.3774476633789787, 'betax': 0.10111578652873898, 'zetax': 0.22111619481922026}, {'learning_rounds': 3, 'learning_time': 212.802591, 'training_set_loglikelihood': -3028.7050947729344})
+run 9
+({'alpha': 0.34777986152136176, 'betax': 0.10080856270625818, 'zetax': 0.2383647582877122}, {'learning_rounds': 3, 'learning_time': 213.634596, 'training_set_loglikelihood': -3107.3239002915366})
+run 10
+({'alpha': 0.3709742922456418, 'betax': 0.10108026673323603, 'zetax': 0.21320689995930037}, {'learning_rounds': 3, 'learning_time': 212.923236, 'training_set_loglikelihood': -3108.719024577938})
