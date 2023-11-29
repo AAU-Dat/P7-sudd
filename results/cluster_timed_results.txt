@@ -1,0 +1,20 @@
+run1
+({'ws_fail': 0.0021076362065680096, 'line_fail': 0.0002225736568726538, 'switch_fail': 0.0003106997710399412}, {'learning_rounds': 3, 'learning_time': 161.088217, 'training_set_loglikelihood': -6010.5417623524905135})
+run2
+({'ws_fail': 0.001948937760642563, 'line_fail': 0.0002236256891826203, 'switch_fail': 0.00028792439400451847}, {'learning_rounds': 3, 'learning_time': 152.575927, 'training_set_loglikelihood': -6120.10088846993477})
+run3
+({'ws_fail': 0.0019537412757274384, 'line_fail': 0.00022895995353764222, 'switch_fail': 0.00021608645162182538}, {'learning_rounds': 3, 'learning_time': 151.973682, 'training_set_loglikelihood': -6033.2022671944879715})
+run4
+({'ws_fail': 0.001878830100508035, 'line_fail': 0.0002830805802816217, 'switch_fail': 0.000249497467774939}, {'learning_rounds': 3, 'learning_time': 151.705913, 'training_set_loglikelihood': -6171.3309034168245484})
+run5
+({'ws_fail': 0.0018080531517072104, 'line_fail': 0.0002144237319109062, 'switch_fail': 0.000246065870780321}, {'learning_rounds': 3, 'learning_time': 151.600489, 'training_set_loglikelihood': -6186.005067619881721})
+run6
+({'ws_fail': 0.0019248077876768302, 'line_fail': 0.00014168860466755645, 'switch_fail': 0.00024576819761656823}, {'learning_rounds': 3, 'learning_time': 152.503483, 'training_set_loglikelihood': -5978.8921727014897693})
+run7
+({'ws_fail': 0.0019601002145572173, 'line_fail': 0.0001789446689972021, 'switch_fail': 0.00025140179168928835}, {'learning_rounds': 3, 'learning_time': 153.465537, 'training_set_loglikelihood': -6021.172909520889217})
+run8
+({'ws_fail': 0.0019548053042098153, 'line_fail': 0.00022023255192499944, 'switch_fail': 0.00021150509489802468}, {'learning_rounds': 3, 'learning_time': 153.815907, 'training_set_loglikelihood': -6028.087564625068834})
+run9
+({'ws_fail': 0.0019464237457484496, 'line_fail': 0.0002034096680595038, 'switch_fail': 0.00024138719060910898}, {'learning_rounds': 3, 'learning_time': 152.406805, 'training_set_loglikelihood': -6029.5584723018667366})
+run10
+({'ws_fail': 0.001973493999961763, 'line_fail': 0.00013612887780528157, 'switch_fail': 0.0002381718468048012}, {'learning_rounds': 3, 'learning_time': 151.808626, 'training_set_loglikelihood': -5883.2439708117364914})
