@@ -102,4 +102,5 @@ DdNode** _log_backwards(
     int n_vars,
     int k_j
 );
+void* safe_malloc(size_t type_size, size_t amount);
 #endif
