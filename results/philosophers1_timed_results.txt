@@ -1,0 +1,20 @@
+run1
+({'alpha': 0.3766186113396365, 'betax': 0.09238204114837038, 'zetax': 0.20885644820799776}, {'learning_rounds': 3, 'learning_time': 2786.700545, 'training_set_loglikelihood': -3125.2666417561502608})
+run2
+({'alpha': 0.37075644107301114, 'betax': 0.10460881775955315, 'zetax': 0.20095164503790652}, {'learning_rounds': 3, 'learning_time': 2799.213614, 'training_set_loglikelihood': -3040.2242412529581719})
+run3
+({'alpha': 0.38481938107373637, 'betax': 0.10612398120577171, 'zetax': 0.19516316626454694}, {'learning_rounds': 3, 'learning_time': 2805.295907, 'training_set_loglikelihood': -2921.7746741609317498})
+run4
+({'alpha': 0.3576864803030013, 'betax': 0.09485023151811346, 'zetax': 0.21252221960122097}, {'learning_rounds': 3, 'learning_time': 2807.89964, 'training_set_loglikelihood': -3108.4019596042964304})
+run5
+({'alpha': 0.36193563220961666, 'betax': 0.09971687537566294, 'zetax': 0.18052589936452135}, {'learning_rounds': 3, 'learning_time': 2806.131612, 'training_set_loglikelihood': -3109.760589562097367})
+run6
+({'alpha': 0.37399967598751926, 'betax': 0.10186711789316846, 'zetax': 0.18950543125888542}, {'learning_rounds': 3, 'learning_time': 2820.628171, 'training_set_loglikelihood': -3062.6479040171119135})
+run7
+({'alpha': 0.38553396501264336, 'betax': 0.09106814054006042, 'zetax': 0.18938085458974885}, {'learning_rounds': 3, 'learning_time': 2835.745297, 'training_set_loglikelihood': -3077.132333418471786})
+run8
+({'alpha': 0.37493849908456656, 'betax': 0.09800708108541185, 'zetax': 0.19807190792103055}, {'learning_rounds': 3, 'learning_time': 2824.531221, 'training_set_loglikelihood': -3171.3836447123616906})
+run9
+({'alpha': 0.37467292591977686, 'betax': 0.09750328319311392, 'zetax': 0.24378887724586026}, {'learning_rounds': 3, 'learning_time': 2823.321616, 'training_set_loglikelihood': -3126.903973176054072})
+run10
+({'alpha': 0.3784487772407561, 'betax': 0.0975255932222175, 'zetax': 0.2173843128492142}, {'learning_rounds': 3, 'learning_time': 2823.289781, 'training_set_loglikelihood': -3093.3547347992947327})

@@ -1,7 +1,5 @@
 #include "forwards_backwards.h"
 
-#define MALLOC_VARS(n_states) (DdNode**) malloc(ceil(log2(n_states)) * sizeof(DdNode*))
-
 int forwards(
     CUDD_VALUE_TYPE* omega,
     CUDD_VALUE_TYPE* P,
@@ -24,6 +22,29 @@ int backwards(
     return fb(_backwards, omega, P, pi, n_states, n_obs, beta);
 }
 
+int log_forwards(
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* alpha
+) {
+    return fb(_log_forwards, omega, P, pi, n_states, n_obs, alpha);
+}
+
+
+int log_backwards(
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* beta
+) {
+    return fb(_log_backwards, omega, P, pi, n_states, n_obs, alpha);
+}
+
 int fb(
     DdNode** (*_fb)(
         DdManager* manager,
@@ -43,20 +64,22 @@ int fb(
     CUDD_VALUE_TYPE* ab // output variable
 ) {
     DdManager* dd = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+    Cudd_SetEpsilon(dd, 0);
 
     int dump_n_rows = n_states;
     int dump_n_cols = n_states;
     int n_row_vars = 0;
     int n_col_vars = 0;
 
-    DdNode** row_vars = MALLOC_VARS(n_states);
-    DdNode** col_vars = MALLOC_VARS(n_states);
-    DdNode** comp_row_vars = MALLOC_VARS(n_states);
-    DdNode** comp_col_vars = MALLOC_VARS(n_states);
+    int n_vars = ceil(log2(n_states));
+    DdNode** row_vars = safe_malloc(sizeof(DdNode*), n_vars);
+    DdNode** col_vars = safe_malloc(sizeof(DdNode*), n_vars);
+    DdNode** comp_row_vars = safe_malloc(sizeof(DdNode*), n_vars);
+    DdNode** comp_col_vars = safe_malloc(sizeof(DdNode*), n_vars);
 
     DdNode* _P;
     DdNode* _pi;
-    DdNode** _omega = (DdNode**) malloc((n_obs) * sizeof(DdNode*));
+    DdNode** _omega = safe_malloc(sizeof(DdNode*), n_obs);
 
     Sudd_addRead(
         P,
@@ -141,9 +164,8 @@ int fb(
         );
     }
 
-    int err = Cudd_DebugCheck(dd);
     Cudd_Quit(dd);
-    return err;
+    return 0;
 }
 
 DdNode** _forwards(
@@ -156,9 +178,8 @@ DdNode** _forwards(
     int n_vars,
     int n_obs
 ) {
-    DdNode** alpha = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
+    DdNode** alpha = safe_malloc(sizeof(DdNode*), n_obs + 1);
     alpha[0] = pi;
-    Cudd_Ref(alpha[0]);
 
     for (int t = 1; t <= n_obs; t++) {
         DdNode* alpha_temp_0 = Cudd_addApply(manager, Cudd_addTimes, omega[t - 1], alpha[t - 1]);
@@ -187,9 +208,8 @@ DdNode** _backwards(
     DdNode* _P = Cudd_addSwapVariables(manager, P, column_vars, row_vars, n_vars);
     Cudd_Ref(_P);
 
-    DdNode** beta = (DdNode**) malloc(sizeof(DdNode*) * (n_obs + 1));
-    beta[n_obs] = Cudd_addConst(manager, 1);
-    Cudd_Ref(beta[n_obs]);
+    DdNode** beta = safe_malloc(sizeof(DdNode*), n_obs + 1);
+    beta[n_obs] = Cudd_ReadOne(manager);
 
     for (int t = n_obs - 1; 0 <= t; t--) {
         DdNode* beta_temp_0 = Cudd_addMatrixMultiply(manager, _P, beta[t + 1], row_vars, n_vars);
@@ -208,7 +228,7 @@ DdNode** _backwards(
 }
 
 // Calculates alpha numerically but using numpy arrays
-int forwards_numeric_numpy(double* omega, 
+int forwards_numeric_c(double* omega, 
                          double* P, 
                          double* pi,
                          int n_states,
@@ -241,7 +261,7 @@ int forwards_numeric_numpy(double* omega,
 }
 
 // Calculates beta numerically but using numpy arrays
-int backwards_numeric_numpy(double* omega, 
+int backwards_numeric_c(double* omega, 
                          double* P, 
                          double* pi,
                          int n_states,
@@ -269,4 +289,114 @@ int backwards_numeric_numpy(double* omega,
     }
 
     return 0;
+}
+DdNode** _log_forwards(
+    DdManager* dd,
+    DdNode** omega,
+    DdNode* P,
+    DdNode* pi,
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
+    int n_obs
+) {
+    DdNode* log_P = Cudd_addMonadicApply(dd, Cudd_addLog, P);
+    Cudd_Ref(log_P);
+    DdNode* log_pi = Cudd_addMonadicApply(dd, Cudd_addLog, pi);
+    Cudd_Ref(log_pi);
+    DdNode** log_omega = safe_malloc(sizeof(DdNode*), n_obs);
+    for (size_t t = 0; t < n_obs; t++) {
+        log_omega[t] = Cudd_addMonadicApply(dd, Cudd_addLog, omega[t]);
+        Cudd_Ref(log_omega[t]);
+    }
+
+    DdNode** log_alpha = safe_malloc(sizeof(DdNode*), n_obs + 1);
+    log_alpha[0] = log_pi;
+    for (size_t t = 1; t < n_obs + 1; t++) {
+        DdNode* log_alpha_temp_0 = Cudd_addApply(dd, Cudd_addPlus, log_omega[t - 1], log_alpha[t - 1]);
+        Cudd_Ref(log_alpha_temp_0);
+        DdNode* log_alpha_temp_1 = Cudd_addLogMatrixMultiply(dd, log_P, log_alpha_temp_0, row_vars, n_vars);
+        Cudd_Ref(log_alpha_temp_1);
+        log_alpha[t] = Cudd_addSwapVariables(dd, log_alpha_temp_1, column_vars, row_vars, n_vars);
+        Cudd_Ref(log_alpha[t]);
+        Cudd_RecursiveDeref(dd, log_alpha_temp_0);
+        Cudd_RecursiveDeref(dd, log_alpha_temp_1);
+    }
+
+    DdNode** alpha = safe_malloc(sizeof(DdNode*), n_obs + 1);
+    for (size_t t = 0; t < n_obs + 1; t++) {
+        alpha[t] = Cudd_addMonadicApply(dd, Cudd_addExp, log_alpha[t]);
+        Cudd_Ref(alpha[t]);
+        Cudd_RecursiveDeref(dd, log_alpha[t]);
+    }
+    free(log_alpha);
+
+    Cudd_RecursiveDeref(dd, log_P);
+    Cudd_RecursiveDeref(dd, log_pi);
+    for (size_t t = 0; t < n_obs; t++) {
+        Cudd_RecursiveDeref(dd, log_omega[t]);
+    }
+    free(log_omega);
+
+    return alpha;
+}
+
+DdNode** _log_backwards(
+    DdManager* dd,
+    DdNode** omega,
+    DdNode* P,
+    DdNode* pi,
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
+    int n_obs
+) {
+    DdNode* _P = Cudd_addSwapVariables(dd, P, column_vars, row_vars, n_vars);
+    Cudd_Ref(_P);
+    DdNode* log_P = Cudd_addMonadicApply(dd, Cudd_addLog, _P);
+    Cudd_Ref(log_P);
+    Cudd_RecursiveDeref(dd, _P);
+    DdNode** log_omega = safe_malloc(sizeof(DdNode*), n_obs);
+    for (size_t t = 0; t < n_obs; t++) {
+        log_omega[t] = Cudd_addMonadicApply(dd, Cudd_addLog, omega[t]);
+        Cudd_Ref(log_omega[t]);
+    }
+
+    DdNode** log_beta = safe_malloc(sizeof(DdNode*), n_obs + 1);
+    log_beta[n_obs] = Cudd_ReadZero(dd);
+    for (ssize_t t = n_obs - 1; 0 <= t; t--) {
+        DdNode* log_beta_temp_0 = Cudd_addLogMatrixMultiply(dd, log_P, log_beta[t + 1], row_vars, n_vars);
+        Cudd_Ref(log_beta_temp_0);
+        DdNode* log_beta_temp_1 = Cudd_addSwapVariables(dd, log_beta_temp_0, column_vars, row_vars, n_vars);
+        Cudd_Ref(log_beta_temp_1);
+        log_beta[t] = Cudd_addApply(dd, Cudd_addPlus, log_omega[t], log_beta_temp_1);
+        Cudd_Ref(log_beta[t]);
+        Cudd_RecursiveDeref(dd, log_beta_temp_0);
+        Cudd_RecursiveDeref(dd, log_beta_temp_1);
+    }
+
+    DdNode** beta = safe_malloc(sizeof(DdNode*), n_obs + 1);
+    for (size_t t = 0; t < n_obs + 1; t++) {
+        beta[t] = Cudd_addMonadicApply(dd, Cudd_addExp, log_beta[t]);
+        Cudd_Ref(beta[t]);
+        Cudd_RecursiveDeref(dd, log_beta[t]);
+    }
+    free(log_beta);
+
+    Cudd_RecursiveDeref(dd, log_P);
+    for (size_t t = 0; t < n_obs; t++) {
+        Cudd_RecursiveDeref(dd, log_omega[t]);
+    }
+    free(log_omega);
+
+    return beta;
+}
+
+void *safe_malloc(size_t type_size, size_t amount) {
+    void *ptr = malloc(type_size * amount);
+    if (ptr == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    return ptr;
 }

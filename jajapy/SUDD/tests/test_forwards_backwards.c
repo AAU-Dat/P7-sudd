@@ -600,6 +600,166 @@ START_TEST(fb_forwards_3x3_3_n_obs) {
 }
 END_TEST
 
+START_TEST(fb_log_backwards_3x3_3_n_obs) {
+    // Arrange
+    int n_states = 3, n_obs = 3;
+
+    CUDD_VALUE_TYPE omega[] = {1, 2, 3, 
+                               4, 5, 6, 
+                               7, 8, 9};
+    CUDD_VALUE_TYPE ** omeganum = (double**)malloc((n_obs + 1) * sizeof(double*));
+    for (int i = 0; i < n_obs + 1; i++)
+    {
+        omeganum[i] = (double*)malloc(n_states * sizeof(double));
+    }
+    omeganum[0][0] = 1;
+    omeganum[0][1] = 2;
+    omeganum[0][2] = 3;
+    omeganum[1][0] = 4;
+    omeganum[1][1] = 5;
+    omeganum[1][2] = 6;
+    omeganum[2][0] = 7;
+    omeganum[2][1] = 8;
+    omeganum[2][2] = 9;
+
+    double P[] = {1, 2, 3, 
+                  4, 5, 6, 
+                  7, 8, 9};
+    CUDD_VALUE_TYPE ** Pnum = (double**)malloc((n_obs + 1) * sizeof(double*));
+    for (int i = 0; i < n_obs + 1; i++)
+    {
+        Pnum[i] = (double*)malloc(n_states * sizeof(double));
+    }
+    Pnum[0][0] = 1;
+    Pnum[0][1] = 2;
+    Pnum[0][2] = 3;
+    Pnum[1][0] = 4;
+    Pnum[1][1] = 5;
+    Pnum[1][2] = 6;
+    Pnum[2][0] = 7;
+    Pnum[2][1] = 8;
+    Pnum[2][2] = 9;
+
+    CUDD_VALUE_TYPE pi[] = {1, 2, 3};
+
+    // Act
+    CUDD_VALUE_TYPE beta[] = {0, 0, 0, 
+                              0, 0, 0, 
+                              0, 0, 0, 
+                              0, 0, 0};
+
+    // Act
+    int err = log_backwards(omega, P, pi, n_states, n_obs, beta);
+    ck_assert(err == 0);
+
+    // Assert
+    double** betanum = backwards_numeric(omeganum, Pnum, pi, n_states, n_obs);
+
+    for (int t = 0; t < n_obs; t++) {
+        for (int s = 0; s < n_states; s++) {
+            ck_assert_double_eq(betanum[t][s], beta[t * n_states + s]);
+        }
+    }
+
+    // Clean
+    for (int i = 0; i <= n_obs; i++)
+    {
+        free(omeganum[i]);
+    }
+    for (int i = 0; i < n_states; i++)
+    {
+        free(Pnum[i]);
+    }
+    for (int i = 0; i < n_states; i++)
+    {
+        free(betanum[i]);
+    }
+    free(omeganum);
+    free(Pnum);
+    free(betanum);
+}
+END_TEST
+
+START_TEST(fb_log_forwards_3x3_3_n_obs) {
+    // Arrange
+    int n_states = 3, n_obs = 3;
+
+    CUDD_VALUE_TYPE omega[] = {1, 2, 3, 
+                               4, 5, 6, 
+                               7, 8, 9};
+    CUDD_VALUE_TYPE ** omeganum = (double**)malloc((n_obs + 1) * sizeof(double*));
+    for (int i = 0; i < n_obs + 1; i++)
+    {
+        omeganum[i] = (double*)malloc(n_states * sizeof(double));
+    }
+    omeganum[0][0] = 1;
+    omeganum[0][1] = 2;
+    omeganum[0][2] = 3;
+    omeganum[1][0] = 4;
+    omeganum[1][1] = 5;
+    omeganum[1][2] = 6;
+    omeganum[2][0] = 7;
+    omeganum[2][1] = 8;
+    omeganum[2][2] = 9;
+
+    double P[] = {1, 2, 3, 
+                  4, 5, 6, 
+                  7, 8, 9};
+    CUDD_VALUE_TYPE ** Pnum = (double**)malloc((n_obs + 1) * sizeof(double*));
+    for (int i = 0; i < n_obs + 1; i++)
+    {
+        Pnum[i] = (double*)malloc(n_states * sizeof(double));
+    }
+    Pnum[0][0] = 1;
+    Pnum[0][1] = 2;
+    Pnum[0][2] = 3;
+    Pnum[1][0] = 4;
+    Pnum[1][1] = 5;
+    Pnum[1][2] = 6;
+    Pnum[2][0] = 7;
+    Pnum[2][1] = 8;
+    Pnum[2][2] = 9;
+
+    CUDD_VALUE_TYPE pi[] = {1, 2, 3};
+
+    // Act
+    CUDD_VALUE_TYPE beta[] = {0, 0, 0, 
+                              0, 0, 0, 
+                              0, 0, 0, 
+                              0, 0, 0};
+
+    // Act
+    int err = log_forwards(omega, P, pi, n_states, n_obs, beta);
+    ck_assert(err == 0);
+
+    // Assert
+    double** betanum = forwards_numeric(omeganum, Pnum, pi, n_states, n_obs);
+
+    for (int t = 0; t < n_obs; t++) {
+        for (int s = 0; s < n_states; s++) {
+            ck_assert_double_eq(betanum[t][s], beta[t * n_states + s]);
+        }
+    }
+
+    // Clean
+    for (int i = 0; i <= n_obs; i++)
+    {
+        free(omeganum[i]);
+    }
+    for (int i = 0; i < n_states; i++)
+    {
+        free(Pnum[i]);
+    }
+    for (int i = 0; i < n_states; i++)
+    {
+        free(betanum[i]);
+    }
+    free(omeganum);
+    free(Pnum);
+    free(betanum);
+}
+END_TEST
+
 START_TEST(numerical_forwardstest) {
     // Arrange
     int states = 3, n_obs = 3;
@@ -747,6 +907,8 @@ Suite* forwards_backwards_suite(void)
     tcase_add_test(tc_forwards_backwards, _backwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, fb_forwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, fb_backwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, fb_log_forwards_3x3_3_n_obs);
+    tcase_add_test(tc_forwards_backwards, fb_log_backwards_3x3_3_n_obs);
     tcase_add_test(tc_forwards_backwards, numerical_forwardstest);
     tcase_add_test(tc_forwards_backwards, numerical_backwardstest);
 

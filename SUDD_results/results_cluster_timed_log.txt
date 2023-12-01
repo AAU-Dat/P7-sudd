@@ -1,0 +1,21 @@
+
+run 1
+({'ws_fail': 0.0019349611790816608, 'line_fail': 0.00023259334903612218, 'switch_fail': 0.0003184784428756431}, {'learning_rounds': 3, 'learning_time': 18.214039, 'training_set_loglikelihood': -6023.846733393645})
+run 2
+({'ws_fail': 0.0021136095337690175, 'line_fail': 0.0001818554039383678, 'switch_fail': 0.00022718621544698546}, {'learning_rounds': 3, 'learning_time': 18.144501, 'training_set_loglikelihood': -5904.51420820061})
+run 3
+({'ws_fail': 0.0020640159065637856, 'line_fail': 0.00019475675828647487, 'switch_fail': 0.0001989926047862708}, {'learning_rounds': 3, 'learning_time': 18.175649, 'training_set_loglikelihood': -5945.628281703932})
+run 4
+({'ws_fail': 0.0020657263502554756, 'line_fail': 0.00030263709350392836, 'switch_fail': 0.0002977994986811936}, {'learning_rounds': 3, 'learning_time': 18.095404, 'training_set_loglikelihood': -5985.387815412606})
+run 5
+({'ws_fail': 0.0019654718805785657, 'line_fail': 0.00018125476663767627, 'switch_fail': 0.00028882492713313196}, {'learning_rounds': 3, 'learning_time': 18.235133, 'training_set_loglikelihood': -6037.3013269785115})
+run 6
+({'ws_fail': 0.00208921551772609, 'line_fail': 0.00015392941980833593, 'switch_fail': 0.000271589083381855}, {'learning_rounds': 3, 'learning_time': 18.104882, 'training_set_loglikelihood': -5858.506893001674})
+run 7
+({'ws_fail': 0.0020287134127652726, 'line_fail': 0.00022348099786476946, 'switch_fail': 0.0002993749235375586}, {'learning_rounds': 3, 'learning_time': 18.220693, 'training_set_loglikelihood': -6110.795617393277})
+run 8
+({'ws_fail': 0.0018648416011424517, 'line_fail': 0.00019295136885637065, 'switch_fail': 0.00019289294254603767}, {'learning_rounds': 3, 'learning_time': 18.145436, 'training_set_loglikelihood': -6103.865166688175})
+run 9
+({'ws_fail': 0.001878894046413041, 'line_fail': 0.00023070246082220288, 'switch_fail': 0.0002387749400453658}, {'learning_rounds': 3, 'learning_time': 18.221296, 'training_set_loglikelihood': -6046.149853043065})
+run 10
+({'ws_fail': 0.0022245410185200948, 'line_fail': 0.0003215763699018749, 'switch_fail': 0.0002579745912675259}, {'learning_rounds': 3, 'learning_time': 18.24637, 'training_set_loglikelihood': -5914.9257760472})

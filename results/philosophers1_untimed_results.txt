@@ -1,0 +1,20 @@
+run1
+({'alpha': 0.3816479248656856, 'betax': 0.11012810069956767, 'zetax': 0.2467035596757973}, {'learning_rounds': 13, 'learning_time': 3104.877479, 'training_set_loglikelihood': -1973.635132879766})
+run2
+({'alpha': 0.42059406506267505, 'betax': 0.11069952557091879, 'zetax': 0.1897128853717501}, {'learning_rounds': 14, 'learning_time': 3444.001539, 'training_set_loglikelihood': -1913.807091203689})
+run3
+({'alpha': 0.42388102823926205, 'betax': 0.10861235470640283, 'zetax': 0.20414760606715007}, {'learning_rounds': 14, 'learning_time': 3306.172879, 'training_set_loglikelihood': -1959.6969682093245})
+run4
+({'alpha': 0.41049405583262855, 'betax': 0.10929545582968199, 'zetax': 0.24456045996330433}, {'learning_rounds': 13, 'learning_time': 3135.2405, 'training_set_loglikelihood': -1935.8616579876343})
+run5
+({'alpha': 0.45026442662481875, 'betax': 0.12312586201122527, 'zetax': 0.22621107122105968}, {'learning_rounds': 14, 'learning_time': 3382.876629, 'training_set_loglikelihood': -1958.5176850762043})
+run6
+({'alpha': 0.36231323554506706, 'betax': 0.09102980281011301, 'zetax': 0.19397984495282872}, {'learning_rounds': 14, 'learning_time': 3277.778073, 'training_set_loglikelihood': -1928.556270705291})
+run7
+({'alpha': 0.4568694792364237, 'betax': 0.12523874906296073, 'zetax': 0.2000687586291319}, {'learning_rounds': 13, 'learning_time': 3128.617869, 'training_set_loglikelihood': -1979.035462075573})
+run8
+({'alpha': 0.40918738503950486, 'betax': 0.1146998131888113, 'zetax': 0.21012450521374906}, {'learning_rounds': 13, 'learning_time': 3112.432828, 'training_set_loglikelihood': -1952.6732008949677})
+run9
+({'alpha': 0.4073961924905674, 'betax': 0.11589240398705539, 'zetax': 0.1893750397294681}, {'learning_rounds': 13, 'learning_time': 3209.005316, 'training_set_loglikelihood': -1921.969594100851})
+run10
+({'alpha': 0.44661382826656343, 'betax': 0.12409621092626584, 'zetax': 0.21454777858566504}, {'learning_rounds': 12, 'learning_time': 2772.074116, 'training_set_loglikelihood': -1997.4707156475024})

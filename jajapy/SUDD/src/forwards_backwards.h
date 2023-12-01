@@ -28,6 +28,22 @@ int backwards(
     ssize_t n_obs,
     CUDD_VALUE_TYPE* beta
 );
+int log_forwards(
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* alpha
+);
+int log_backwards(
+    CUDD_VALUE_TYPE* omega,
+    CUDD_VALUE_TYPE* P,
+    CUDD_VALUE_TYPE* pi,
+    ssize_t n_states,
+    ssize_t n_obs,
+    CUDD_VALUE_TYPE* beta
+);
 int fb(
     DdNode** (*_fb)(
         DdManager* manager,
@@ -66,7 +82,7 @@ DdNode** _backwards(
     int n_vars,
     int k_j
 );
-int backwards_numeric_numpy(double* omega, 
+int backwards_numeric_c(double* omega, 
                          double* P, 
                          double* pi,
                          int n_states,
@@ -74,11 +90,32 @@ int backwards_numeric_numpy(double* omega,
                          double* beta
 );
 
-int forwards_numeric_numpy(double* omega, 
+int forwards_numeric_c(double* omega, 
                          double* P, 
                          double* pi,
                          int n_states,
                          int n_obs,
                          double* alpha
 );
+DdNode** _log_forwards(
+    DdManager* manager,
+    DdNode** omega, 
+    DdNode* P, 
+    DdNode* pi, 
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
+    int k_j
+);
+DdNode** _log_backwards(
+    DdManager* manager,
+    DdNode** omega, 
+    DdNode* P, 
+    DdNode* pi, 
+    DdNode** row_vars,
+    DdNode** column_vars,
+    int n_vars,
+    int k_j
+);
+void* safe_malloc(size_t type_size, size_t amount);
 #endif

@@ -1,5 +1,4 @@
 #include "conversion.h"
-#include <cudd.h>
 
 CUDD_VALUE_TYPE* add_to_vector(DdNode* add, int n, int var_index_offset, int var_index_multiplier) {
     int n_variables = (int) ceil(log2(n));

@@ -1,0 +1,20 @@
+run1
+({'mu1a': 0.20377582604711356, 'mu1b': 1.7853407794147813, 'mu2': 2.3095586392436194, 'kappa': 4.051030468781604}, {'learning_rounds': 3, 'learning_time': 1016.030532, 'training_set_loglikelihood': 7146.8798001467843113})
+run2
+({'mu1a': 0.21021582759099952, 'mu1b': 1.8819441881103196, 'mu2': 2.28307318091685, 'kappa': 3.9305835915469705}, {'learning_rounds': 3, 'learning_time': 1066.605341, 'training_set_loglikelihood': 7179.0985813459936455})
+run3
+({'mu1a': 0.1731234414795456, 'mu1b': 1.881620140154898, 'mu2': 1.8320794605341229, 'kappa': 3.750784349141557}, {'learning_rounds': 3, 'learning_time': 1064.72375, 'training_set_loglikelihood': 7198.099000709815153})
+run4
+({'mu1a': 0.17813503387582885, 'mu1b': 1.8067982007405499, 'mu2': 2.2452829977715423, 'kappa': 4.207097154952973}, {'learning_rounds': 3, 'learning_time': 1360.767119, 'training_set_loglikelihood': 7127.6644382502239354})
+run5
+({'mu1a': 0.19814893785315843, 'mu1b': 1.7146518030846751, 'mu2': 1.9531914447143186, 'kappa': 4.071912438098823}, {'learning_rounds': 3, 'learning_time': 1144.368203, 'training_set_loglikelihood': 7211.5062696651435354})
+run6
+({'mu1a': 0.19683919568985278, 'mu1b': 1.8776460197092362, 'mu2': 1.714210072597042, 'kappa': 3.9271897507565403}, {'learning_rounds': 3, 'learning_time': 1006.601254, 'training_set_loglikelihood': 7151.8969437303936547})
+run7
+({'mu1a': 0.18763995982124143, 'mu1b': 1.7838184010747011, 'mu2': 2.099815109017511, 'kappa': 4.042830604963609}, {'learning_rounds': 3, 'learning_time': 966.100878, 'training_set_loglikelihood': 7192.844556721161235})
+run8
+({'mu1a': 0.14113276524935464, 'mu1b': 1.8310111285625597, 'mu2': 2.406144861937528, 'kappa': 4.0274389763166605}, {'learning_rounds': 3, 'learning_time': 612.114184, 'training_set_loglikelihood': 7142.087704799575262})
+run9
+({'mu1a': 0.17270530739368525, 'mu1b': 1.886816710945279, 'mu2': 1.9195645052663193, 'kappa': 4.065293813663573}, {'learning_rounds': 3, 'learning_time': 1136.919617, 'training_set_loglikelihood': 7226.9452848359885224})
+run10
+({'mu1a': 0.21967925308248962, 'mu1b': 1.8163537679353896, 'mu2': 1.7070144445841757, 'kappa': 4.039476590254048}, {'learning_rounds': 3, 'learning_time': 1141.957504, 'training_set_loglikelihood': 7058.173253775352033})

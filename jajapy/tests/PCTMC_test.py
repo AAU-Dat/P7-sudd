@@ -60,6 +60,10 @@ m = loadPrism("jajapy/tests/materials/pctmc/tl.pm")
 
 
 class PCTMCTestclass(unittest.TestCase):
+    LOW_INITIAL_PARAMETER = 0.000025
+    MID_INITIAL_PARAMETER = 0.5
+    PRECISION = 7
+
     def test_PCTMC_instantiation(var):
         var.assertFalse(m.isInstantiated())
         for i in range(6):
@@ -181,12 +185,12 @@ class PCTMCTestclass(unittest.TestCase):
 
     def test_PCTMC_parameters_learning_untimed(var):
         initial_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        initial_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.5, 0.5, 0.5, 0.5])
+        initial_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.MID_INITIAL_PARAMETER, PCTMCTestclass.MID_INITIAL_PARAMETER, PCTMCTestclass.MID_INITIAL_PARAMETER, PCTMCTestclass.MID_INITIAL_PARAMETER])
         training_set = loadSet("jajapy/tests/materials/pctmc/untimed_training_set_PCTMC.txt")
         bw = BW()
         # bw.processes = 1  # uncomment this when debugging
         output_gotten = bw.fit_parameters(
-            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX
+            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.LOG_SEMIRING
         )
         output_expected = {
             "mu1a": 0.19154272606453604,
@@ -195,16 +199,16 @@ class PCTMCTestclass(unittest.TestCase):
             "kappa": 4.0504485338277245,
         }
         for key, _ in output_gotten.items():
-            var.assertAlmostEqual(output_expected[key], output_gotten[key], 7)
+            var.assertAlmostEqual(output_expected[key], output_gotten[key], PCTMCTestclass.PRECISION)
 
     def test_PCTMC_parameters_learning_timed(var):
         initial_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        initial_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.5, 0.5, 0.5, 0.5])
+        initial_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.MID_INITIAL_PARAMETER, PCTMCTestclass.MID_INITIAL_PARAMETER, PCTMCTestclass.MID_INITIAL_PARAMETER, PCTMCTestclass.MID_INITIAL_PARAMETER])
         training_set = loadSet("jajapy/tests/materials/pctmc/timed_training_set_PCTMC.txt")
         bw = BW()
         # bw.processes = 1  # uncomment this when debugging
         output_gotten = bw.fit_parameters(
-            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX
+            training_set, initial_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.LOG_SEMIRING
         )
         output_expected = {
             "mu1a": 0.1867468928590901,
@@ -213,87 +217,119 @@ class PCTMCTestclass(unittest.TestCase):
             "kappa": 4.051248447744933,
         }
         for key, _ in output_gotten.items():
-            var.assertAlmostEqual(output_expected[key], output_gotten[key], 7)
+            var.assertAlmostEqual(output_expected[key], output_gotten[key], PCTMCTestclass.PRECISION)
 
     def test_PCTMC_parameters_learning_untimed_all_methods_equal(var):
         # Arrange
         training_set = loadSet("jajapy/tests/materials/pctmc/untimed_training_set_PCTMC.txt")
 
         classic_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        classic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        classic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         classic_bw = BW()
 
         element_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        element_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         element_bw = BW()
 
         matrix_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        matrix_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        matrix_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         matrix_bw = BW()
 
         add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         add_bw = BW()
         
         element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
         element_c_bw = BW()
 
-        # Act
-        # classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
-        # element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
-        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
-        # add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
-        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENTC)
+        log_semiring_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        log_semiring_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
+        log_semiring_bw = BW()
 
-        # Assert
-        #for key, _ in matrix_output.items():
-            # var.assertAlmostEqual(classic_output[key], element_output[key], 7)
-            # var.assertAlmostEqual(element_output[key], matrix_output[key], 7)
-            # var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
+        log_symbolic_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        log_symbolic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
+        log_symbolic_bw = BW()
+
+        # Act
+        log_semiring_output = log_semiring_bw.fit_parameters(training_set, log_semiring_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.LOG_SEMIRING)
+
+        classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
+
+        element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC)
+
+        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX_NUMERIC)
+
+        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC)
+
+        log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING)
+
+        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC_C)
         
-        for key, _ in matrix_output.items():
-            var.assertAlmostEqual(matrix_output[key], element_c_output[key], 7)
+        # Assert
+        for key, _ in log_semiring_output.items():
+            var.assertAlmostEqual(log_semiring_output[key], classic_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], element_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], matrix_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], add_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], log_symbolic_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], element_c_output[key], PCTMCTestclass.PRECISION)    
 
     def test_PCTMC_parameters_learningntimed_all_methods_equal(var):
         # Arrange
         training_set = loadSet("jajapy/tests/materials/pctmc/timed_training_set_PCTMC.txt")
 
         classic_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        classic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        classic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         classic_bw = BW()
 
         element_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        element_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         element_bw = BW()
 
         matrix_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        matrix_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        matrix_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         matrix_bw = BW()
 
         add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         add_bw = BW()
         
         element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
         element_c_bw = BW()
 
-        # Act
-        # classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
-        # element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENT)
-        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX)
-        # add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ADD)
-        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.ELEMENTC)
-        # Assert
-        for key, _ in matrix_output.items():
-            var.assertAlmostEqual(matrix_output[key], element_c_output[key], 7)
-        # for key, _ in matrix_output.items():
-            # var.assertAlmostEqual(classic_output[key], element_output[key], 7)
-            # var.assertAlmostEqual(element_output[key], matrix_output[key], 7)
-            # var.assertAlmostEqual(matrix_output[key], add_output[key], 7)
-            
+        log_semiring_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        log_semiring_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
+        log_semiring_bw = BW()
 
+        log_symbolic_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        log_symbolic_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
+        log_symbolic_bw = BW()
+
+        # Act
+        log_semiring_output = log_semiring_bw.fit_parameters(training_set, log_semiring_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.LOG_SEMIRING)
+
+        classic_output = classic_bw.fit_parameters(training_set, classic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.CLASSIC)
+
+        element_output = element_bw.fit_parameters(training_set, element_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC)
+
+        matrix_output = matrix_bw.fit_parameters(training_set, matrix_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.MATRIX_NUMERIC)
+
+        add_output = add_bw.fit_parameters(training_set, add_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC)
+
+        log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING)
+
+        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC_C)
+
+        # Assert
+        for key, _ in log_semiring_output.items():
+            var.assertAlmostEqual(log_semiring_output[key], classic_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], element_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], matrix_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], add_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], log_symbolic_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], element_c_output[key], PCTMCTestclass.PRECISION)
 
 if __name__ == "__main__":
     unittest.main()
