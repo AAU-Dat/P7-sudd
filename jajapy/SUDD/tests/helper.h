@@ -13,4 +13,6 @@ DdNode* vector_2x1(DdManager* manager, double vector[2], DdNode* row_var);
 DdNode* vector_3x1(DdManager* manager, double vector[3], DdNode* row_vars[2]);
 double** forwards_numeric(double** omega, double** P, double* pi, int n_states, int n_obs);
 double** backwards_numeric(double** omega, double** P, double* pi, int n_states, int n_obs);
+int forwards_numeric_numpy(double* omega, double* P, double* pi, int n_states, int n_obs, double* alpha);
+int backwards_numeric_numpy(double* omega, double* P, double* pi, int n_states, int n_obs, double* beta);
 #endif

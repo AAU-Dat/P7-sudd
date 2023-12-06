@@ -82,6 +82,21 @@ DdNode** _backwards(
     int n_vars,
     int k_j
 );
+int backwards_numeric_c(double* omega, 
+                         double* P, 
+                         double* pi,
+                         int n_states,
+                         int n_obs,
+                         double* beta
+);
+
+int forwards_numeric_c(double* omega, 
+                         double* P, 
+                         double* pi,
+                         int n_states,
+                         int n_obs,
+                         double* alpha
+);
 DdNode** _log_forwards(
     DdManager* manager,
     DdNode** omega, 
