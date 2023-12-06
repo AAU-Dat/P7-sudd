@@ -42,7 +42,7 @@ int log_backwards(
     ssize_t n_obs,
     CUDD_VALUE_TYPE* beta
 ) {
-    return fb(_log_backwards, omega, P, pi, n_states, n_obs, alpha);
+    return fb(_log_backwards, omega, P, pi, n_states, n_obs, beta);
 }
 
 int fb(
