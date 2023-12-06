@@ -238,6 +238,10 @@ class PCTMCTestclass(unittest.TestCase):
         add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         add_bw = BW()
+        
+        element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
+        element_c_bw = BW()
 
         log_semiring_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         log_semiring_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
@@ -260,6 +264,8 @@ class PCTMCTestclass(unittest.TestCase):
 
         log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING)
 
+        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC_C)
+        
         # Assert
         for key, _ in log_semiring_output.items():
             var.assertAlmostEqual(log_semiring_output[key], classic_output[key], PCTMCTestclass.PRECISION)
@@ -267,6 +273,7 @@ class PCTMCTestclass(unittest.TestCase):
             var.assertAlmostEqual(log_semiring_output[key], matrix_output[key], PCTMCTestclass.PRECISION)
             var.assertAlmostEqual(log_semiring_output[key], add_output[key], PCTMCTestclass.PRECISION)
             var.assertAlmostEqual(log_semiring_output[key], log_symbolic_output[key], PCTMCTestclass.PRECISION)
+            var.assertAlmostEqual(log_semiring_output[key], element_c_output[key], PCTMCTestclass.PRECISION)    
 
     def test_PCTMC_parameters_learningntimed_all_methods_equal(var):
         # Arrange
@@ -287,6 +294,10 @@ class PCTMCTestclass(unittest.TestCase):
         add_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         add_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         add_bw = BW()
+        
+        element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
+        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
+        element_c_bw = BW()
 
         log_semiring_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
         log_semiring_model.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
@@ -309,6 +320,8 @@ class PCTMCTestclass(unittest.TestCase):
 
         log_symbolic_output = log_symbolic_bw.fit_parameters(training_set, log_symbolic_model, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING)
 
+        element_c_output = element_c_bw.fit_parameters(training_set, element_model_c, ["mu1a", "mu1b", "mu2", "kappa"], compute_alpha_beta_how=ComputeAlphaBetaHow.NUMERIC_C)
+
         # Assert
         for key, _ in log_semiring_output.items():
             var.assertAlmostEqual(log_semiring_output[key], classic_output[key], PCTMCTestclass.PRECISION)
@@ -316,7 +329,7 @@ class PCTMCTestclass(unittest.TestCase):
             var.assertAlmostEqual(log_semiring_output[key], matrix_output[key], PCTMCTestclass.PRECISION)
             var.assertAlmostEqual(log_semiring_output[key], add_output[key], PCTMCTestclass.PRECISION)
             var.assertAlmostEqual(log_semiring_output[key], log_symbolic_output[key], PCTMCTestclass.PRECISION)
-
+            var.assertAlmostEqual(log_semiring_output[key], element_c_output[key], PCTMCTestclass.PRECISION)
 
 if __name__ == "__main__":
     unittest.main()
