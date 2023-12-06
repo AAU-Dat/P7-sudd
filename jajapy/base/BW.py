@@ -1834,10 +1834,15 @@ class BW:
                 and self.training_set.type == 4):
             self._computeAlphas = self._computedAlphas_timed_log_symbolic_PCTMC
             self._computeBetas = self._computedBetas_timed_log_symbolic_PCTMC
+        elif (compute_alpha_beta_how == ComputeAlphaBetaHow.NUMERIC_C 
+                and not self.training_set.type == 4):
+            self._computeAlphas = self._computedAlphas_untimed_element_PCTMC_c
+            self._computeBetas = self._computedBetas_untimed_element_PCTMC_c
         elif (compute_alpha_beta_how == ComputeAlphaBetaHow.NUMERIC_C
                 and self.training_set.type == 4):
-            self._computeAlphas = self._computedAlphas_timed_log_symbolic_PCTMC #TODO
-            self._computeBetas = self._computedBetas_timed_log_symbolic_PCTMC
+            self._computeAlphas = self._computedAlphas_timed_element_PCTMC_c
+            self._computeBetas = self._computedBetas_timed_element_PCTMC_c 
+
 
         self.nb_parameters = self.h.nb_parameters
         self.update_constant = update_constant
