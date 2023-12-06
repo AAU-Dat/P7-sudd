@@ -240,7 +240,7 @@ class PCTMCTestclass(unittest.TestCase):
         add_bw = BW()
         
         element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         element_c_bw = BW()
 
         log_semiring_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
@@ -296,7 +296,7 @@ class PCTMCTestclass(unittest.TestCase):
         add_bw = BW()
         
         element_model_c = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
-        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [0.000025, 0.000025, 0.000025, 0.000025])
+        element_model_c.instantiate(["mu1a", "mu1b", "mu2", "kappa"], [PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER, PCTMCTestclass.LOW_INITIAL_PARAMETER])
         element_c_bw = BW()
 
         log_semiring_model = loadPrism("jajapy/tests/materials/pctmc/tandem_3.sm")
