@@ -9,7 +9,7 @@ for iter in range (1,11):
   file1.write("\nrun "+str(iter)+"\n")
   training_set = original_model.generateSet(100,30,timed=True)
   initial_hypothesis = ja.loadPrism("examples/materials/tandem_3.sm")
-  output_val = ja.BW().fit_nonInstantiatedParameters(training_set, initial_hypothesis,min_val=0.1, max_val=5.0, return_data=True)
+  output_val = ja.BW().fit_nonInstantiatedParameters(training_set, initial_hypothesis,min_val=0.00025, max_val=0.0025, return_data=True, compute_alpha_beta_how=ja.ComputeAlphaBetaHow.MATRIX)
   file1.write(str(output_val))
 
 file1.close()
