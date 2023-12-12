@@ -1,0 +1,21 @@
+
+run 1
+({'alpha': 0.44107613541058405, 'betax': 0.11525106462788172, 'zetax': 0.2495987314203415}, {'learning_rounds': 15, 'learning_time': 1159.255875, 'training_set_loglikelihood': -1970.078509874153})
+run 2
+({'alpha': 0.40934883003301653, 'betax': 0.11152000976576072, 'zetax': 0.23463051050057296}, {'learning_rounds': 13, 'learning_time': 1007.493468, 'training_set_loglikelihood': -1945.5167223049732})
+run 3
+({'alpha': 0.36248875038286005, 'betax': 0.12128576300456985, 'zetax': 0.18901015643531172}, {'learning_rounds': 13, 'learning_time': 1006.509997, 'training_set_loglikelihood': -1966.3751958762023})
+run 4
+({'alpha': 0.44103428977740367, 'betax': 0.1256636702851997, 'zetax': 0.23207894675654617}, {'learning_rounds': 12, 'learning_time': 926.675169, 'training_set_loglikelihood': -1993.4889187367608})
+run 5
+({'alpha': 0.3760890183048333, 'betax': 0.10578138988323652, 'zetax': 0.23608473680339911}, {'learning_rounds': 15, 'learning_time': 1165.318082, 'training_set_loglikelihood': -1996.1801940971566})
+run 6
+({'alpha': 0.4870858116775663, 'betax': 0.12937203376087025, 'zetax': 0.2642294329661979}, {'learning_rounds': 15, 'learning_time': 1164.887886, 'training_set_loglikelihood': -1988.660733144232})
+run 7
+({'alpha': 0.4304530016145966, 'betax': 0.11049636444071896, 'zetax': 0.18965487379408627}, {'learning_rounds': 14, 'learning_time': 1088.343287, 'training_set_loglikelihood': -1934.8647409224882})
+run 8
+({'alpha': 0.4074723687271845, 'betax': 0.11573212699044226, 'zetax': 0.1960027420179238}, {'learning_rounds': 13, 'learning_time': 1013.165118, 'training_set_loglikelihood': -1964.358773876548})
+run 9
+({'alpha': 0.40245539747651976, 'betax': 0.10492343850493122, 'zetax': 0.2395915483875295}, {'learning_rounds': 15, 'learning_time': 1162.20507, 'training_set_loglikelihood': -1921.9990390100193})
+run 10
+({'alpha': 0.40617813505199635, 'betax': 0.11509342343992486, 'zetax': 0.22958962122587476}, {'learning_rounds': 12, 'learning_time': 948.006029, 'training_set_loglikelihood': -1999.2256923531984})

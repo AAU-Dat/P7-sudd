@@ -1,0 +1,21 @@
+
+run 1
+({'alpha': 0.3627953668006419, 'betax': 0.0944822081483844, 'zetax': 0.2245908614326412}, {'learning_rounds': 3, 'learning_time': 248.887392, 'training_set_loglikelihood': -3141.0041086207007})
+run 2
+({'alpha': 0.37073957626387016, 'betax': 0.1047150168635983, 'zetax': 0.1858404753504676}, {'learning_rounds': 3, 'learning_time': 245.514324, 'training_set_loglikelihood': -3077.3984675154506})
+run 3
+({'alpha': 0.3631869446305633, 'betax': 0.0910795814600223, 'zetax': 0.21784633434414416}, {'learning_rounds': 3, 'learning_time': 247.295572, 'training_set_loglikelihood': -3064.4585711490304})
+run 4
+({'alpha': 0.36545712228115357, 'betax': 0.09643773335390884, 'zetax': 0.18854223976878917}, {'learning_rounds': 3, 'learning_time': 245.236345, 'training_set_loglikelihood': -3105.3471880494776})
+run 5
+({'alpha': 0.34868591244596386, 'betax': 0.11296459861045746, 'zetax': 0.20798080817495362}, {'learning_rounds': 3, 'learning_time': 244.146381, 'training_set_loglikelihood': -3086.7153637990164})
+run 6
+({'alpha': 0.37307721013572176, 'betax': 0.0945288975031824, 'zetax': 0.2135117806502173}, {'learning_rounds': 3, 'learning_time': 244.083787, 'training_set_loglikelihood': -3097.1124006848904})
+run 7
+({'alpha': 0.357450346535772, 'betax': 0.10013635588281844, 'zetax': 0.18769079091018642}, {'learning_rounds': 3, 'learning_time': 244.090733, 'training_set_loglikelihood': -3190.470152529243})
+run 8
+({'alpha': 0.38571835803971044, 'betax': 0.09882185307628476, 'zetax': 0.21020590047329507}, {'learning_rounds': 3, 'learning_time': 243.752523, 'training_set_loglikelihood': -3016.945788245401})
+run 9
+({'alpha': 0.36316108038951683, 'betax': 0.09550284811728468, 'zetax': 0.2005861365648609}, {'learning_rounds': 3, 'learning_time': 243.117359, 'training_set_loglikelihood': -3171.8930443747045})
+run 10
+({'alpha': 0.35774295582532567, 'betax': 0.10822991209956753, 'zetax': 0.22465442407730954}, {'learning_rounds': 3, 'learning_time': 244.949532, 'training_set_loglikelihood': -3040.293686865392})
