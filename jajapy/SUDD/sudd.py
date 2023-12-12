@@ -1,10 +1,10 @@
 import ctypes
-from typing import Any
+import math
+import os
+from typing import Any, Tuple
+
 import numpy as np
 from numpy.typing import NDArray
-import os
-import math
-
 
 lib_path = os.path.join(os.path.dirname(__file__), 'build', 'sudd.so')
 lib = ctypes.CDLL(lib_path)
@@ -21,79 +21,81 @@ common_argtypes = [
     np.ctypeslib.ndpointer(dtype=float, ndim=1, flags='aligned, contiguous'),
     ctypes.c_int,
     ctypes.c_int,
-    np.ctypeslib.ndpointer(dtype=float, ndim=2, flags='aligned, contiguous, writeable'),
+    np.ctypeslib.ndpointer(dtype=float, ndim=2,
+                           flags='aligned, contiguous, writeable'),
 ]
+
 
 set_function_types(lib.forwards, common_argtypes)
 set_function_types(lib.backwards, common_argtypes)
 set_function_types(lib.log_forwards, common_argtypes)
 set_function_types(lib.log_backwards, common_argtypes)
+set_function_types(lib.forwards_numeric_c, common_argtypes)
+set_function_types(lib.backwards_numeric_c, common_argtypes)
 
 
 def forwards_symbolic(
-    phi: np.ndarray,
-    tau: np.ndarray,
+    omega: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
 ) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.forwards,
-        phi,
-        tau,
+        omega,
+        p,
         pi
     )
 
 
 def backwards_symbolic(
-    phi: np.ndarray,
-    tau: np.ndarray,
+    omega: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
 ) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.backwards,
-        phi,
-        tau,
+        omega,
+        p,
         pi
     )
 
 
 def forwards_log_symbolic(
-    phi: np.ndarray,
-    tau: np.ndarray,
+    omega: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
 ) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.log_forwards,
-        phi,
-        tau,
+        omega,
+        p,
         pi
     )
 
 
 def backwards_log_symbolic(
-    phi: np.ndarray,
-    tau: np.ndarray,
+    omega: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
 ) -> NDArray[np.float64]:
     return fb_symbolic(
         lib.log_backwards,
-        phi,
-        tau,
+        omega,
+        p,
         pi
     )
 
 
 def fb_symbolic(
     fb: Any,
-    phi: np.ndarray,
-    tau: np.ndarray,
+    omega: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
 ) -> NDArray[np.float64]:
-    phi = phi.astype(np.float64)
-    tau = tau.astype(np.float64)
-    pi = pi.astype(np.float64)
-    n_obs, n_states = phi.shape
+    omega, p, pi = sanitize(omega, p, pi)
+    n_obs, n_states = omega.shape
     alpha = np.zeros((n_obs + 1, n_states))
-    err = fb(phi, tau, pi, n_states, n_obs, alpha)
+    err = fb(omega, p, pi, n_states, n_obs, alpha)
     if err == 0:
         pass
     elif err == 1:
@@ -105,9 +107,10 @@ def fb_symbolic(
 
 def forwards_numeric(
     omega: np.ndarray,
-    P: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
-) -> np.ndarray:
+) -> NDArray[np.float64]:
+    omega, p, pi = sanitize(omega, p, pi)
     n_obs, n_states = omega.shape
     alpha = np.empty((n_obs + 1, n_states))
     alpha[0] = pi
@@ -115,27 +118,29 @@ def forwards_numeric(
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):
-                temp += P[ss][s] * omega[t-1][ss] * alpha[t-1][ss]
+                temp += p[ss][s] * omega[t-1][ss] * alpha[t-1][ss]
             alpha[t][s] = temp
     return alpha
 
 
 def forwards_log_semiring(
     omega: np.ndarray,
-    P: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
-) -> np.ndarray:
+) -> NDArray[np.float64]:
+    omega, p, pi = sanitize(omega, p, pi)
     n_obs, n_states = omega.shape
     omega = np.log(omega)
-    P = np.log(P)
+    p = np.log(p)
     pi = np.log(pi)
     alpha = np.empty((n_obs + 1, n_states))
     alpha[0] = pi
     for t in range(1, n_obs + 1):
         for s in range(n_states):
-            temp = P[0][s] + omega[t-1][0] + alpha[t-1][0]
+            temp = p[0][s] + omega[t-1][0] + alpha[t-1][0]
             for ss in range(1, n_states):
-                temp = log_add(temp, P[ss][s] + omega[t-1][ss] + alpha[t-1][ss])
+                temp = log_add(temp, p[ss][s] + omega[t-1]
+                               [ss] + alpha[t-1][ss])
             alpha[t][s] = temp
     alpha = np.exp(alpha)
     return alpha
@@ -143,22 +148,24 @@ def forwards_log_semiring(
 
 def forwards_matrix_numeric(
     omega: np.ndarray,
-    P: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
-) -> np.ndarray:
+) -> NDArray[np.float64]:
+    omega, p, pi = sanitize(omega, p, pi)
     n_obs, n_states = omega.shape
     alpha = np.empty((n_obs + 1, n_states))
     alpha[0] = pi
     for t in range(1, n_obs + 1):
-        alpha[t] = P.T @ (omega[t - 1] * alpha[t - 1])
+        alpha[t] = p.T @ (omega[t - 1] * alpha[t - 1])
     return alpha
 
 
 def backwards_numeric(
     omega: np.ndarray,
-    P: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
-) -> np.ndarray:
+) -> NDArray[np.float64]:
+    omega, p, pi = sanitize(omega, p, pi)
     n_obs, n_states = omega.shape
     beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 1
@@ -166,27 +173,28 @@ def backwards_numeric(
         for s in range(n_states):
             temp = 0
             for ss in range(n_states):
-                temp += beta[t+1][ss] * P[s][ss]
+                temp += beta[t+1][ss] * p[s][ss]
             beta[t][s] = omega[t][s] * temp
     return beta
 
 
 def backwards_log_semiring(
     omega: np.ndarray,
-    P: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
-) -> np.ndarray:
+) -> NDArray[np.float64]:
+    omega, p, pi = sanitize(omega, p, pi)
     n_obs, n_states = omega.shape
     omega = np.log(omega)
-    P = np.log(P)
+    p = np.log(p)
     pi = np.log(pi)
     beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 0
     for t in range(n_obs - 1, -1, -1):
         for s in range(n_states):
-            temp = beta[t+1][0] + P[s][0]
+            temp = beta[t+1][0] + p[s][0]
             for ss in range(1, n_states):
-                temp = log_add(temp, beta[t+1][ss] + P[s][ss])
+                temp = log_add(temp, beta[t+1][ss] + p[s][ss])
             beta[t][s] = omega[t][s] + temp
     beta = np.exp(beta)
     return beta
@@ -194,15 +202,79 @@ def backwards_log_semiring(
 
 def backwards_matrix_numeric(
     omega: np.ndarray,
-    P: np.ndarray,
+    p: np.ndarray,
     pi: np.ndarray,
-) -> np.ndarray:
+) -> NDArray[np.float64]:
+    omega, p, pi = sanitize(omega, p, pi)
     n_obs, n_states = omega.shape
     beta = np.empty((n_obs + 1, n_states))
     beta[-1] = 1
     for t in range(n_obs - 1, -1, -1):
-        beta[t] = omega[t] * (P @ beta[t + 1])
+        beta[t] = omega[t] * (p @ beta[t + 1])
     return beta
+
+def forwards_numeric_c(
+    phis: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    return fb_numeric_c(
+        lib.forwards_numeric_c,
+        phis,
+        tau,
+        pi
+    )
+    
+def backwards_numeric_c(
+    phis: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    return fb_numeric_c(
+        lib.backwards_numeric_c,
+        phis,
+        tau,
+        pi
+    )
+
+def fb_numeric_c(
+    fw: Any,
+    phi: np.ndarray[np.float64, Tuple[int, int]],
+    tau: np.ndarray[np.float64, Tuple[int, int]],
+    pi: np.ndarray[np.float64, Tuple[int]],
+) -> np.ndarray[np.float64, Tuple[int, int]]:
+    phi = phi.astype(np.float64)
+    tau = tau.astype(np.float64)
+    pi = pi.astype(np.float64)
+    n_obs, n_states = phi.shape
+    alpha = np.zeros((n_obs + 1, n_states))
+    err = fw(phi, tau, pi, n_states, n_obs, alpha)
+    if err == 0:
+        pass
+    elif err == 1:
+        raise Exception("Inconsistencies occurred in cudd manager")
+    else:
+        raise Exception("Cudd manager ran out memory")
+    return alpha
+
+def sanitize(
+    omega: np.ndarray,
+    p: np.ndarray,
+    pi: np.ndarray
+) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+    assert omega.ndim == 2
+    assert p.ndim == 2
+    assert pi.ndim == 1
+
+    assert p.shape[0] == omega.shape[1]
+    assert p.shape[1] == omega.shape[1]
+    assert pi.shape[0] == omega.shape[1]
+
+    omega = omega.astype(np.float64)
+    p = p.astype(np.float64)
+    pi = pi.astype(np.float64)
+
+    return omega, p, pi
 
 
 def log_add(x, y):

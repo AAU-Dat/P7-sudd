@@ -1,0 +1,20 @@
+run1
+({'alpha': 0.43576979742663885, 'betax': 0.11747341717705437, 'zetax': 0.17947061761893535}, {'learning_rounds': 13, 'learning_time': 3682.334946, 'training_set_loglikelihood': -1937.1974002655227})
+run2
+({'alpha': 0.4079107831136968, 'betax': 0.11852297621427425, 'zetax': 0.24635688129236014}, {'learning_rounds': 13, 'learning_time': 3786.047495, 'training_set_loglikelihood': -1973.314313950682})
+run3
+({'alpha': 0.46010574305552066, 'betax': 0.11543752459936121, 'zetax': 0.21919496662125723}, {'learning_rounds': 13, 'learning_time': 3652.565689, 'training_set_loglikelihood': -1932.971273479948})
+run4
+({'alpha': 0.4128915061511654, 'betax': 0.10643632778014629, 'zetax': 0.22220910319299006}, {'learning_rounds': 14, 'learning_time': 3889.768148, 'training_set_loglikelihood': -1963.0670658695735})
+run5
+({'alpha': 0.4663574467215782, 'betax': 0.12508637333733624, 'zetax': 0.2115305473873103}, {'learning_rounds': 12, 'learning_time': 3441.633763, 'training_set_loglikelihood': -1952.2601820920931})
+run6
+({'alpha': 0.4292011816324836, 'betax': 0.11453787776022172, 'zetax': 0.24165239795248922}, {'learning_rounds': 14, 'learning_time': 4046.460284, 'training_set_loglikelihood': -1973.348653601554})
+run7
+({'alpha': 0.40616684613239074, 'betax': 0.11129922710838351, 'zetax': 0.22198556184953916}, {'learning_rounds': 15, 'learning_time': 4384.14179, 'training_set_loglikelihood': -1915.3704444359664})
+run8
+({'alpha': 0.39993531216518896, 'betax': 0.1073752830457847, 'zetax': 0.23115397807180912}, {'learning_rounds': 16, 'learning_time': 4568.428191, 'training_set_loglikelihood': -1982.636238825152})
+run9
+({'alpha': 0.3900594320626306, 'betax': 0.10962536336085116, 'zetax': 0.26596657117145706}, {'learning_rounds': 15, 'learning_time': 4420.797841, 'training_set_loglikelihood': -1988.7342749958827})
+run10
+({'alpha': 0.43273795730969916, 'betax': 0.11013517283248994, 'zetax': 0.19574561679763797}, {'learning_rounds': 12, 'learning_time': 3495.60208, 'training_set_loglikelihood': -1923.273715697786})
