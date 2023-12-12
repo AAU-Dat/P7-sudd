@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bed14dfd-eec6-4042-86d9-e6d604096081" name="Changes" comment="project settings">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SUDD_results/results_tandem_untimed_log1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SUDD_results/results_tandem_untimed_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/excel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/results/excel_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/jajapy_runs.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/results/jajapy_runs.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,6 +17,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -26,23 +35,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Runge/PycharmProjects/jajapy&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.editor&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "development",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/Runge/PycharmProjects/jajapy",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
@@ -50,10 +59,10 @@
       </set>
     </option>
   </component>
-  <component name="SpaceReviewFiltersPersistance"><![CDATA[{
-  "lastFilter": {
+  <component name="SpaceReviewFiltersPersistance">{
+  &quot;lastFilter&quot;: {
   }
-}]]></component>
+}</component>
   <component name="SpaceReviewProjectSettings">
     <option name="selectedReviewProjectId" value="3Oyh3932iRwW" />
   </component>
@@ -67,6 +76,7 @@
       <updated>1695989410464</updated>
       <workItem from="1695989411527" duration="1945000" />
       <workItem from="1696092002681" duration="3420000" />
+      <workItem from="1701247134979" duration="7568000" />
     </task>
     <task id="LOCAL-00001" summary="project settings">
       <option name="closed" value="true" />
@@ -112,5 +122,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="project settings" />
     <option name="LAST_COMMIT_MESSAGE" value="project settings" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/jajapy$excel_script.coverage" NAME="excel_script Coverage Results" MODIFIED="1701424028335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/results" />
   </component>
 </project>
