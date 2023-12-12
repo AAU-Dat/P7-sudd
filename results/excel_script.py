@@ -1,7 +1,7 @@
 import csv
 
 # Specify the path to your input text file
-input_file_path = 'philosophers2_untimed_results.txt'
+input_file_path = '../SUDD_results/results_philosophers2_untimed_log.txt'
 
 # Read the data from the input file
 with open(input_file_path, 'r') as file:
@@ -11,7 +11,7 @@ runs = data.split('})\n')
 #runs.pop()
 print(f"Number of runs: {len(runs)}")
 # Create a CSV file and write the header
-with open('results_philosophers2_untimed.csv', 'w', newline='') as csvfile:
+with open('results_philosophers2_untimed_log.csv', 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerow(['Run', 'alpha', 'betax', 'gammax', 'zetax', 'Learning Rounds', 'Learning Time', 'Training Set Loglikelihood'])
 
