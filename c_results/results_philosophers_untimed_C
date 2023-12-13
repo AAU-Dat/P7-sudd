@@ -1,0 +1,21 @@
+
+run 1
+({'alpha': 0.49029310459928155, 'betax': 0.129649610461126, 'zetax': 0.22233491492503696}, {'learning_rounds': 14, 'learning_time': 971.168569, 'training_set_loglikelihood': -1965.6676655367608})
+run 2
+({'alpha': 0.4087256246893465, 'betax': 0.10642231555772862, 'zetax': 0.20607905539350793}, {'learning_rounds': 13, 'learning_time': 901.821682, 'training_set_loglikelihood': -1918.6711259806402})
+run 3
+({'alpha': 0.44931179014250644, 'betax': 0.1088343020980339, 'zetax': 0.20718203731988244}, {'learning_rounds': 14, 'learning_time': 971.837159, 'training_set_loglikelihood': -1889.533713117377})
+run 4
+({'alpha': 0.4076078146941352, 'betax': 0.1179787775298308, 'zetax': 0.2194133631229434}, {'learning_rounds': 12, 'learning_time': 832.624672, 'training_set_loglikelihood': -1969.7379983547144})
+run 5
+({'alpha': 0.40752769505361475, 'betax': 0.10545549565825385, 'zetax': 0.16182757817349913}, {'learning_rounds': 12, 'learning_time': 832.353918, 'training_set_loglikelihood': -1915.8122685495562})
+run 6
+({'alpha': 0.4388046197137607, 'betax': 0.12184971180205251, 'zetax': 0.23196261370783336}, {'learning_rounds': 14, 'learning_time': 973.278445, 'training_set_loglikelihood': -1986.891062919277})
+run 7
+({'alpha': 0.43895759268446005, 'betax': 0.1160683302120257, 'zetax': 0.21749112786103614}, {'learning_rounds': 14, 'learning_time': 980.432476, 'training_set_loglikelihood': -1953.2546889867288})
+run 8
+({'alpha': 0.43264616018475655, 'betax': 0.11208014757658048, 'zetax': 0.20975932373819725}, {'learning_rounds': 15, 'learning_time': 1046.427132, 'training_set_loglikelihood': -1907.2795369473672})
+run 9
+({'alpha': 0.38558574252710553, 'betax': 0.10638279045400745, 'zetax': 0.1900950708794973}, {'learning_rounds': 12, 'learning_time': 833.492744, 'training_set_loglikelihood': -1946.1901736143677})
+run 10
+({'alpha': 0.451347039044263, 'betax': 0.11538905255667337, 'zetax': 0.1697036341891145}, {'learning_rounds': 13, 'learning_time': 905.935746, 'training_set_loglikelihood': -1898.9363007570385})
