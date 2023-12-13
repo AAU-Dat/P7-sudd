@@ -1,0 +1,21 @@
+
+run 1
+({'alpha': 0.30234295787198867, 'betax': 0.11137994562376478, 'gammax': 0.9514625923067419, 'zetax': 0.2061263070195864}, {'learning_rounds': 13, 'learning_time': 848.651655, 'training_set_loglikelihood': -3094.6624071749225})
+run 2
+({'alpha': 0.28659446202906574, 'betax': 0.09699432161566376, 'gammax': 1.0489761479829343, 'zetax': 0.2281308897428192}, {'learning_rounds': 13, 'learning_time': 849.829432, 'training_set_loglikelihood': -3135.5007943647943})
+run 3
+({'alpha': 0.29645488760497624, 'betax': 0.0977387252631827, 'gammax': 0.9771181888824994, 'zetax': 0.17790995336277232}, {'learning_rounds': 10, 'learning_time': 654.236977, 'training_set_loglikelihood': -3136.1023174987176})
+run 4
+({'alpha': 0.3052817580942569, 'betax': 0.09893456592711337, 'gammax': 1.0204414951894403, 'zetax': 0.18481525936592202}, {'learning_rounds': 15, 'learning_time': 981.112285, 'training_set_loglikelihood': -3031.4020705914622})
+run 5
+({'alpha': 0.29674895088575076, 'betax': 0.10089562216539039, 'gammax': 1.027548137253529, 'zetax': 0.18687297942026596}, {'learning_rounds': 13, 'learning_time': 850.900772, 'training_set_loglikelihood': -3075.0980548236253})
+run 6
+({'alpha': 0.3138718837729312, 'betax': 0.1067097939239134, 'gammax': 0.997445195747626, 'zetax': 0.1982785627554736}, {'learning_rounds': 15, 'learning_time': 979.682452, 'training_set_loglikelihood': -2986.09529005408})
+run 7
+({'alpha': 0.3161164330340324, 'betax': 0.09863871970736673, 'gammax': 0.9422351563225613, 'zetax': 0.2620765483368208}, {'learning_rounds': 14, 'learning_time': 914.605852, 'training_set_loglikelihood': -3122.040907904094})
+run 8
+({'alpha': 0.29824799777339406, 'betax': 0.10339297664182644, 'gammax': 1.0162748148630785, 'zetax': 0.21331587119295892}, {'learning_rounds': 14, 'learning_time': 914.160452, 'training_set_loglikelihood': -3061.025503787859})
+run 9
+({'alpha': 0.2851174886392764, 'betax': 0.11016932100619263, 'gammax': 0.9757758055355794, 'zetax': 0.1968276505273164}, {'learning_rounds': 13, 'learning_time': 851.343694, 'training_set_loglikelihood': -3110.3901284543704})
+run 10
+({'alpha': 0.31109637622943787, 'betax': 0.09963127962702097, 'gammax': 0.9713314394416123, 'zetax': 0.20245093636673403}, {'learning_rounds': 15, 'learning_time': 980.532358, 'training_set_loglikelihood': -3026.90195207156})
