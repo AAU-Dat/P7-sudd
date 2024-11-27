@@ -73,5 +73,13 @@ RUN make build/sudd.so
 
 # GO BACK
 WORKDIR /base/jajapy
+RUN git config --list
+# Configure Git user identity
+RUN git config --global user.email "saahol20@student.aau.dk"
+RUN git config --global user.name "test"
+RUN git remote set-url origin git@github.com:AAU-Dat/P7-sudd.git
+#RUN git config branch.test.remote origin
+#RUN git config branch.test.merge refs/heads/test
+
 RUN chmod +x command_script.sh
-ENTRYPOINT ./command_script.sh && tail -f /dev/null
+ENTRYPOINT ./command_script.sh && git checkout -b test && git add experiments/results/ && git commit -m "Add test results" && git push --set-upstream origin test 

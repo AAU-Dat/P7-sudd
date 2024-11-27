@@ -1,34 +1,19 @@
 #python3 -m memray run -o polling_timed_memory.bin polling_timed_script.py
 #python3 -m memray run -o polling_untimed_memory.bin polling_untimed_script.py
 
-#python3 -m memray run -o cluster_timed_memory.bin cluster_timed_script.py
-#python3 -m memray run -o cluster_untimed_memory.bin cluster_untimed_script.py
-
-#python3 -m memray run -o tandem_timed_memory.bin tandem_timed_script.py
-#python3 -m memray run -o tandem_untimed_memory.bin tandem_untimed_script.py
-
-#python3 polling_timed_script.py
-#python3 polling_untimed_script.py
-
-#python3 philosophers_timed_script.py
-#python3 philosophers_untimed_script.py
-
-#python3 philosophers2_timed_script.py
-#python3 philosophers2_untimed_script.py
-
 #python3 -m memray flamegraph polling_timed_memory.bin
 #python3 -m memray flamegraph polling_untimed_memory.bin
 
-#python3 -m memray flamegraph cluster_timed_memory.bin
-#python3 -m memray flamegraph cluster_untimed_memory.bin
+#RUN THESE!!!
 
-#python3 -m memray flamegraph tandem_timed_memory.bin
-#python3 -m memray flamegraph tandem_untimed_memory.bin
+python3 experiments/experiment_polling.py
+#python3 experiments/experiment_cluster.py
+#python3 experiments/experiment_tandem.py
+#python3 experiments/experiment_philosophers.py
+#python3 experiments/experiment_philosophers2.py
 
-#python3 -m memray flamegraph philosophers_timed_memory.bin
-#python3 -m memray flamegraph philosophers_untimed_memory.bin
+#python3 test.py
 
-#python3 polling_timed_script.py
-#python3 experiment.py
+echo "Done"
 
-python3 experiment_polling.py
+
