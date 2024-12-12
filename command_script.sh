@@ -7,13 +7,15 @@
 #RUN THESE!!!
 
 python3 experiments/experiment_polling.py
-#python3 experiments/experiment_cluster.py
-#python3 experiments/experiment_tandem.py
-#python3 experiments/experiment_philosophers.py
+python3 experiments/experiment_cluster.py
+python3 experiments/experiment_tandem.py
+python3 experiments/experiment_philosophers.py
 #python3 experiments/experiment_philosophers2.py
 
 #python3 test.py
 
+
+#python3 scaling_experiment.py
 echo "Done"
 
 
