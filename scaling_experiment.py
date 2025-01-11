@@ -1,84 +1,73 @@
 import sys
-from random import uniform
-from jajapy.base.BW import ComputeAlphaBetaHow
 from jajapy import loadSet, loadPrism, BW
 from numpy import array
+import jajapy as ja
 from datetime import datetime
 import pandas as pd
+import string
+import random
 
-min_c = 3
+def eksperiment():
+    
+    alphabet = ['a', 'b', 'c', 'd', 'e']
+    results = pd.DataFrame(
+    columns=['num_states', 'learning_time'])
 
+    for states in range(20, 1021, 100):
+        training_set = loadSet("training_sets/observations.txt")
+        hypothesis = ja.loadHMM("training_sets/initial_hypothesis_" + str(states) + "states.txt")
+        output_model, model_results = BW().fit(training_set=training_set, initial_model=hypothesis, return_data=True)
+        
+        model_dataframe = pd.DataFrame([
+             {"num_states": states, "learning_time": model_results['learning_time']}])
+        results = pd.concat([results, model_dataframe], ignore_index=True, axis=0)
 
-def experiment3(args):
-    steps = 7
-    nb_rep = 3
-    max_c = 19
-    if len(args) > 1:
-        if args[1] == '--quick':
-            steps = 2
-            nb_rep = 5
-        elif args[1] == '--fastest':
-            steps = 7
-            nb_rep = 3
-            max_c = 19
+    results.to_csv("experiments/results/cluster_results.csv")
 
-    execute(max_c, steps, nb_rep)
+    
 
+def generate_random_hmm(num_states, num_emissions_per_state=3):
+    transitions = []
+    emissions = []
 
-def execute(max_c, steps, nb_rep):
-    models_info, learning_data = learn(max_c, steps, nb_rep)
-    # Write results to CSV
-    results_df = pd.concat(learning_data)
-    results_df.to_csv("experiments/results/scalability_results.csv", index=False)
-    print("experiments/results/scalability_results.csv")
+    # Generate random transitions
+    for state in range(num_states):
+        # Create random transition probabilities to other states
+        trans_probs = [random.random() for _ in range(num_states)]
+        total = sum(trans_probs)
+        trans_probs = [p / total for p in trans_probs]  # Normalize to sum to 1
 
+        for target_state in range(num_states):
+            if trans_probs[target_state] > 0:  # Avoid zero-probability entries
+                transitions.append((state, target_state, trans_probs[target_state]))
 
-def learn(max_c, steps, nb_rep):
-    learning_data = []
+    # Generate random emissions
+    emission_labels = ['a', 'b', 'c', 'd', 'e']
+    for state in range(num_states):
+        # Select a subset of emission labels for the current state
+        labels = random.sample(emission_labels, num_emissions_per_state)
 
-    for timed in [True, False]:
-        k = min_c
-        while k < max_c:
-            # Load the dataset for the current value of `c` and timing
-            ts1 = loadSet(f"training_sets/scaling_training_set_tandem_{'timed' if timed else 'untimed'}_c{k}.txt")
+        # Create random emission probabilities
+        emission_probs = [random.random() for _ in labels]
+        total = sum(emission_probs)
+        emission_probs = [p / total for p in emission_probs]  # Normalize to sum to 1
 
-            # Iterate for each repetition
-            for r in range(nb_rep):
-                # Iterate for each implementation
-                initial_params = [uniform(0.1, 5.0) for _ in range(4)]
+        for label, prob in zip(labels, emission_probs):
+            if prob > 0:  # Avoid zero-probability entries
+                emissions.append((state, label, prob))
 
-                for impl in [ComputeAlphaBetaHow.CLASSIC, ComputeAlphaBetaHow.SYMBOLIC,
-                             ComputeAlphaBetaHow.SYMBOLIC_LOG_SEMIRING]:
-                    # Initialize model parameters randomly
-
-                    # Load and instantiate the model
-                    m = loadPrism("examples/materials/tandem_3.sm")
-                    m.instantiate(["mu1a", "mu1b", "mu2", "kappa"], initial_params)
-
-                    # Run the learning process
-                    tandem_params, tandem_result = BW().fit_parameters(
-                        ts1, m, ["mu1a", "mu1b", "mu2", "kappa"],
-                        return_data=True, compute_alpha_beta_how=impl
-                    )
-
-                    # Collect results
-                    result_entry = {
-                        "run": r,
-                        "timed": timed,
-                        "implementation": impl.name,
-                        "c_value": k,
-                        "learning_time": tandem_result['learning_time'],
-                        "learning_rounds": tandem_result['learning_rounds'],
-                        "mu1a": tandem_params['mu1a'],
-                        "mu1b": tandem_params['mu1b'],
-                        "mu2": tandem_params['mu2'],
-                        "kappa": tandem_params['kappa']
-                    }
-                    learning_data.append(pd.DataFrame([result_entry]))
-            k += steps
-
-    return [], learning_data
+    return transitions, emissions
 
 
-if __name__ == '__main__':
-    experiment3(sys.argv)
+def generate_initial_hypothesis(num_states, alphabet):
+    
+    for i in range(20, 1021, 100):
+        initial_hypothesis = ja.HMM_random(i, alphabet=alphabet, random_initial_state=False)
+        initial_hypothesis.save("initial_hypothesis_" + str(i) + "states.txt")
+        print("Initial hypothesis with", i, "states saved to file")
+
+
+if __name__ == "__main__":
+    eksperiment()
+    # generate_initial_hypothesis(5, ['a', 'b', 'c', 'd', 'e'])
+    # transitions, emissions = generate_random_h

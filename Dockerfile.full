@@ -82,4 +82,5 @@ RUN git remote set-url origin git@github.com:AAU-Dat/P7-sudd.git
 #RUN git config branch.test.merge refs/heads/test
 
 RUN chmod +x command_script.sh
-ENTRYPOINT ./command_script.sh && git checkout -b results  && git add experiments/results/ && git commit -m"Results for Jajapy, SUDD and SUDD-semiring" && git push --set-upstream origin results
+ENTRYPOINT ./command_script.sh && git checkout -b results  && git add experiments/results/ && git commit -m"Results for Jajapy" && git push --set-upstream origin results
+#ENTRYPOINT ./command_script.sh && tail -f /dev/null
