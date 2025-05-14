@@ -34,7 +34,6 @@ class BW:
     """
     Class for the Baum-Welch algorithm.
     """
-
     def __init__(self):
         if platform == "win32" or platform == "darwin":
             self.processes = 1
@@ -50,6 +49,33 @@ class BW:
         except ModuleNotFoundError:
             self.stormpy_installed = False
 
+    def fit_symbolic(self, model, training_set, max_iteration = 100, epsilon = 1e-2, time = 3600, outputPath = "", resultPath = ""):
+        try:
+            import libcupaal_bindings
+        except ModuleNotFoundError:
+            print("Cannot find module")
+        
+        states = [str(i) for i in range (model.nb_states)]
+        labels = list(set(model.labelling))
+        
+        observations = []
+        for times, sequences in zip(training_set.times, training_set.sequences):
+            for i in range(times):
+                observations.append(list(sequences))
+
+        initial_state = model.initial_state.tolist()
+        
+        transitions = model.matrix.flatten().tolist()
+
+        emissions = zeros((len(labels), model.nb_states))
+        for row in range(len(labels)):
+            for col in range(model.nb_states):
+                if model.labelling[col] == labels[row]:
+                    emissions[row][col] = 1
+        emissions = emissions.flatten().tolist()
+        
+        libcupaal_bindings.bw_wrapping_function(states, labels, observations, initial_state, transitions, emissions, max_iteration, epsilon, time, outputPath, resultPath)
+        
     def fit(
         self,
         training_set,
