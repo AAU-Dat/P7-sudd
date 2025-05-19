@@ -99,6 +99,7 @@ class BW:
         min_val: float = None,
         max_val: float = None,
         processes: int = None,
+        symbolic: bool = False,
     ):
         """
         Fits any model according to ``traces``.
@@ -244,16 +245,19 @@ class BW:
             min_val,
             max_val,
         )
-        return self._bw(
-            max_it,
-            pp,
-            epsilon,
-            output_file,
-            output_file_prism,
-            verbose,
-            stormpy_output,
-            return_data,
-        )
+        if symbolic :
+            return self._bw_symbolic(initial_model, training_set, max_it, epsilon, output_file, output_file_prism)
+        else:
+            return self._bw(
+                max_it,
+                pp,
+                epsilon,
+                output_file,
+                output_file_prism,
+                verbose,
+                stormpy_output,
+                return_data,
+            )
 
     def _preparation(
         self,
@@ -460,6 +464,36 @@ class BW:
             return self.h, info
 
         return self.h
+    
+
+    def _bw_symbolic(self, model, training_set, max_iteration = 100, epsilon = 1e-2, outputPath = "", resultPath = ""):
+        try:
+            import libcupaal_bindings
+        except ModuleNotFoundError:
+            print("Cannot find module")
+        
+        states = [str(i) for i in range (model.nb_states)]
+        labels = list(set(model.labelling))
+        
+        observations = []
+        for times, sequences in zip(training_set.times, training_set.sequences):
+            for i in range(times):
+                observations.append(list(sequences))
+
+        initial_state = model.initial_state.tolist()
+        
+        transitions = model.matrix.flatten().tolist()
+
+        emissions = zeros((len(labels), model.nb_states))
+        for row in range(len(labels)):
+            for col in range(model.nb_states):
+                if model.labelling[col] == labels[row]:
+                    emissions[row][col] = 1
+        emissions = emissions.flatten().tolist()
+        
+        self.h = libcupaal_bindings.bw_wrapping_function(states, labels, observations, initial_state, transitions, emissions, max_iteration, epsilon, outputPath, resultPath)
+        return self.h
+
 
     # MC-----------------------------------------------------------------------
     def _processWork_MC(self, sequence, times):
