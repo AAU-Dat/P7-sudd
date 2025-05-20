@@ -74,7 +74,7 @@ class BW:
                     emissions[row][col] = 1
         emissions = emissions.flatten().tolist()
         
-        libcupaal_bindings.bw_wrapping_function(states, labels, observations, initial_state, transitions, emissions, max_iteration, epsilon, time, outputPath, resultPath)
+        libcupaal_bindings.cupaal_bw_symbolic(states, labels, observations, initial_state, transitions, emissions, max_iteration, epsilon, time, outputPath, resultPath)
         
     def fit(
         self,
@@ -246,7 +246,7 @@ class BW:
             max_val,
         )
         if symbolic :
-            return self._bw_symbolic(initial_model, training_set, max_it, epsilon, output_file, output_file_prism)
+            return self._bw_symbolic(max_it, epsilon, output_file, output_file_prism)
         else:
             return self._bw(
                 max_it,
@@ -466,32 +466,36 @@ class BW:
         return self.h
     
 
-    def _bw_symbolic(self, model, training_set, max_iteration = 100, epsilon = 1e-2, outputPath = "", resultPath = ""):
+    def _bw_symbolic(self, max_iteration = 100, epsilon = 1e-2, outputPath = "", resultPath = ""):
         try:
             import libcupaal_bindings
         except ModuleNotFoundError:
             print("Cannot find module")
         
-        states = [str(i) for i in range (model.nb_states)]
-        labels = list(set(model.labelling))
+        states = [str(i) for i in range (self.h.nb_states)]
+        labels = list(set(self.h.labelling))
         
         observations = []
-        for times, sequences in zip(training_set.times, training_set.sequences):
+        for times, sequences in zip(self.training_set.times, self.training_set.sequences):
             for i in range(times):
                 observations.append(list(sequences))
 
-        initial_state = model.initial_state.tolist()
+        initial_state = self.h.initial_state.tolist()
         
-        transitions = model.matrix.flatten().tolist()
+        transitions = self.h.matrix.flatten().tolist()
 
-        emissions = zeros((len(labels), model.nb_states))
+        emissions = zeros((len(labels), self.h.nb_states))
         for row in range(len(labels)):
-            for col in range(model.nb_states):
-                if model.labelling[col] == labels[row]:
+            for col in range(self.h.nb_states):
+                if self.h.labelling[col] == labels[row]:
                     emissions[row][col] = 1
         emissions = emissions.flatten().tolist()
         
-        self.h = libcupaal_bindings.bw_wrapping_function(states, labels, observations, initial_state, transitions, emissions, max_iteration, epsilon, outputPath, resultPath)
+        cupaal_model = libcupaal_bindings.cupaal_bw_symbolic(states, labels, observations, initial_state, transitions, emissions, max_iteration, epsilon, outputPath, resultPath)
+        self.h.initial_state = array(cupaal_model.initial_distribution)
+        self.h.matrix = array(cupaal_model.transitions).reshape(self.h.nb_states, self.h.nb_states)
+        self.h.emissions = array(cupaal_model.emissions).reshape(len(labels), self.h.nb_states)
+
         return self.h
 
 
